@@ -1,47 +1,48 @@
 <!doctype html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Labyrinth Generator</title>
+        <script src="/jquery/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="/js/main.js"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
+              integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
+        <link href="/css/style.css" rel="stylesheet"/>
 
-<head>
-    <meta charset="UTF-8"/>
-    <title>Labyrinth Generator</title>
-    <script src="/jquery/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
-    <script src="/js/main.js"></script>
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
-          integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
-    <link href="/css/style.css" rel="stylesheet"/>
-
-</head>
+    </head>
     <body>
-        <header>
-            <h1 id="title">Labyrinth Generator</h1>
-        </header>
-        <nav>
-            <ul>
-                <li>Depth-first search</li>
-                <li>Randomized Kruskal's algorithm</li>
-                <li>Randomized Prim's algorithm</li>
-                <li>Recursive division method</li>
-                <li>Cellular automaton algorithm</li>
-            </ul>
-        </nav>
-        <section>
-            <!--the maze-->
-            <article id="maze">
-                000000000<br/>
-                011111111<br/>
-                010100100<br/>
-                000100000<br/>
-            </article>
-            
-            <div class="player">
-                <button class="btn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
-                <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
-                <button class="btn" id="play"><i class="fas fa-play fa-2x"></i></button>
-                <button class="btn" id="fow"><i class="fas fa-forward fa-2x"></i></button>
-                <button class="btn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>
-            </div>
-        </section>
-    <footer> Copyright &copy; Codecool 2017/2 - Daniel Knoll </footer>
+        <div class="wrapper">
+            <header>
+                <h1 id="title">Labyrinth Generator</h1>
+            </header>
+            <nav>
+                <ul>
+                    <li>DFS</li>
+                    <li>Kruskal's</li>
+                    <li>Random Prim</li>
+                    <li>Recursive division</li>
+                    <li>Cellular automaton</li>
+                </ul>
+            </nav>
+            <section>
+                <!--the maze-->
+                <article id="maze">
+                    000000000<br/>
+                    011111111<br/>
+                    010100100<br/>
+                    000100000<br/>
+                </article>
+
+                <div class="player">
+                    <button class="btn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
+                    <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
+                    <button class="btn" id="play"><i class="fas fa-play fa-2x"></i></button>
+                    <button class="btn" id="fow"><i class="fas fa-forward fa-2x"></i></button>
+                    <button class="btn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>
+                </div>
+            </section>
+        </div>
+        <footer> Copyright &copy; Codecool 2017/2 - Daniel Knoll </footer>
     </body>
 </html>

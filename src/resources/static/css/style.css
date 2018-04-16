@@ -1,3 +1,51 @@
 body {
-    background-color: red;
+    background-color: cornflowerblue;
+    margin: 0;
+}
+
+.wrapper {
+    background-color: coral;
+    min-height: calc(100vh - 50px);
+}
+
+header {
+    height: 80px;
+    background-color: azure;
+}
+
+header h1 {
+    margin: 0px;
+    text-align: center;
+}
+
+nav {
+    background-color: cornflowerblue;
+    margin-bottom: 20px;
+}
+
+nav ul {
+    margin: 0px auto;
+    width: 50%;
+}
+
+nav li {
+    display: inline-block;
+}
+
+section {
+    background-color: aquamarine;
+    margin: 0px auto;
+    width: 70%;
+}
+
+section #maze, section .player {
+    margin: 0px auto;
+    width: 70%;
+}
+
+footer {
+    height: 50px;
+    text-align: center;
+    background-color: aquamarine;
+
 }
