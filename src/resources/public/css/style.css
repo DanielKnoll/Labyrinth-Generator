@@ -35,17 +35,36 @@ header h1 {
 }
 
 nav {
-    background-color: darkred;
-    margin-bottom: 20px;
+    margin-bottom:20px;
+    font-family: Arial, sans-serif;
+    color: #ffffff;
+    background-color: #3F3F43;
+}
+
+nav .separator {
+    height: 10px;
+    background-color: #ff6b33;
 }
 
 nav ul {
+    width: 55%;
     margin: 0px auto;
-    width: 50%;
+    padding: 0px 0px 10px;
 }
 
 nav li {
     display: inline-block;
+    padding: 10px;
+}
+
+nav li:hover {
+    border-radius: 0px 0px 10px 10px;
+    background: linear-gradient(to bottom, #ff6b33 0%, #ff8a35 100%);
+}
+
+section h2 {
+    font-family: Arial, sans-serif;
+    text-align: center;
 }
 
 section .maze, section .player {
@@ -55,9 +74,10 @@ section .maze, section .player {
 
 section .maze {
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto auto;
-    background-color: #333333;
+    grid-template-columns: auto auto auto auto auto auto auto auto auto;  /* TODO add this with JS*/
+    margin-bottom: 20px;
     padding: 10px;
+    background-color: #333333;
 }
 
 .grid-item {
@@ -69,11 +89,11 @@ section .maze {
 }
 
 footer {
-    height: 35px;
-    padding-top: 15px;
+    height: 25px;
+    padding-top: 12px;
     font-family: Arial, serif;
     text-align: center;
     color: white;
     background-color: #3F3F43;
-
+    border-top: 10px solid #ff6b33;
 }
