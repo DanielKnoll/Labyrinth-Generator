@@ -1,5 +1,6 @@
 $(document).ready(function(){
-    $("#title").click(function(){
-        alert("Hello");
-    });
+    let canvasString = saveCanvas();
+    navigationEventListener(canvasString);
+    playerBtnEventlistener();
+    generateMazeBtnEventListener();
 });
