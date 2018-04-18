@@ -63,17 +63,17 @@ nav li:hover, .active_nav {
     background: linear-gradient(to bottom, #ff6b33 0%, #ff8a35 100%);
 }
 
-section h2 {
+.canvas h2, h5, #generate {
     font-family: Arial, sans-serif;
     text-align: center;
 }
 
-section .maze {
+.canvas .maze {
     margin: 0px auto;
     width: 70%;
 }
 
-section .maze {
+.canvas .maze {
     display: grid;
     grid-template-columns: auto auto auto auto auto auto auto auto auto;  /* TODO add this with JS*/
     margin-bottom: 20px;
@@ -82,7 +82,7 @@ section .maze {
 }
 
 .grid-item {
-    background-color: rgba(255, 255, 255, 0.8);
+    background-color: black;/*rgba(255, 255, 255, 0.8);*/
     border: 1px solid rgba(0, 0, 0, 0.8);
     padding: 20px;
     font-size: 30px;
@@ -122,7 +122,8 @@ section .maze {
 }
 
 #generate {
-    width: 185%;
+    width: 50%; /*todo not the same width as player btns*/
+    margin: 0px auto;
     font-size: 2em;
 }
 
