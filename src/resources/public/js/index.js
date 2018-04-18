@@ -5,9 +5,11 @@ function saveCanvas() {
 function navigationEventListener(canvasString) {
     $("nav li").click(function(){
         $("nav li").removeClass("active_nav");
-        $(this).addClass("active_nav");  /*todo will need the menu point*/
+        let selectedMenu = $(this);
+        let selectedMenuId = selectedMenu.attr("id");
 
-        switch ($(this).attr("id")) {
+        selectedMenu.addClass("active_nav");
+        switch (selectedMenuId) { /*todo will need to return the menu point id or just the order*/
             case "dfs":
                 loadCanvas(canvasString);
                 break;
@@ -20,14 +22,19 @@ function navigationEventListener(canvasString) {
 
 function loadCanvas(canvasString) {
     $(".canvas").html(canvasString);
-    /*todo fill maze with 0*/
 }
 
 function generateMazeBtnEventListener() {
     $("#generate").click(function() {
+        let order = [31,22,13,14,15,16,17,18,12,11,20]; //getOrder();
+        let iterator = 0;
+        let delay = 1000;
+
         $(this).hide();
-        loadButtons();
-        playerBtnEventlistener();
+        loadButtons(); //TODO rename
+        playerBtnEventlistener(order, iterator, delay);
+        mazeGeneration(order, iterator, delay);
+        console.log("out: " + order + " " + iterator);
     });
 }
 
@@ -39,12 +46,13 @@ function loadButtons() {
         <button class="btn right_btn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>`); /*fa-play*/
 }
 
-function playerBtnEventlistener() {
+function playerBtnEventlistener(order, iterator, delay) {
+    console.log("list: " + order + " " + iterator);
     $(".player button").click(function(){
 
         switch ($(this).attr("id")) {
             case "start":
-                /*loadEmptyMaze();*/
+                loadEmptyMaze();
                 resetBtnFontColor();
                 break;
             case "rew":
@@ -52,15 +60,14 @@ function playerBtnEventlistener() {
                 $("#rew").css("color", "#333333");
                 break;
             case "pause":
-                /*mazeGenerationStop();*/
-                $("#pause i").toggleClass("fa-pause").toggleClass("fa-play");
-                $("#pause").attr("id", "play");
+                mazeGenerationStop();
+                togglePlayPauseBtn();
                 resetBtnFontColor();
                 break;
             case "play":
-                /*mazeGeneration();*/
-                $("#play i").toggleClass("fa-play").toggleClass("fa-pause");
-                $("#play").attr("id", "pause");
+                loadEmptyMaze();
+                mazeGeneration(order, iterator, delay);
+                togglePlayPauseBtn();
                 resetBtnFontColor();
                 break;
             case "ffwd":
@@ -69,7 +76,7 @@ function playerBtnEventlistener() {
                 $("#ffwd").css("color", "#333333");
                 break;
             case "end":
-                /*loadGeneratedMaze();*/
+                mazeGeneration(order, iterator, 0);
                 resetBtnFontColor();
                 break;
             case "generate":
@@ -80,11 +87,45 @@ function playerBtnEventlistener() {
     });
 }
 
-function resetBtnFontColor() {
+function loadEmptyMaze() {
+    $(".maze .grid-item").css("background-color", "black");
+}
+
+function resetBtnFontColor() {  //Todo runs even if not necessary
     $("#rew").css("color", "white");
     $("#ffwd").css("color", "white");
 }
 
-function mazeGeneration() {
+function togglePlayPauseBtn() {
+    let btn = $("#rew").next();
+    if(btn.attr("id") === "pause") {
+        btn.attr("id", "play").children().toggleClass("fa-play").toggleClass("fa-pause");
+    } else {
+        btn.attr("id", "pause").children().toggleClass("fa-play").toggleClass("fa-pause");
+    }
+}
 
+function mazeGeneration(order, iterator, delay) {
+    function f() {
+        console.log(order + " " + iterator);
+        if(iterator > 1) {
+            $(".maze div:nth-child(" + order[iterator - 1] + ")").css("background-color", "rgba(255, 255, 255, 0.8)");
+        } else if(iterator === 1){
+            $(".maze div:nth-child(" + order[0] + ")").css("background-color", "rgba(255, 255, 255, 0.8)");
+        }
+        $(".maze div:nth-child(" + order[iterator] + ")").css("background-color", "#ff6b33");
+        iterator++;
+        if( iterator < order.length ){
+            setTimeout(f, delay);
+        } else {
+            togglePlayPauseBtn();
+        }
+    }
+    f();
+
+}
+
+function mazeGenerationStop() {
+    //mazeGeneration().stop();
+    togglePlayPauseBtn();
 }
