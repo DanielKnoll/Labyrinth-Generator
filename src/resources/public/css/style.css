@@ -8,15 +8,6 @@ body {
     background-color: #333333;
 }
 
-.wrapper {
-    min-height: calc(100vh - 183px);
-    margin: 0px 100px;
-    background-color: #e4e4e4;
-    border-color: white;
-    border-style: solid;
-    border-width: 0px 2px 0px 2px;
-}
-
 header {
     height: 110px;
     padding-top: 20px;
@@ -34,6 +25,16 @@ header h1 {
     border-radius: 15px;
 }
 
+.wrapper {
+    min-height: calc(100vh - 183px);
+    margin: 0px 100px;
+    padding-bottom: 40px;
+    background-color: #e4e4e4;
+    border-color: white;
+    border-style: solid;
+    border-width: 0px 2px 0px 2px;
+}
+
 nav {
     margin-bottom:20px;
     font-family: Arial, sans-serif;
@@ -48,7 +49,7 @@ nav .separator {
 
 nav ul {
     width: 55%;
-    margin: 0px auto;
+    margin: 0px auto;  /*TODO not centered*/
     padding: 0px 0px 10px;
 }
 
@@ -57,7 +58,7 @@ nav li {
     padding: 10px;
 }
 
-nav li:hover {
+nav li:hover, .active_nav {
     border-radius: 0px 0px 10px 10px;
     background: linear-gradient(to bottom, #ff6b33 0%, #ff8a35 100%);
 }
@@ -67,7 +68,7 @@ section h2 {
     text-align: center;
 }
 
-section .maze, section .player {
+section .maze {
     margin: 0px auto;
     width: 70%;
 }
@@ -86,6 +87,43 @@ section .maze {
     padding: 20px;
     font-size: 30px;
     text-align: center;
+}
+
+.player {
+    margin: 0px auto;
+    width: 50%;
+    display: grid;
+    grid-template-columns: auto auto auto auto auto auto;
+}
+
+.btn {
+    padding: 9px 32px;
+    border: 1px solid #cc562c;
+    font-size: 12px;
+    text-align: center;
+    color: white;
+    background: linear-gradient(to bottom, #ff6b33 0%, #ff8a35 100%);
+}
+
+.btn:hover {
+    color: #ffa888;
+}
+
+.left_btn {
+    border-radius: 10px 0px 0px 10px;
+}
+
+.right_btn {
+    border-radius: 0px 10px 10px 0px;
+}
+
+.single_btn {
+    border-radius: 10px;
+}
+
+#generate {
+    width: 185%;
+    font-size: 2em;
 }
 
 footer {

@@ -19,7 +19,7 @@
             <nav>
                 <div class="separator"></div>
                 <ul> <!--TODO use id-->
-                    <li>DFS</li>
+                    <li class="active_nav">DFS</li>
                     <li>Kruskal's</li>
                     <li>Random Prim</li>
                     <li>Recursive division</li>
@@ -27,6 +27,7 @@
                 </ul>
             </nav>
             <section>
+                <h2>Depth-first search algorithm</h2>
                 <!--the maze-->
                 <article class="maze">
                     <div class="grid-item">0</div>
@@ -71,14 +72,26 @@
                 </article>
 
                 <div class="player">
-                    <button class="btn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
+                    <button class="btn single_btn" id="generate">Generate</button>
+                </div>
+
+                <div class="player">
+                    <button class="btn left_btn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
                     <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
                     <button class="btn" id="play"><i class="fas fa-play fa-2x"></i></button>
                     <button class="btn" id="fow"><i class="fas fa-forward fa-2x"></i></button>
-                    <button class="btn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>
+                    <button class="btn right_btn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>
+                </div>
+
+                <div class="player">
+                    <button class="btn left_btn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
+                    <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
+                    <button class="btn" id="pause"><i class="fas fa-pause fa-2x"></i></button>
+                    <button class="btn" id="fow"><i class="fas fa-forward fa-2x"></i></button>
+                    <button class="btn right_btn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>
                 </div>
             </section>
         </div>
-        <footer> Copyright &copy; Codecool 2017/2 - Daniel Knoll </footer>
+        <footer> Copyright &copy; Codecool 2017/2 - Daniel Knoll <i class="fab fa-github"></i></footer>
     </body>
 </html>
