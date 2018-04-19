@@ -122,8 +122,11 @@ dom = {
     },
 
     rewindMazeGen: function () {
+        dom.data.interrupted = true;
         dom.resetBtnFontColor();
         $("#rew").css("color", dom.data.colorGray);
+        dom.data.delay = 1000;
+        dom.mazeGeneration();
     },
 
     stopMazeGen: function () {
@@ -139,7 +142,6 @@ dom = {
     },
 
     playMazeGen: function () {
-        console.log(dom.data.iterator);
         if(dom.data.iterator === 0 || dom.data.iterator === dom.data.mazeOrder.length) {
             dom.jumpToStart();
         }
@@ -157,7 +159,6 @@ dom = {
             dom.data.iterator++;  // Todo reverse
             if( dom.data.iterator < dom.data.mazeOrder.length ){
                 timeOutId = setTimeout(f, dom.data.delay);
-                console.log(timeOutId);
                 if(dom.data.interrupted) {
                     clearTimeout(timeOutId); // TODO it will do one more step
                 }
@@ -180,6 +181,7 @@ dom = {
     },
 
     fastForwardMazeGen: function () {
+        dom.data.interrupted = true;
         dom.resetBtnFontColor();
         $("#ffwd").css("color", dom.data.colorGray);
         dom.data.delay = 100;
@@ -188,6 +190,7 @@ dom = {
 
     jumpToEnd: function () {
         dom.data.interrupted = true;
+        dom.data.iterator = dom.data.mazeOrder.length -1;
         for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
             if(dom.data.mazeOrder.includes(i)) {
                 $(".maze div:nth-child(" + i + ")").css("background-color", dom.data.colorTransparent);
