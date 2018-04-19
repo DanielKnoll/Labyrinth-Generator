@@ -32,12 +32,11 @@ dom = {
             $("nav li").removeClass("active_nav");
             let selectedMenu = $(this);
             let selectedMenuId = selectedMenu.attr("id");
-            //getMazeByAlgo(selectedMenuId);
+            // todo getMazeByAlgo(selectedMenuId);
             selectedMenu.addClass("active_nav");
             switch (selectedMenuId) { /*todo will need to return the menu point id or just the order*/
                 case "dfs":
                     dom.loadCanvas(canvasString);
-
                     break;
                 default:
                     $(".canvas").html("<h2>Next sprint</h2><h5>hopefully</h5>");
@@ -48,9 +47,6 @@ dom = {
 
     loadCanvas: function (canvasString) {
         $(".canvas").html(canvasString);
-        console.log($(".canvas").html());
-
-        /*todo create grid items in .maze*/
     },
 
     generateMazeBtnEventListener: function () {
@@ -82,16 +78,13 @@ dom = {
                     dom.rewindMazeGen();
                     break;
                 case "pause":
-                    dom.mazeGenerationStop();
+                    dom.stopMazeGen();
                     break;
                 case "play":
-                    dom.jumpToStart();  // Todo after pause it is not okay.
-                    dom.mazeGeneration();
-                    dom.togglePlayPauseBtn();
-                    dom.resetBtnFontColor();
+                    dom.playMazeGen();
                     break;
                 case "ffwd":
-                    /*mazeGenerationFastForward();*/
+                    /*fastForwardMazeGen();*/
                     dom.resetBtnFontColor();
                     $("#ffwd").css("color", dom.data.colorGray);
                     break;
@@ -104,7 +97,7 @@ dom = {
                 case "generate":
                     break;
                 default:
-                    alert("error: button not exists " + $(this).attr("id"));
+                    console.log("error: button not exists " + $(this).attr("id"));
             }
         });
     },
@@ -115,6 +108,7 @@ dom = {
         dom.resetBtnFontColor();
         dom.data.iterator = 0;
         dom.data.delay = 500;
+        $("#rew").next().attr("id", "play").children().addClass("fa-play").removeClass("fa-pause");  //change pause to play
     },
 
     resetBtnFontColor: function () {
@@ -133,33 +127,39 @@ dom = {
         $("#rew").css("color", dom.data.colorGray);
     },
 
+    stopMazeGen: function () {
+        dom.data.interrupted = true;
+        dom.togglePlayPauseBtn();
+        dom.resetBtnFontColor();
+    },
+
     togglePlayPauseBtn: function () {
         let btn = $("#rew").next();
-        let value;
-        if(btn.attr("id") === "pause") {
-            value = "play";
-        } else {
-            value = "pause";
-        }
+        let value = (btn.attr("id") === "pause") ? "play" : "pause";
         btn.attr("id", value).children().toggleClass("fa-play").toggleClass("fa-pause");
     },
 
+    playMazeGen: function () {
+        console.log(dom.data.iterator);
+        if(dom.data.iterator === 0) {
+            dom.jumpToStart();
+        }
+        dom.mazeGeneration();
+        dom.togglePlayPauseBtn();
+        dom.resetBtnFontColor();
+    },
+
     mazeGeneration: function () {
-        console.log(dom.data.interrupted);
+        dom.data.interrupted = false;
         function f() {
             let timeOutId;
-            if(dom.data.iterator > 1) {
-                $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator - 1] + ")").css("background-color", dom.data.colorTransparent);
-            } else if(dom.data.iterator === 1){
-                $(".maze div:nth-child(" + dom.data.mazeOrder[0] + ")").css("background-color", dom.data.colorTransparent);
-            }
-            $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator]  + ")").css("background-color", dom.data.colorOrange);
+            dom.changeCurrentAndPreviousMazeTileColor();
             dom.data.iterator++;  // Todo reverse
             if( dom.data.iterator < dom.data.mazeOrder.length ){
                 timeOutId = setTimeout(f, dom.data.delay);
-
+                console.log(timeOutId);
                 if(dom.data.interrupted) {
-                    clearTimeout(timeOutId);
+                    clearTimeout(timeOutId); // TODO it will do one more step
                 }
             } else {
                 dom.togglePlayPauseBtn();
@@ -168,9 +168,13 @@ dom = {
         f();
     },
 
-    mazeGenerationStop: function () {
-        dom.data.interrupted = true;
-        dom.togglePlayPauseBtn();
-        dom.resetBtnFontColor();
+    changeCurrentAndPreviousMazeTileColor: function() {
+        if(dom.data.iterator === 1) {
+            $(".maze div:nth-child(" + dom.data.mazeOrder[0] + ")").css("background-color", dom.data.colorTransparent);
+        } else if(dom.data.iterator > 1){
+            $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator - 1] + ")").css("background-color", dom.data.colorTransparent);
+        }
+        $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").css("background-color", dom.data.colorOrange);
     }
+
 };
