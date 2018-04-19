@@ -51,12 +51,17 @@ dom = {
 
     generateMazeBtnEventListener: function () {
         $("#generate").click(function() {
-
+            dom.resetIterAndDelay();
             $(this).hide();
             dom.loadButtons();  //TODO rename
             dom.playerBtnEventlistener();
             dom.mazeGeneration();
         });
+    },
+
+    resetIterAndDelay: function () {
+        dom.data.iterator = 0;
+        dom.data.delay = 500;
     },
 
     loadButtons: function () {
@@ -84,15 +89,10 @@ dom = {
                     dom.playMazeGen();
                     break;
                 case "ffwd":
-                    /*fastForwardMazeGen();*/
-                    dom.resetBtnFontColor();
-                    $("#ffwd").css("color", dom.data.colorGray);
+                    dom.fastForwardMazeGen();
                     break;
                 case "end":
-                    dom.data.iterator = 0;
-                    dom.data.delay = 0;
-                    dom.mazeGeneration();
-                    dom.resetBtnFontColor();
+                    dom.jumpToEnd();
                     break;
                 case "generate":
                     break;
@@ -106,8 +106,7 @@ dom = {
         dom.data.interrupted = true;
         $(".maze .grid-item").css("background-color", "black");
         dom.resetBtnFontColor();
-        dom.data.iterator = 0;
-        dom.data.delay = 500;
+        dom.resetIterAndDelay();
         $("#rew").next().attr("id", "play").children().addClass("fa-play").removeClass("fa-pause");  //change pause to play
     },
 
@@ -141,15 +140,16 @@ dom = {
 
     playMazeGen: function () {
         console.log(dom.data.iterator);
-        if(dom.data.iterator === 0) {
+        if(dom.data.iterator === 0 || dom.data.iterator === dom.data.mazeOrder.length) {
             dom.jumpToStart();
         }
+        dom.data.delay = 500;
         dom.mazeGeneration();
         dom.togglePlayPauseBtn();
         dom.resetBtnFontColor();
     },
 
-    mazeGeneration: function () {
+    mazeGeneration: function() {
         dom.data.interrupted = false;
         function f() {
             let timeOutId;
@@ -168,13 +168,31 @@ dom = {
         f();
     },
 
-    changeCurrentAndPreviousMazeTileColor: function() {
+    changeCurrentAndPreviousMazeTileColor: function () {
         if(dom.data.iterator === 1) {
             $(".maze div:nth-child(" + dom.data.mazeOrder[0] + ")").css("background-color", dom.data.colorTransparent);
         } else if(dom.data.iterator > 1){
             $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator - 1] + ")").css("background-color", dom.data.colorTransparent);
         }
-        $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").css("background-color", dom.data.colorOrange);
-    }
+        if(dom.data.iterator < dom.data.mazeOrder.length) {
+            $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").css("background-color", dom.data.colorOrange);
+        }
+    },
 
+    fastForwardMazeGen: function () {
+        dom.resetBtnFontColor();
+        $("#ffwd").css("color", dom.data.colorGray);
+        dom.data.delay = 100;
+        dom.mazeGeneration();
+    },
+
+    jumpToEnd: function () {
+        dom.data.interrupted = true;
+        for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
+            if(dom.data.mazeOrder.includes(i)) {
+                $(".maze div:nth-child(" + i + ")").css("background-color", dom.data.colorTransparent);
+            }
+        }
+        dom.resetBtnFontColor();
+    }
 };
