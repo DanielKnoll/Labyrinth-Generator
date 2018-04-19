@@ -19,7 +19,6 @@ dom = {
         mazeDom.css("grid-template-columns", cssColumValue);
         for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
             mazeDom.append(`<div class="grid-item\">&nbsp;</div>`);
-
         }
     },
 
@@ -77,20 +76,16 @@ dom = {
 
             switch ($(this).attr("id")) {
                 case "start":
-                    dom.loadEmptyMaze();
-                    dom.resetBtnFontColor();
+                    dom.jumpToStart();
                     break;
                 case "rew":
-                    /*mazeGenerationRewerse();*/
-                    $("#rew").css("color", dom.data.colorGray);
+                    dom.rewindMazeGen();
                     break;
                 case "pause":
                     dom.mazeGenerationStop();
                     break;
                 case "play":
-                    dom.data.iterator = 0;
-                    dom.data.delay = 500;
-                    dom.loadEmptyMaze();  // Todo after pause it is not okay.
+                    dom.jumpToStart();  // Todo after pause it is not okay.
                     dom.mazeGeneration();
                     dom.togglePlayPauseBtn();
                     dom.resetBtnFontColor();
@@ -114,23 +109,39 @@ dom = {
         });
     },
 
-    loadEmptyMaze: function () {
+    jumpToStart: function () {
         dom.data.interrupted = true;
         $(".maze .grid-item").css("background-color", "black");
+        dom.resetBtnFontColor();
+        dom.data.iterator = 0;
+        dom.data.delay = 500;
     },
 
-    resetBtnFontColor: function () {  //Todo runs even if not necessary
-        $("#rew").css("color", "white");
-        $("#ffwd").css("color", "white");
+    resetBtnFontColor: function () {
+        let btnRew = $("#rew");
+        let btnFfwd = $("#ffwd");
+        if(btnRew.css("color") === "rgb(51, 51, 51)") {
+            btnRew.css("color", "white");
+        }
+        if(btnFfwd.css("color") === "rgb(51, 51, 51)") {
+            btnFfwd.css("color", "white");
+        }
+    },
+
+    rewindMazeGen: function () {
+        dom.resetBtnFontColor();
+        $("#rew").css("color", dom.data.colorGray);
     },
 
     togglePlayPauseBtn: function () {
         let btn = $("#rew").next();
+        let value;
         if(btn.attr("id") === "pause") {
-            btn.attr("id", "play").children().toggleClass("fa-play").toggleClass("fa-pause");
+            value = "play";
         } else {
-            btn.attr("id", "pause").children().toggleClass("fa-play").toggleClass("fa-pause");
+            value = "pause";
         }
+        btn.attr("id", value).children().toggleClass("fa-play").toggleClass("fa-pause");
     },
 
     mazeGeneration: function () {
