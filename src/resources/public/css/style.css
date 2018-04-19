@@ -69,24 +69,19 @@ nav li:hover, .active_nav {
 }
 
 .canvas .maze {
-    margin: 0px auto;
-    width: 70%;
-}
-
-.canvas .maze {
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto auto auto auto;  /* TODO add this with JS*/
-    margin-bottom: 20px;
+    width: 60%;
+    margin: 0px auto 20px;
+    /*grid-template-columns: auto auto ...;  /* Done by JS*/
     padding: 10px;
     background-color: #333333;
 }
 
-.grid-item {
-    background-color: black;/*rgba(255, 255, 255, 0.8);*/
-    border: 1px solid rgba(0, 0, 0, 0.8);
-    padding: 20px;
+.grid-item { /*todo is border needed?*/
+    background-color: black;
     font-size: 30px;
     text-align: center;
+    /*border: 1px solid rgba(0, 0, 0, 0.8);*/
 }
 
 .player {
