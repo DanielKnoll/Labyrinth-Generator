@@ -6,7 +6,7 @@
         <script src="/jquery/jquery.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
         <script src="/js/main.js"></script>
-        <script src="/js/index.js"></script>
+        <script src="/js/dom.js"></script>
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
               integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
         <link href="/css/style.css" rel="stylesheet"/>
@@ -21,7 +21,7 @@
                 <div class="separator"></div>
                 <ul>
                     <li class="active_nav" id="dfs">DFS</li>
-                    <li id="kruskal">Kruskal</li> <!--new-->
+                    <li id="kruskal">Kruskal</li>
                     <li id="rnd_prim">Random Prim</li>
                     <li id="rec_division">Recursive division</li>
                     <li id="cellular">Cellular automaton</li>
@@ -29,47 +29,47 @@
             </nav>
             <section class="canvas">
                 <h2>Depth-first search algorithm</h2>
-                <!--the maze todo fill it with tymeleaf-->
+                <!--the maze todo fill it with JS .append-->
                 <article class="maze">
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
 
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">1</div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
 
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
 
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">1</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
-                    <div class="grid-item">0</div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
+                    <div class="grid-item"></div>
                 </article>
 
                 <div class="btn single_btn" id="generate">Generate</div>

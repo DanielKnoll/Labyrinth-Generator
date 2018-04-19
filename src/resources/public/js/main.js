@@ -1,6 +1,6 @@
 $(document).ready(function(){
-    let canvasString = saveCanvas();
-    navigationEventListener(canvasString);
-    playerBtnEventlistener();
-    generateMazeBtnEventListener();
+    let canvasString = dom.saveCanvas();
+    dom.navigationEventListener(canvasString);
+    dom.playerBtnEventlistener();
+    dom.generateMazeBtnEventListener();
 });
