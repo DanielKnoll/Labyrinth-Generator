@@ -1,8 +1,9 @@
 dom = {
     data: {
+        mazeData: "",
         mazeColNum: 18,
         mazeRowNum: 10,
-        mazeOrder: [167, 149, 148, 130, 112, 113, 95, 77, 59, 41, 42, 43, 44, 62, 80, 79, 97, 115, 133, 151, 152, 153, 154, 155, 137, 119, 120, 121, 122, 104, 86, 87, 69, 70, 71, 72, 147, 146, 128, 110, 92, 75, 57, 56, 38, 20, 21, 22, 24, 26, 27, 28, 46, 64, 82, 100, 99, 117, 29, 83, 84, 66, 48, 49, 50, 32, 33, 34, 35, 156, 157, 158, 159, 160, 161, 143, 125, 107, 106],
+        mazeOrder: [],
         iterator: 0,
         delay: 500,
         interrupted: false,
@@ -11,6 +12,7 @@ dom = {
         colorTransparent: "rgba(255, 255, 255, 0.8)"
     },
     createGrid: function () {
+        apiData.getMazeData("dfs");  //TODO remove
         let cssColumValue ="";
         let mazeDom = $(".maze");
         for(let i = 0; i < dom.data.mazeColNum; i++) {
@@ -18,8 +20,13 @@ dom = {
         }
         mazeDom.css("grid-template-columns", cssColumValue);
         for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-            mazeDom.append(`<div class="grid-item\">&nbsp;</div>`);
+            mazeDom.append(`<div class="grid-item\">&nbsp;</div>`); //
         }
+    },
+
+    saveMazeDate: function (mazeData) {
+        dom.data.mazeData = mazeData;
+        dom.data.mazeOrder = mazeData.mazeOrder;
     },
 
     saveCanvas: function () {
@@ -29,10 +36,13 @@ dom = {
 
     navigationEventListener: function (canvasString) {
         $("nav li").click(function(){
+            dom.data.interrupted = true;
             $("nav li").removeClass("active_nav");
             let selectedMenu = $(this);
             let selectedMenuId = selectedMenu.attr("id");
-            // todo getMazeByAlgo(selectedMenuId);
+            if(selectedMenuId === "dfs") {
+                apiData.getMazeData(selectedMenuId);
+            }
             selectedMenu.addClass("active_nav");
             switch (selectedMenuId) { /*todo will need to return the menu point id or just the order*/
                 case "dfs":
