@@ -5,6 +5,7 @@
 
 body {
     margin: 0;
+    font-family: Arial, sans-serif;
     background-color: #333333;
 }
 
@@ -19,16 +20,20 @@ header {
 header h1 {
     font-family: labyrinth, Arial, sans-serif;
     font-size: 44pt;
-    color: #797979;
+    color: #f28736;
     text-align: center;
     margin: auto;
-    border-radius: 15px;
+    text-shadow: 2px 2px #777777;
 }
 
-.wrapper {
-    min-height: calc(100vh - 183px);
-    margin: 0px 100px;
-    padding-bottom: 40px;
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 11fr 1fr;
+    grid-auto-rows:minmax(calc(100vh - 183px), auto);
+}
+
+.grid-wrap {
+    grid-column:2/3;
     background-color: #e4e4e4;
     border-color: white;
     border-style: solid;
@@ -38,21 +43,26 @@ header h1 {
 nav {
     margin-bottom:20px;
     border-top: 10px solid #ff6b33;
-    font-family: Arial, sans-serif;
     color: #ffffff;
     background-color: #3F3F43;
 }
 
-
 nav ul {
-    width: 55%;
-    margin: 0px auto;  /*TODO not centered*/
+    display: grid;
+    grid-template-columns: 1fr repeat(5, 1fr) 1fr;
+    grid-gap: 5px;
     padding: 0px 0px 10px;
+    margin-top: 0px;
 }
 
 nav li {
-    display: inline-block;
+    list-style-type: none;
     padding: 10px;
+    text-align: center;
+}
+
+nav li:first-child {
+    grid-column: 2/3;
 }
 
 nav li:hover, .active_nav {
@@ -60,36 +70,42 @@ nav li:hover, .active_nav {
     background: linear-gradient(to bottom, #ff6b33 0%, #ff8a35 100%);
 }
 
-.canvas h2, h5, #generate {
-    font-family: Arial, sans-serif;
+.demoArea h2, h5, #generate {
     text-align: center;
 }
 
-.canvas .maze {
+.maze {
     display: grid;
+    grid-template-columns: repeat(18, auto);
+    grid-gap: 1px;
     width: 60%;
     margin: 0px auto 20px;
-    grid-template-columns: repeat(18, auto);  /* Done by JS*/
     padding: 10px;
     background-color: #333333;
 }
 
-.grid-item { /*todo is border needed?*/
+.maze > div {
+    padding-bottom: 100%;
     background-color: black;
-    font-size: 30px;
-    text-align: center;
-    /*border: 1px solid rgba(0, 0, 0, 0.8);*/
 }
 
-.player {
+.mazeCorridor {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.mazePointer {
+    background-color: #ff6b33;
+}
+
+.playerBtns {
     margin: 0px auto;
     width: 50%;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-columns: repeat(5, auto);
 }
 
 .btn {
-    padding: 9px 32px;
+    padding: 10px 0px;
     border: 1px solid #cc562c;
     font-size: 12px;
     text-align: center;
@@ -120,11 +136,14 @@ nav li:hover, .active_nav {
 }
 
 footer {
-    height: 25px;
+    display: grid;
+    grid-template-columns: 1fr 2fr repeat(3, 1fr);
     padding-top: 12px;
-    font-family: Arial, serif;
-    text-align: center;
     color: white;
-    background-color: #3F3F43;
+    background-color: #505050;
     border-top: 10px solid #ff6b33;
+}
+
+footer div:first-child {
+    grid-column: 2/3;
 }

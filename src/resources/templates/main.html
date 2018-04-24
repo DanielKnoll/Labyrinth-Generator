@@ -17,25 +17,40 @@
             <h1 id="title">Labyrinth Generator</h1>
         </header>
 
-        <div class="wrapper">
-            <nav>
-                <div class="separator"></div>
-                <ul>
-                    <li class="active_nav" id="dfs">DFS</li>
-                    <li id="kruskal">Kruskal</li>
-                    <li id="rnd_prim">Random Prim</li>
-                    <li id="rec_division">Recursive division</li>
-                    <li id="cellular">Cellular automaton</li>
-                </ul>
-            </nav>
-            <section class="canvas">
-                <h2>Depth-first search algorithm</h2>
-                <article class="maze"></article>
+        <div class="grid">
+            <div class="grid-wrap">
+                <nav>
+                    <ul>
+                        <li class="active_nav" id="dfs">Depth-first search</li>
+                        <li id="kruskal">Kruskal's algorithm</li>
+                        <li id="rnd_prim">Random Prim</li>
+                        <li id="rec_division">Recursive division</li>
+                        <li id="cellular">Cellular automaton</li>
+                    </ul>
+                </nav>
+                <section class="demoArea">
+                    <h2>Depth-first search algorithm</h2>
+                    <article class="maze"></article>
 
-                <div class="btn single_btn" id="generate">Generate</div>
-                <div class="player"></div>
-            </section>
+                    <div class="btn single_btn" id="generate">Generate</div>
+                    <div class="playerBtns"></div>
+                </section>
+            </div>
         </div>
-        <footer> Copyright &copy; Codecool 2017/2 - Daniel Knoll <i class="fab fa-github"></i></footer>
+        <footer>
+            <div>
+                Description<br/>
+                Copyright &copy; Codecool 2017/2 - Daniel Knoll
+            </div>
+            <div>
+                used tech:<br/>
+
+            </div>
+            <div>
+                Contact:<br/>
+                knoll [dot] dani [at] gmail [dot] com<br/>
+                <i class="fab fa-github"></i>
+            </div>
+        </footer>
     </body>
 </html>

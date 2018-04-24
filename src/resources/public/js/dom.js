@@ -15,7 +15,7 @@ dom = {
         apiData.getMazeData("dfs");  //TODO remove
         let mazeDom = $(".maze");
         for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-            mazeDom.append(`<div class="grid-item\">&nbsp;</div>`); // TODO no class, fixed height
+            mazeDom.append(`<div></div>`); // TODO no class, fixed height
         }
     },
 
@@ -24,12 +24,12 @@ dom = {
         dom.data.mazeOrder = mazeData.mazeOrder;
     },
 
-    saveCanvas: function () {
+    saveDemoArea: function () {
         dom.createGrid();
-        return $("section.canvas").html();
+        return $("section.demoArea").html();
     },
 
-    navigationEventListener: function (canvasString) {
+    navigationEventListener: function (demoAreaString) {
         $("nav li").click(function(){
             dom.data.interrupted = true;
             $("nav li").removeClass("active_nav");
@@ -41,17 +41,17 @@ dom = {
             selectedMenu.addClass("active_nav");
             switch (selectedMenuId) { /*todo will need to return the menu point id or just the order*/
                 case "dfs":
-                    dom.loadCanvas(canvasString);
+                    dom.loadDemoArea(demoAreaString);
                     break;
                 default:
-                    $(".canvas").html("<h2>Next sprint</h2><h5>hopefully</h5>");
+                    $(".demoArea").html("<h2>Next sprint</h2><h5>hopefully</h5>");
             }
             dom.generateMazeBtnEventListener();
         });
     },
 
-    loadCanvas: function (canvasString) {
-        $(".canvas").html(canvasString);
+    loadDemoArea: function (demoAreaString) {
+        $(".demoArea").html(demoAreaString);
     },
 
     generateMazeBtnEventListener: function () {
@@ -70,7 +70,7 @@ dom = {
     },
 
     loadButtons: function () {
-        $(".player").html(`<button class="btn left_btn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
+        $(".playerBtns").html(`<button class="btn left_btn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
             <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
             <button class="btn" id="pause"><i class="fas fa-pause fa-2x"></i></button>
             <button class="btn" id="ffwd"><i class="fas fa-forward fa-2x"></i></button>
@@ -78,7 +78,7 @@ dom = {
     },
 
     playerBtnEventlistener: function () {
-        $(".player button").click(function(){
+        $(".playerBtns button").click(function(){
 
             switch ($(this).attr("id")) {
                 case "start":
@@ -109,7 +109,7 @@ dom = {
 
     jumpToStart: function () {
         dom.data.interrupted = true;
-        $(".maze .grid-item").css("background-color", "black"); // TODO class
+        $(".maze > div").css("background-color", "black"); // TODO class
         dom.resetBtnFontColor();
         dom.resetIterAndDelay();
         $("#rew").next().attr("id", "play").children().addClass("fa-play").removeClass("fa-pause");  //change pause to play
