@@ -65,7 +65,7 @@ nav li:first-child {
     grid-column: 2/3;
 }
 
-nav li:hover, .active_nav {
+nav li:hover, .activeNav {
     border-radius: 0px 0px 10px 10px;
     background: linear-gradient(to bottom, #ff6b33 0%, #ff8a35 100%);
 }
@@ -86,14 +86,17 @@ nav li:hover, .active_nav {
 
 .maze > div {
     padding-bottom: 100%;
-    background-color: black;
+}
+
+.mazeWall {
+    background-color: #000000;
 }
 
 .mazeCorridor {
     background-color: rgba(255, 255, 255, 0.8);
 }
 
-.mazePointer {
+.mazeGenPointer {
     background-color: #ff6b33;
 }
 
@@ -117,15 +120,19 @@ nav li:hover, .active_nav {
     color: #ffa888;
 }
 
-.left_btn {
+.activeBtn {
+    color: #333333;
+}
+
+.lefBtn {
     border-radius: 10px 0px 0px 10px;
 }
 
-.right_btn {
+.rightBtn {
     border-radius: 0px 10px 10px 0px;
 }
 
-.single_btn {
+.singleBtn {
     border-radius: 10px;
 }
 
