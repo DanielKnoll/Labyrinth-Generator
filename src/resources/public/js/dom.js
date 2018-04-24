@@ -7,20 +7,15 @@ dom = {
         iterator: 0,
         delay: 500,
         interrupted: false,
-        colorGray: "#333333",
-        colorOrange: "#ff6b33",
-        colorTransparent: "rgba(255, 255, 255, 0.8)"
+        colorGray: "#333333", // TODO class
+        colorOrange: "#ff6b33", // TODO class
+        colorTransparent: "rgba(255, 255, 255, 0.8)" // TODO class
     },
     createGrid: function () {
         apiData.getMazeData("dfs");  //TODO remove
-        let cssColumValue ="";
         let mazeDom = $(".maze");
-        for(let i = 0; i < dom.data.mazeColNum; i++) {
-            cssColumValue += "auto ";
-        }
-        mazeDom.css("grid-template-columns", cssColumValue);
         for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-            mazeDom.append(`<div class="grid-item\">&nbsp;</div>`); //
+            mazeDom.append(`<div class="grid-item\">&nbsp;</div>`); // TODO no class, fixed height
         }
     },
 
@@ -114,7 +109,7 @@ dom = {
 
     jumpToStart: function () {
         dom.data.interrupted = true;
-        $(".maze .grid-item").css("background-color", "black");
+        $(".maze .grid-item").css("background-color", "black"); // TODO class
         dom.resetBtnFontColor();
         dom.resetIterAndDelay();
         $("#rew").next().attr("id", "play").children().addClass("fa-play").removeClass("fa-pause");  //change pause to play
@@ -123,10 +118,10 @@ dom = {
     resetBtnFontColor: function () {
         let btnRew = $("#rew");
         let btnFfwd = $("#ffwd");
-        if(btnRew.css("color") === "rgb(51, 51, 51)") {
+        if(btnRew.css("color") === "rgb(51, 51, 51)") { // TODO class
             btnRew.css("color", "white");
         }
-        if(btnFfwd.css("color") === "rgb(51, 51, 51)") {
+        if(btnFfwd.css("color") === "rgb(51, 51, 51)") { // TODO class
             btnFfwd.css("color", "white");
         }
     },
@@ -134,7 +129,7 @@ dom = {
     rewindMazeGen: function () {
         dom.data.interrupted = true;
         dom.resetBtnFontColor();
-        $("#rew").css("color", dom.data.colorGray);
+        $("#rew").css("color", dom.data.colorGray);  // TODO class
         dom.data.delay = 1000;
         dom.mazeGeneration();
     },
@@ -180,12 +175,12 @@ dom = {
     },
 
     changeCurrentAndPreviousMazeTileColor: function () {
-        if(dom.data.iterator === 1) {
+        if(dom.data.iterator === 1) { // TODO class
             $(".maze div:nth-child(" + dom.data.mazeOrder[0] + ")").css("background-color", dom.data.colorTransparent);
-        } else if(dom.data.iterator > 1){
+        } else if(dom.data.iterator > 1){ // TODO class
             $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator - 1] + ")").css("background-color", dom.data.colorTransparent);
         }
-        if(dom.data.iterator < dom.data.mazeOrder.length) {
+        if(dom.data.iterator < dom.data.mazeOrder.length) { // TODO class
             $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").css("background-color", dom.data.colorOrange);
         }
     },
@@ -193,7 +188,7 @@ dom = {
     fastForwardMazeGen: function () {
         dom.data.interrupted = true;
         dom.resetBtnFontColor();
-        $("#ffwd").css("color", dom.data.colorGray);
+        $("#ffwd").css("color", dom.data.colorGray); // TODO class
         dom.data.delay = 100;
         dom.mazeGeneration();
     },
@@ -203,7 +198,7 @@ dom = {
         dom.data.iterator = dom.data.mazeOrder.length -1;
         for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
             if(dom.data.mazeOrder.includes(i)) {
-                $(".maze div:nth-child(" + i + ")").css("background-color", dom.data.colorTransparent);
+                $(".maze div:nth-child(" + i + ")").css("background-color", dom.data.colorTransparent); // TODO class
             }
         }
         dom.resetBtnFontColor();
