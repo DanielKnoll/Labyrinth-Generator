@@ -41,7 +41,7 @@ dom = {
                     dom.loadDemoArea(demoAreaString);
                     break;
                 default:
-                    $(".demoArea").html("<h2>Next sprint</h2><h5>hopefully</h5>");
+                    $(".demoArea").html("<h2 class='title'>Next sprint</h2><h5 class='title'>hopefully</h5>");
             }
             dom.generateMazeBtnEventListener();
         });
@@ -67,7 +67,8 @@ dom = {
     },
 
     loadButtons: function () {
-        $(".playerBtns").html(`<button class="btn lefBtn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
+        $(".playerBtns").html(`
+            <button class="btn lefBtn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
             <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
             <button class="btn" id="pause"><i class="fas fa-pause fa-2x"></i></button>
             <button class="btn" id="ffwd"><i class="fas fa-forward fa-2x"></i></button>
@@ -109,7 +110,11 @@ dom = {
         $(".maze > div").removeClass("mazeCorridor").removeClass("mazeGenPointer").addClass("mazeWall");
         dom.resetBtnFontColor();
         dom.resetIterAndDelay();
-        $("#rew").next().attr("id", "play").children().addClass("fa-play").removeClass("fa-pause");  //change pause to play
+        dom.changeBtnToPlay();
+    },
+
+    changeBtnToPlay: function () {
+        $("#rew").next().attr("id", "play").children().addClass("fa-play").removeClass("fa-pause");
     },
 
     resetBtnFontColor: function () {
@@ -162,7 +167,11 @@ dom = {
             if( dom.data.iterator < dom.data.mazeOrder.length ){
                 timeOutId = setTimeout(f, dom.data.delay);
                 if(dom.data.interrupted) {
-                    clearTimeout(timeOutId); // TODO it will do one more step
+                    clearTimeout(timeOutId); // TODO it will still do one more step
+                    $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").removeClass("mazeGenPointer").addClass("mazeWall");
+                    dom.data.iterator -= 1;
+                    $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").removeClass("mazeGenCorridor").addClass("mazeGenPointer");
+                    dom.changeBtnToPlay();
                 }
             } else {
                 dom.togglePlayPauseBtn();
@@ -179,7 +188,7 @@ dom = {
         } else if(iterator > 1){
             $(".maze div:nth-child(" + order[iterator - 1] + ")").removeClass("mazeGenPointer").addClass("mazeCorridor");
         }
-        if(iterator < order.length) {
+        if(iterator < order.length -1 ) {
             $(".maze div:nth-child(" + order[iterator] + ")").removeClass("mazeWall").addClass("mazeGenPointer");
         }
     },
@@ -193,7 +202,7 @@ dom = {
     },
 
     jumpToEnd: function () {
-        dom.data.interrupted = true;
+        dom.jumpToStart();
         dom.data.iterator = dom.data.mazeOrder.length -1;
         for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
             if(dom.data.mazeOrder.includes(i)) {
