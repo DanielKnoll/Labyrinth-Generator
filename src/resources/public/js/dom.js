@@ -16,7 +16,6 @@ dom = {
     initFunctions: {
 
         saveDemoArea: function () {
-            //dom.data.mazeOrderLength = dom.data.mazeOrder.length; //todo delete
             dom.initFunctions.createGrid();
             $(".gridGenButtons").hide();
             $(".playerBtns").hide();
@@ -24,6 +23,7 @@ dom = {
         },
 
         createGrid: function () {
+            apiData.getMazeData("dfs");  // TODO delete when start with choose algo
             let mazeDom = $(".maze");
             for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
                 mazeDom.append(`<div class="mazeWall"></div>`);
@@ -67,9 +67,9 @@ dom = {
 
         generateMazeBtnEventListener: function () {
             $("#generate").click(function () {
-                dom.dataFunctions.resetIterAndDelay();
+                dom.dataFunctions.resetIterDelayOrder();
                 $(this).hide();
-                $(".playerBtns").show();
+                $(".playerBtns").show(100);
                 $(".gridGenButtons").show(200);  // Todo another animation
                 dom.utility.mazeGeneration();
             });
@@ -93,7 +93,6 @@ dom = {
                         dom.data.iterator >= dom.data.mazeOrderLength))) {
                     dom.utility.resetMaze();
                 }
-
             });
         },
 
@@ -105,7 +104,7 @@ dom = {
 
         rewindMazeGenEventListener: function () {
             $("#rew").click(function () {
-                if(dom.data.iterator <= dom.data.mazeOrderLength) {
+                if(dom.data.iterator <= dom.data.mazeOrderLength + 1) {
                     dom.utility.changePlayToPause();
                     $("#rew").addClass("activeBtn");
                     dom.data.delay = 100;
@@ -150,7 +149,7 @@ dom = {
                 dom.data.iterator = dom.data.mazeOrderLength;
                 for (let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
                     if (dom.data.mazeOrder.includes(i)) {
-                        $(".maze div:nth-child(" + i + ")").addClass("mazeCorridor");
+                        $(".maze div:nth-child(" + i + ")").removeClass("mazeWall").addClass("mazeCorridor");
                     }
                 }
                 dom.utility.changePauseToPlay();
@@ -166,7 +165,7 @@ dom = {
 
         resetMaze: function () {
             $(".maze > div").removeClass("mazeCorridor").removeClass("mazeGenPointer").addClass("mazeWall");
-            dom.dataFunctions.resetIterAndDelay();
+            dom.dataFunctions.resetIterDelayOrder();
         },
 
         resetBtnFontColor: function () {
@@ -179,7 +178,7 @@ dom = {
                 btnFfwd.removeClass("activeBtn");
             }
         },
-        changePauseToPlay: function () {  // TODO debug
+        changePauseToPlay: function () {
             $("#rew").next().attr("id", "play").children().removeClass("fa-pause").addClass("fa-play");
         },
 
@@ -187,20 +186,26 @@ dom = {
             $("#rew").next().attr("id", "pause").children().removeClass("fa-play").addClass("fa-pause");
         },
 
-
         mazeGeneration: function() {
             dom.data.interrupted = false;
             let timeOutId = setTimeout(function () {
                 if(!dom.data.interrupted && dom.data.iterator <= dom.data.mazeOrderLength) {
-                    dom.utility.changeCurrentAndPreviousMazeTileColor();
-                    dom.data.iterator++;  // Todo reverse
+                    if(dom.data.reverseOrder) {
+                        dom.utility.changeBackCurrentAndPreviousMazeTileColor();
+                        dom.data.iterator--;
+                    } else {
+                        dom.utility.changeCurrentAndPreviousMazeTileColor();
+                        dom.data.iterator++;
+                    }
                 } else {
                     clearTimeout(timeOutId);
                     return;
                 }
-                if (dom.data.iterator < dom.data.mazeOrderLength) {
+                if ( (dom.data.iterator < dom.data.mazeOrderLength && !dom.data.reverseOrder) ||
+                    (dom.data.iterator >= 0 && dom.data.reverseOrder)) {
                     dom.utility.mazeGeneration();
                 }  else {
+                    dom.data.iterator = (dom.data.reverseOrder) ? 0 : dom.data.mazeOrderLength;
                     dom.utility.changePauseToPlay();
                     dom.utility.resetBtnFontColor();
                     clearTimeout(timeOutId);
@@ -216,10 +221,24 @@ dom = {
             } else if(iterator > 1){
                 $(".maze div:nth-child(" + order[iterator - 1] + ")").removeClass("mazeGenPointer").addClass("mazeCorridor");
             }
-            if(iterator < dom.data.mazeOrderLength -1 ) {
+            if(iterator <= dom.data.mazeOrderLength -1 ) {
                 $(".maze div:nth-child(" + order[iterator] + ")").removeClass("mazeWall").addClass("mazeGenPointer");
             }
         },
+
+        changeBackCurrentAndPreviousMazeTileColor: function () {
+            let order = dom.data.mazeOrder;
+            let iterator = dom.data.iterator;
+            let length = dom.data.mazeOrderLength;
+            if(iterator === length) {
+                $(".maze div:nth-child(" + order[length - 1] + ")").removeClass("mazeCorridor").addClass("mazeGenPointer");
+            } else if(iterator > 0){
+                $(".maze div:nth-child(" + order[iterator - 1] + ")").removeClass("mazeCorridor").addClass("mazeGenPointer");
+            }
+            if(iterator < length) {
+                $(".maze div:nth-child(" + order[iterator] + ")").removeClass("mazeGenPointer").addClass("mazeWall");
+            }
+        }
     },
 
     dataFunctions: {
@@ -230,9 +249,10 @@ dom = {
             dom.data.mazeOrderLength = dom.data.mazeOrder.length;
         },
 
-        resetIterAndDelay: function () {
+        resetIterDelayOrder: function () {
             dom.data.iterator = 0;
             dom.data.delay = 500;
+            dom.data.reverseOrder = false;
         },
     },
 };
