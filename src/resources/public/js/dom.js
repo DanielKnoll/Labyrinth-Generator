@@ -14,10 +14,17 @@ dom = {
     initFunctions: {
 
         saveDemoArea: function () {
-            dom.utility.createGrid();
+            dom.initFunctions.createGrid();
             $(".gridGenButtons").hide();
             $(".playerBtns").hide();
             return $("section.demoArea").html();
+        },
+
+        createGrid: function () {
+            let mazeDom = $(".maze");
+            for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
+                mazeDom.append(`<div class="mazeWall"></div>`);
+            }
         },
 
         loadEventListeners: function (canvasString) {
@@ -40,13 +47,12 @@ dom = {
                 $(".gridGenButtons").hide();
                 $("nav li").removeClass("activeNav");
                 let selectedMenu = $(this);
-                let selectedMenuId = selectedMenu.attr("id");
-                if (selectedMenuId === "dfs") {
-                    apiData.getMazeData(selectedMenuId);
-                }
                 selectedMenu.addClass("activeNav");
-                switch (selectedMenuId) { /*todo will need to return the menu point id or just the order*/
+
+                let selectedMenuId = selectedMenu.attr("id");
+                switch (selectedMenuId) {
                     case "dfs":
+                        apiData.getMazeData("dfs"); // TODO generate?wall=0&...
                         dom.utility.loadDemoArea(dom.data.demoAreaString);
                         break;
                     default:
@@ -62,33 +68,38 @@ dom = {
                 $(this).hide();
                 $(".playerBtns").show();
                 $(".gridGenButtons").show(200);  // Todo another animation
-                //dom.utility.mazeGeneration();
+                dom.utility.mazeGeneration();
             });
         },
 
         anyMazeGenBtnEventListener: function () {
+            let interruptorBtns = ["start", "rew", "pause", "ffwd", "end"];
             $(".playerBtns button").click(function () {
                 dom.utility.resetBtnFontColor();
+
+                if(interruptorBtns.includes($(this).attr("id"))) {
+                    dom.data.interrupted = true;
+                }
+
+                // Todo Reset Maze
             });
         },
 
         jumpToStartEventListener: function () {
             $("#start").click(function () {
-                dom.data.interrupted = true;
                 dom.utility.resetMaze();
                 dom.utility.changePauseToPlay();
-                console.log("stopVisualization - start");
             });
         },
 
         rewindMazeGenEventListener: function () {
             $("#rew").click(function () {
-                dom.data.interrupted = true;
-                dom.utility.changePlayToPause();
-                $("#rew").addClass("activeBtn");
-                dom.data.delay = 200;
-                //dom.utility.mazeGeneration();
-                console.log("runVisualization - rew, delay: " +dom.data.delay);
+                if(dom.data.iterator < dom.data.mazeOrder.length) {
+                    dom.utility.changePlayToPause();
+                    $("#rew").addClass("activeBtn");
+                    dom.data.delay = 200;
+                    dom.utility.mazeGeneration();
+                }
             });
 
         },
@@ -98,19 +109,15 @@ dom = {
             btn.click(function () {
                 switch (btn.attr("id")) {
                     case "pause":
-                        dom.data.interrupted = true;
                         dom.utility.changePauseToPlay();
-                        console.log("StopVisualization");
                         break;
                     case "play":
-                        dom.data.interrupted = false;
-                        if (dom.data.iterator === 0 || dom.data.iterator === dom.data.mazeOrder.length) {
+                        if (dom.data.iterator === 0 || dom.data.iterator >= dom.data.mazeOrder.length) {
                             dom.utility.resetMaze();
                         }
                         dom.data.delay = 500;
                         dom.utility.changePlayToPause();
-                        //dom.utility.mazeGeneration();
-                        console.log("runVisualization - norm, delay: " +dom.data.delay);
+                        dom.utility.mazeGeneration();
                         break;
                     default:
                         console.log("error: button not exists");
@@ -120,39 +127,30 @@ dom = {
 
         fastForwardMazeGenEventListener: function () {
             $("#ffwd").click(function () {
-                dom.data.interrupted = true;
-                dom.utility.changePlayToPause();
-                $("#ffwd").addClass("activeBtn");
-                dom.data.delay = 100;
-                //dom.utility.mazeGeneration();
-                console.log("runVisualization - fast, delay: " +dom.data.delay);
+                if(dom.data.iterator < dom.data.mazeOrder.length) {
+                    dom.utility.changePlayToPause();
+                    $("#ffwd").addClass("activeBtn");
+                    dom.data.delay = 100;
+                    dom.utility.mazeGeneration();
+                }
             });
         },
 
         jumpToEndEventListener: function () {
             $("#end").click(function () {
-                dom.data.interrupted = true;
                 dom.utility.resetMaze();
-                /*dom.data.iterator = dom.data.mazeOrder.length -1;*/
+                dom.data.iterator = dom.data.mazeOrder.length;
                 for (let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
                     if (dom.data.mazeOrder.includes(i)) {
                         $(".maze div:nth-child(" + i + ")").addClass("mazeCorridor");
                     }
                 }
-                console.log("stopVisualization - end");
+                dom.utility.changePauseToPlay();
             });
         },
     },
 
     utility: {
-
-        createGrid: function () {
-            apiData.getMazeData("dfs");  //TODO remove
-            let mazeDom = $(".maze");
-            for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-                mazeDom.append(`<div class="mazeWall"></div>`);
-            }
-        },
 
         loadDemoArea: function (canvasString) {
             $(".demoArea").html(canvasString);
@@ -161,7 +159,6 @@ dom = {
         resetMaze: function () {
             $(".maze > div").removeClass("mazeCorridor").removeClass("mazeGenPointer").addClass("mazeWall");
             dom.dataFunctions.resetIterAndDelay();
-            //dom.utility.changePauseToPlay();
         },
 
         resetBtnFontColor: function () {
@@ -182,27 +179,26 @@ dom = {
             $("#rew").next().attr("id", "pause").children().removeClass("fa-play").addClass("fa-pause");
         },
 
+
         mazeGeneration: function() {
             dom.data.interrupted = false;
-            function f() {
-                let timeOutId;
-                dom.utility.changeCurrentAndPreviousMazeTileColor();
-                dom.data.iterator++;  // Todo reverse
-                if( dom.data.iterator < dom.data.mazeOrder.length ){
-                    timeOutId = setTimeout(f, dom.data.delay);
-                    if(dom.data.interrupted) {
-                        clearTimeout(timeOutId); // TODO it will still do one more step
-                        $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").removeClass("mazeGenPointer").addClass("mazeWall");
-                        /*dom.data.iterator -= 1;*/
-                        $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator - 1] + ")").removeClass("mazeGenCorridor").addClass("mazeGenPointer");
-                    }
+            let timeOutId = setTimeout(function () {
+                if(!dom.data.interrupted && dom.data.iterator <= dom.data.mazeOrder.length) {
+                    dom.utility.changeCurrentAndPreviousMazeTileColor();
+                    dom.data.iterator++;  // Todo reverse
                 } else {
-                    dom.utility.changePauseToPlay();
+                    clearTimeout(timeOutId);
+                    return;
                 }
-            }
-            f();
+                if (dom.data.iterator < dom.data.mazeOrder.length) {
+                    dom.utility.mazeGeneration();
+                }  else {
+                    dom.utility.changePauseToPlay();
+                    dom.utility.resetBtnFontColor();
+                    clearTimeout(timeOutId);
+                }
+            }, dom.data.delay)
         },
-
 
         changeCurrentAndPreviousMazeTileColor: function () {
             let order = dom.data.mazeOrder;
