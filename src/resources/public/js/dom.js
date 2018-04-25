@@ -5,15 +5,18 @@ dom = {
         mazeColNum: 18,
         mazeRowNum: 10,
         mazeOrder: [],
+        mazeOrderLength: 0,
         iterator: 0,
         delay: 500,
         interrupted: false,
+        reverseOrder: false,
         infoData: ""
     },
 
     initFunctions: {
 
         saveDemoArea: function () {
+            //dom.data.mazeOrderLength = dom.data.mazeOrder.length; //todo delete
             dom.initFunctions.createGrid();
             $(".gridGenButtons").hide();
             $(".playerBtns").hide();
@@ -74,30 +77,39 @@ dom = {
 
         anyMazeGenBtnEventListener: function () {
             let interruptorBtns = ["start", "rew", "pause", "ffwd", "end"];
+            let forwardBtns = ["start", "play", "ffwd", "end"];
+            let resetMazeBtns = ["start", "end"];
             $(".playerBtns button").click(function () {
                 dom.utility.resetBtnFontColor();
+                let btnId = $(this).attr("id");
 
-                if(interruptorBtns.includes($(this).attr("id"))) {
+                if(interruptorBtns.includes(btnId)) {
                     dom.data.interrupted = true;
                 }
+                if(forwardBtns.includes(btnId)) {
+                    dom.data.reverseOrder = false;
+                }
+                if(resetMazeBtns.includes(btnId) || (btnId === "play" && (dom.data.iterator === 0 ||
+                        dom.data.iterator >= dom.data.mazeOrderLength))) {
+                    dom.utility.resetMaze();
+                }
 
-                // Todo Reset Maze
             });
         },
 
         jumpToStartEventListener: function () {
             $("#start").click(function () {
-                dom.utility.resetMaze();
                 dom.utility.changePauseToPlay();
             });
         },
 
         rewindMazeGenEventListener: function () {
             $("#rew").click(function () {
-                if(dom.data.iterator < dom.data.mazeOrder.length) {
+                if(dom.data.iterator <= dom.data.mazeOrderLength) {
                     dom.utility.changePlayToPause();
                     $("#rew").addClass("activeBtn");
-                    dom.data.delay = 200;
+                    dom.data.delay = 100;
+                    dom.data.reverseOrder = true;
                     dom.utility.mazeGeneration();
                 }
             });
@@ -112,9 +124,6 @@ dom = {
                         dom.utility.changePauseToPlay();
                         break;
                     case "play":
-                        if (dom.data.iterator === 0 || dom.data.iterator >= dom.data.mazeOrder.length) {
-                            dom.utility.resetMaze();
-                        }
                         dom.data.delay = 500;
                         dom.utility.changePlayToPause();
                         dom.utility.mazeGeneration();
@@ -127,7 +136,7 @@ dom = {
 
         fastForwardMazeGenEventListener: function () {
             $("#ffwd").click(function () {
-                if(dom.data.iterator < dom.data.mazeOrder.length) {
+                if(dom.data.iterator < dom.data.mazeOrderLength) {
                     dom.utility.changePlayToPause();
                     $("#ffwd").addClass("activeBtn");
                     dom.data.delay = 100;
@@ -138,8 +147,7 @@ dom = {
 
         jumpToEndEventListener: function () {
             $("#end").click(function () {
-                dom.utility.resetMaze();
-                dom.data.iterator = dom.data.mazeOrder.length;
+                dom.data.iterator = dom.data.mazeOrderLength;
                 for (let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
                     if (dom.data.mazeOrder.includes(i)) {
                         $(".maze div:nth-child(" + i + ")").addClass("mazeCorridor");
@@ -183,14 +191,14 @@ dom = {
         mazeGeneration: function() {
             dom.data.interrupted = false;
             let timeOutId = setTimeout(function () {
-                if(!dom.data.interrupted && dom.data.iterator <= dom.data.mazeOrder.length) {
+                if(!dom.data.interrupted && dom.data.iterator <= dom.data.mazeOrderLength) {
                     dom.utility.changeCurrentAndPreviousMazeTileColor();
                     dom.data.iterator++;  // Todo reverse
                 } else {
                     clearTimeout(timeOutId);
                     return;
                 }
-                if (dom.data.iterator < dom.data.mazeOrder.length) {
+                if (dom.data.iterator < dom.data.mazeOrderLength) {
                     dom.utility.mazeGeneration();
                 }  else {
                     dom.utility.changePauseToPlay();
@@ -208,7 +216,7 @@ dom = {
             } else if(iterator > 1){
                 $(".maze div:nth-child(" + order[iterator - 1] + ")").removeClass("mazeGenPointer").addClass("mazeCorridor");
             }
-            if(iterator < order.length -1 ) {
+            if(iterator < dom.data.mazeOrderLength -1 ) {
                 $(".maze div:nth-child(" + order[iterator] + ")").removeClass("mazeWall").addClass("mazeGenPointer");
             }
         },
@@ -216,9 +224,10 @@ dom = {
 
     dataFunctions: {
 
-        saveMazeDate: function (mazeData) {
+        saveMazeData: function (mazeData) {
             dom.data.mazeData = mazeData;
             dom.data.mazeOrder = mazeData.mazeOrder;
+            dom.data.mazeOrderLength = dom.data.mazeOrder.length;
         },
 
         resetIterAndDelay: function () {
