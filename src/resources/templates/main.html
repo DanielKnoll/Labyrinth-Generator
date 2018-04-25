@@ -14,28 +14,161 @@
     </head>
     <body>
         <header>
-            <h1 id="title">Labyrinth Generator</h1>
+            <h1 class="title">Labyrinth Generator</h1>
         </header>
 
-        <div class="wrapper">
-            <nav>
-                <div class="separator"></div>
-                <ul>
-                    <li class="active_nav" id="dfs">DFS</li>
-                    <li id="kruskal">Kruskal</li>
-                    <li id="rnd_prim">Random Prim</li>
-                    <li id="rec_division">Recursive division</li>
-                    <li id="cellular">Cellular automaton</li>
-                </ul>
-            </nav>
-            <section class="canvas">
-                <h2>Depth-first search algorithm</h2>
-                <article class="maze"></article>
-
-                <div class="btn single_btn" id="generate">Generate</div>
-                <div class="player"></div>
-            </section>
+        <div class="grid">
+            <div class="gridWrap">
+                <nav>
+                    <ul>
+                        <li class="active_nav" id="dfs">Depth-first search</li>
+                        <li id="kruskal">Kruskal's algorithm</li>
+                        <li id="rndPrim">Random Prim</li>
+                        <li id="recDivision">Recursive division</li>
+                        <li id="cellular">Cellular automaton</li>
+                    </ul>
+                </nav>
+                <section class="demoArea">
+                    <h2 class="title">Depth-first search algorithm</h2>
+                    <article class="maze"><!--maze tiles filled by JS--></article>
+                    <div class="btn singleBtn" id="generate">Generate</div>
+                    <div class="playerBtns"><!--maze generation buttons--></div>
+                </section>
+            </div>
         </div>
-        <footer> Copyright &copy; Codecool 2017/2 - Daniel Knoll <i class="fab fa-github"></i></footer>
+        <div class="gridGenButtons">
+            <!--Hidden before generate button pushed-->
+            <div>New Maze</div>
+            <div>Show API <i class="fas fa-angle-down"></i></div>
+            <div>Solve Maze</div>
+            <div>Show Code <i class="fas fa-angle-down"></i></div>
+            <div>Show Infor <i class="fas fa-angle-down"></i></div>
+
+        </div>
+        <div class="grid">
+            <div class="gridWrap">
+                <div class="info">
+                    <!--API/CODE/INFO-->
+                    <!--API-->
+                    <h3 class="title">API description</h3>
+                    <div class="snippet">
+                        <code>http://www.future-domain-name.hu/api/generate?wall=0&#38;algo=0&#38;width=18&#38;height=18</code>
+                    </div>
+                    <div class="apiInfo">
+                        <ol>
+                            <li>input: 0: thick wall / 1: thin wall</li>
+                            <li>input: 0-4 generation algorithms</li>
+                            <li>input: maze width (3-100)</li>
+                            <li>input: maze height (3-100)</li>
+                        </ol>
+                        <div class="form">
+                            <form>
+                                <select id="wallType" name="wall">
+                                    <option value="0">thick wall</option>
+                                    <option value="1">thin wall</option>
+                                </select>
+                                <select id="algoType" name="algo">
+                                    <option value="0">DFS</option>
+                                    <option value="1">Kruskal</option>
+                                    <option value="1">Random</option>
+                                </select>
+                                <input type="number" value="3" max="100"/>
+                                <input type="number" value="3" max="100"/>
+                                <input class="btn singleBtn formSubmit" type="submit" value="Send"/>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="snippet">
+                        <code class="json">{"algoName":"Depth-first search algorithm","mazeOrder":[167, 149, 148, 130, 112, 113, 95, 77, 59, 41, 42, 43, 44, 62, 80, 79, 97, 115, 133, 151, 152, 153, 154, 155, 137, 119, 120, 121, 122, 104, 86, 87, 69, 70, 71, 72, 147, 146, 128, 110, 92, 76, 75, 57, 56, 38, 20, 21, 22, 24, 26, 27, 28, 46, 64, 82, 100, 99, 117, 29, 83, 84, 66, 48, 49, 50, 32, 33, 34, 35, 156, 157, 158, 159, 160, 161, 143, 125, 107, 106]}</code>
+                    </div>
+
+                    <!--INFO-->
+                    <h3 class="title">Algorithm Info</h3>
+                    <div class="algoInfo">
+                        <article>
+                            <h4 class="title">Depth-first search algorithm</h4>
+                            <p>Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.</p>
+                            <p>A version of depth-first search was investigated in the 19th century by French mathematician Charles Pierre Trémaux[1] as a strategy for solving mazes.</p>
+                            <p>Nunc condimentum, nulla in faucibus commodo, elit massa pharetra nibh, at tincidunt libero dolor quis augue. Donec pulvinar consectetur tortor, eget gravida ligula molestie at. Aenean ullamcorper tempor fermentum. Vestibulum metus ante, aliquam sed ligula vitae, auctor tempus quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vitae imperdiet justo, sed egestas nulla. Nunc sit amet malesuada mauris, sed pellentesque arcu. Sed venenatis mattis mi ac tincidunt. Pellentesque nec justo ullamcorper, cursus massa at, condimentum justo. Mauris pharetra ligula in nibh efficitur, ut facilisis nisi pulvinar. Nullam eu consectetur mi. In in dapibus sem, a pharetra sem. Pellentesque in blandit magna. Nulla in orci finibus, ornare massa ut, mollis velit.</p>
+                            <p>Etiam condimentum congue est, eget accumsan enim ornare eget. Morbi sed dui sit amet purus hendrerit egestas. Mauris at tellus sit amet dolor commodo suscipit sit amet eget elit. Curabitur nec diam id risus pulvinar euismod. Sed et rutrum lacus. Fusce sit amet augue auctor nulla semper luctus eget at dolor. Vivamus egestas tincidunt tincidunt. Donec sapien velit, venenatis eu tincidunt nec, consequat eu lacus. Nulla finibus sodales mauris, sed consequat urna hendrerit sed. Morbi eleifend consectetur imperdiet. Morbi eu venenatis mauris. Morbi non mi vel orci ultricies semper. Pellentesque rutrum, odio sit amet auctor accumsan, enim arcu vestibulum quam, vel fringilla leo odio eget lorem. Sed nisl purus, porttitor et sagittis vel, pharetra lacinia lectus.</p>
+                        </article>
+                        <aside class="images">
+                            <h4 class="title">Images:</h4>
+                            <img src="img/300px-Depth-first-tree.svg.png"/>
+                            <img src="img/300px-Depth-first-tree.svg.png"/>
+                        </aside>
+                    </div>
+
+                    <!--CODE-->
+                    <!--<h3 class="title">Class Name</h3>
+                    <div class="snippet">
+                        <pre><code>
+                            import java.util.List;
+
+                            public class QuickSort {
+                            /**
+                            * Sorts the given List in place
+                            * Reference: http://me.dt.in.th/page/Quicksort/
+                            * @param toSort the List to sort. Throws an error if its null
+                            */
+                            <span class="keyWord">&nbsp;&nbsp;&nbsp;&nbsp;public void</span> sort(List<Integer> toSort) {
+                                    if (toSort == null) {
+                                    throw new IllegalArgumentException("List can't be null.");
+                                    }
+                                    int left = 0;
+                                    int right = toSort.size() - 1;
+                                    sort(toSort, left, right);
+                                }
+
+                                private void sort(List<Integer> toSort, int left, int right) {
+                                    if (left >= right) {
+                                    return;
+                                    }
+                                    int last = partitioning(toSort, left, right);
+                                    sort(toSort, left, last - 1);
+                                    sort(toSort, last+1, right);
+                                }
+
+                                private int partitioning(List<Integer> toSort, int left, int right) {
+                                    int pivot = (left + right) / 2;
+                                    swap(toSort, left, pivot);
+                                    int last = left + 1;
+
+                                    for (int current = left ; current < right + 1; current++) {
+                                        if (toSort.get(current) < toSort.get(left)) {
+                                            swap(toSort, last, current);
+                                            last++;
+                                        }
+                                    }
+                                    swap(toSort, left, last - 1);
+                                    return last - 1;
+                                }
+
+                                private void swap(List<Integer> toSort, int indexLeft, int indexRight) {
+                                    int temp = toSort.get(indexLeft);
+                                    toSort.set(indexLeft, toSort.get(indexRight));
+                                    toSort.set(indexRight, temp);
+                                }
+                            }
+                        </Integer></Integer></Integer></Integer></code></pre>
+                    </div>-->
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div>
+                Description<br/>
+                Copyright &copy; Codecool 2017/2 - Daniel Knoll
+            </div>
+            <div>
+                used tech:<br/>
+
+            </div>
+            <div>
+                Contact:<br/>
+                knoll [dot] dani [at] gmail [dot] com<br/>
+                <i class="fab fa-github"></i>
+            </div>
+        </footer>
     </body>
 </html>

@@ -3,8 +3,11 @@
     src: url("../font/AbstractLabyrinthRounded.ttf");
 }
 
+/***************************Main***************************/
+
 body {
     margin: 0;
+    font-family: Arial, sans-serif;
     background-color: #333333;
 }
 
@@ -17,82 +20,113 @@ header {
 }
 
 header h1 {
+    margin: 0;
     font-family: labyrinth, Arial, sans-serif;
     font-size: 44pt;
-    color: #797979;
-    text-align: center;
-    margin: auto;
-    border-radius: 15px;
+    color: #f28736;
+    text-shadow: 2px 2px #777777;
 }
 
-.wrapper {
-    min-height: calc(100vh - 183px);
-    margin: 0px 100px;
-    padding-bottom: 40px;
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 11fr 1fr;
+    /*grid-auto-rows:minmax(calc(100vh - 183px), auto);*/
+}
+
+.gridWrap {
+    grid-column: 2 / 3;
+    padding-bottom: 50px;
     background-color: #e4e4e4;
-    border-color: white;
-    border-style: solid;
+    border: solid #ffffff;
     border-width: 0px 2px 0px 2px;
 }
 
 nav {
     margin-bottom:20px;
-    font-family: Arial, sans-serif;
+    border-top: 10px solid #ff6b33;
     color: #ffffff;
     background-color: #3F3F43;
 }
 
-nav .separator {
-    height: 10px;
-    background-color: #ff6b33;
-}
-
 nav ul {
-    width: 55%;
-    margin: 0px auto;  /*TODO not centered*/
+    display: grid;
+    grid-template-columns: 1fr repeat(5, 1fr) 1fr;
+    grid-gap: 5px;
     padding: 0px 0px 10px;
+    margin-top: 0px;
 }
 
 nav li {
-    display: inline-block;
+    list-style-type: none;
     padding: 10px;
+    text-align: center;
 }
 
-nav li:hover, .active_nav {
+nav li:first-child {
+    grid-column: 2 / 3;
+}
+
+nav li:hover, .activeNav {
     border-radius: 0px 0px 10px 10px;
     background: linear-gradient(to bottom, #ff6b33 0%, #ff8a35 100%);
 }
 
-.canvas h2, h5, #generate {
-    font-family: Arial, sans-serif;
+.title, #generate {
     text-align: center;
 }
 
-.canvas .maze {
+footer {
     display: grid;
+    grid-template-columns: 1fr 3fr repeat(2, 2fr) 1fr;
+    padding-top: 12px;
+    color: white;
+    background-color: #505050;
+    border-top: 10px solid #ff6b33;
+}
+
+footer div:first-child {
+    grid-column: 2 / 3;
+}
+
+/***************************Maze***************************/
+
+.maze {
+    display: grid;
+    grid-template-columns: repeat(18, auto);
+    grid-gap: 1px;
     width: 60%;
     margin: 0px auto 20px;
-    /*grid-template-columns: auto auto ...;  /* Done by JS*/
     padding: 10px;
     background-color: #333333;
 }
 
-.grid-item { /*todo is border needed?*/
-    background-color: black;
-    font-size: 30px;
-    text-align: center;
-    /*border: 1px solid rgba(0, 0, 0, 0.8);*/
+.maze > div {
+    padding-bottom: 100%;
 }
 
-.player {
+.mazeWall {
+    background-color: #000000;
+}
+
+.mazeCorridor {
+    background-color: rgba(255, 255, 255, 0.8);
+}
+
+.mazeGenPointer {
+    background-color: #ff6b33;
+}
+
+/***************************Player buttons***************************/
+
+.playerBtns {
     margin: 0px auto;
     width: 50%;
     display: grid;
-    grid-template-columns: auto auto auto auto auto auto;
+    grid-template-columns: repeat(5, auto);
 }
 
 .btn {
-    padding: 9px 32px;
+    padding: 10px 0px;
     border: 1px solid #cc562c;
     font-size: 12px;
     text-align: center;
@@ -101,18 +135,22 @@ nav li:hover, .active_nav {
 }
 
 .btn:hover {
-    color: #ffa888;
+    background: linear-gradient(to bottom, #ff8a35 0%, #ff6b33 100%);
 }
 
-.left_btn {
+.activeBtn {
+    color: #333333;
+}
+
+.lefBtn {
     border-radius: 10px 0px 0px 10px;
 }
 
-.right_btn {
+.rightBtn {
     border-radius: 0px 10px 10px 0px;
 }
 
-.single_btn {
+.singleBtn {
     border-radius: 10px;
 }
 
@@ -122,12 +160,102 @@ nav li:hover, .active_nav {
     font-size: 2em;
 }
 
-footer {
-    height: 25px;
-    padding-top: 12px;
-    font-family: Arial, serif;
-    text-align: center;
+/***************************Info buttons***************************/
+
+.gridGenButtons {
+    display: grid;
+    grid-template-columns: 1fr 2fr 2fr 3fr 2fr 2fr 1fr;
     color: white;
-    background-color: #3F3F43;
-    border-top: 10px solid #ff6b33;
+    font-size: 1.5em;
+    background-color: #f28736;
+    border-top: 5px solid #cc562c;
+    border-bottom: 1px solid #797979;
+}
+
+.gridGenButtons > div {
+    padding: 20px 0px;
+    text-align: center;
+    border: solid #cc562c;
+    border-width: 0px 0px 0px 2px;
+}
+
+.gridGenButtons div:first-child {
+    grid-column: 2 / 3;
+    border-width: 0px;
+}
+
+.gridGenButtons > div:hover, activeInfoBtn {
+    background: linear-gradient(to bottom, #ffb928 0%, #f28736 100%);*/
+}
+
+.info {
+    margin: 20px 10%;
+}
+
+/***************************API Info***************************/
+
+.apiInfo {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    padding: 25px 0px;
+}
+
+.form {
+    align-self: center;
+}
+
+.apiInfo ol {
+    align-self: center;
+}
+
+.apiInfo li {
+    margin: 30px 0px;
+}
+
+.form form {
+    padding: 15px;
+    border: 1px solid #797979;
+    border-radius: 5px;
+}
+
+.form input[type=number], select {
+    display: block;
+    width: calc(100% - 1.55rem);
+    margin: 10px 0px;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px #ddd;
+    border-radius: 4px;
+}
+
+select {
+    width: 100%;
+}
+
+.formSubmit {
+    width: 100%;
+    padding: 5px 0;
+    font-size: 1em;
+}
+/***************************Code Info***************************/
+
+.keyWord {  /* TODO variable, method name, constant+string, annotation, comment*/
+    color: #ff6b33;
+}
+
+/***************************Algo Info***************************/
+
+.algoInfo {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-gap: 5px;
+}
+
+.snippet {
+    padding: 10px;
+    background-color: rgba(162, 162, 162, 0.8);
+    border: 1px solid #333333;
+    border-radius: 5px;
 }
