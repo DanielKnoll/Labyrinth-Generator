@@ -185,7 +185,7 @@ footer div:first-child {
 }
 
 .gridGenButtons > div:hover, activeInfoBtn {
-    background: linear-gradient(to bottom, #ffb928 0%, #f28736 100%);*/
+    background: linear-gradient(to bottom, #ffb928 0%, #f28736 100%);
 }
 
 .info {

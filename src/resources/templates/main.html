@@ -21,7 +21,7 @@
             <div class="gridWrap">
                 <nav>
                     <ul>
-                        <li class="active_nav" id="dfs">Depth-first search</li>
+                        <li class="activeNav" id="dfs">Depth-first search</li>
                         <li id="kruskal">Kruskal's algorithm</li>
                         <li id="rndPrim">Random Prim</li>
                         <li id="recDivision">Recursive division</li>
@@ -31,19 +31,26 @@
                 <section class="demoArea">
                     <h2 class="title">Depth-first search algorithm</h2>
                     <article class="maze"><!--maze tiles filled by JS--></article>
+
                     <div class="btn singleBtn" id="generate">Generate</div>
-                    <div class="playerBtns"><!--maze generation buttons--></div>
+
+                    <div class="playerBtns">
+                        <button class="btn lefBtn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
+                        <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
+                        <button class="btn" id="pause"><i class="fas fa-pause fa-2x"></i></button>
+                        <button class="btn" id="ffwd"><i class="fas fa-forward fa-2x"></i></button>
+                        <button class="btn rightBtn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>
+                    </div>
                 </section>
             </div>
         </div>
         <div class="gridGenButtons">
             <!--Hidden before generate button pushed-->
-            <div>New Maze</div>
-            <div>Show API <i class="fas fa-angle-down"></i></div>
-            <div>Solve Maze</div>
-            <div>Show Code <i class="fas fa-angle-down"></i></div>
-            <div>Show Infor <i class="fas fa-angle-down"></i></div>
-
+            <div id="newMaze">New Maze</div>
+            <div id="showApi">Show API <i class="fas fa-angle-down"></i></div>
+            <div id="solveMaze">Solve Maze</div>
+            <div id="showCode">Show Code <i class="fas fa-angle-down"></i></div>
+            <div id="showInfo">Show Info <i class="fas fa-angle-down"></i></div>
         </div>
         <div class="grid">
             <div class="gridWrap">
@@ -52,7 +59,7 @@
                     <!--API-->
                     <h3 class="title">API description</h3>
                     <div class="snippet">
-                        <code>http://www.future-domain-name.hu/api/generate?wall=0&#38;algo=0&#38;width=18&#38;height=18</code>
+                        <code>http://www.future-domain-name.hu/api/generate?wall=0&amp;algo=0&amp;width=18&amp;height=18</code>
                     </div>
                     <div class="apiInfo">
                         <ol>
@@ -166,7 +173,7 @@
             </div>
             <div>
                 Contact:<br/>
-                knoll [dot] dani [at] gmail [dot] com<br/>
+                knoll.dani@gmail.com<br/>
                 <i class="fab fa-github"></i>
             </div>
         </footer>
