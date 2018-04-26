@@ -10,7 +10,6 @@ dom = {
         delay: 500,
         interrupted: false,
         reverseOrder: false,
-        infoData: ""
     },
 
     initFunctions: {
@@ -23,7 +22,7 @@ dom = {
         },
 
         createGrid: function () {
-            apiData.getMazeData("dfs");  // TODO delete when start with choose algo
+            apiData.getMazeData("dfs");  // TODO delete when page starts with choose algo
             let mazeDom = $(".maze");
             for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
                 mazeDom.append(`<div class="mazeWall"></div>`);
@@ -39,6 +38,7 @@ dom = {
             dom.eventListeners.playPauseMazeGenEventListener();
             dom.eventListeners.fastForwardMazeGenEventListener();
             dom.eventListeners.jumpToEndEventListener();
+            dom.eventListeners.newMazeEventListener();
         },
     },
 
@@ -75,10 +75,10 @@ dom = {
             });
         },
 
-        anyMazeGenBtnEventListener: function () {
-            let interruptorBtns = ["start", "rew", "pause", "ffwd", "end"];
+        anyMazeGenBtnEventListener: function () {  //TODO how to include newMaze and Solve? is this a good practice?
+            let interruptorBtns = ["start", "rew", "pause", "ffwd", "end", "newMaze"];
             let forwardBtns = ["start", "play", "ffwd", "end"];
-            let resetMazeBtns = ["start", "end"];
+            let resetMazeBtns = ["start", "end", "newMaze"];
             $(".playerBtns button").click(function () {
                 dom.utility.resetBtnFontColor();
                 let btnId = $(this).attr("id");
@@ -155,6 +155,16 @@ dom = {
                 dom.utility.changePauseToPlay();
             });
         },
+
+        newMazeEventListener: function () {
+            $("#newMaze").click(function () {
+                dom.data.interrupted = true;
+                dom.utility.resetMaze();
+                apiData.getMazeData("dfs");
+                dom.utility.changePlayToPause();
+                dom.utility.mazeGeneration();
+            });
+        }
     },
 
     utility: {
@@ -205,7 +215,7 @@ dom = {
                     (dom.data.iterator >= 0 && dom.data.reverseOrder)) {
                     dom.utility.mazeGeneration();
                 }  else {
-                    dom.data.iterator = (dom.data.reverseOrder) ? 0 : dom.data.mazeOrderLength;
+                    dom.data.iterator = (dom.data.reverseOrder) ? 0 : dom.data.mazeOrderLength;  //TODO still goes over.
                     dom.utility.changePauseToPlay();
                     dom.utility.resetBtnFontColor();
                     clearTimeout(timeOutId);
@@ -253,6 +263,6 @@ dom = {
             dom.data.iterator = 0;
             dom.data.delay = 500;
             dom.data.reverseOrder = false;
-        },
+        }
     },
 };
