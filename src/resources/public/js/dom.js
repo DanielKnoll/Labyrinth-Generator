@@ -149,11 +149,10 @@ dom = {
 
         jumpToEndEventListener: function () {
             $("#end").click(function () {
-                dom.data.iterator = dom.data.mazeOrderLength;
-                for (let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-                    if (dom.data.mazeOrder.includes(i)) {
-                        $(".maze div:nth-child(" + i + ")").removeClass("mazeWall").addClass("mazeCorridor");
-                    }
+                let tile;
+                for (let i = dom.data.iterator; i < dom.data.mazeOrderLength; i++) {
+                    tile = dom.data.mazeOrder[i];
+                    $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
                 }
                 dom.utility.changePauseToPlay();
             });
@@ -266,12 +265,12 @@ dom = {
             let order = dom.data.mazeOrder;
             let iterator = dom.data.iterator;
             if(iterator === 1) {
-                $(".maze div:nth-child(" + order[0] + ")").removeClass("mazeGenPointer").addClass("mazeCorridor");
+                $(".maze div").eq(order[0]).removeClass("mazeGenPointer").addClass("mazeCorridor");
             } else if(iterator > 1){
-                $(".maze div:nth-child(" + order[iterator - 1] + ")").removeClass("mazeGenPointer").addClass("mazeCorridor");
+                $(".maze div").eq(order[iterator - 1]).removeClass("mazeGenPointer").addClass("mazeCorridor");
             }
             if(iterator <= dom.data.mazeOrderLength -1 ) {
-                $(".maze div:nth-child(" + order[iterator] + ")").removeClass("mazeWall").addClass("mazeGenPointer");
+                $(".maze div").eq(order[iterator]).removeClass("mazeWall").addClass("mazeGenPointer");
             }
         },
 
@@ -280,12 +279,12 @@ dom = {
             let iterator = dom.data.iterator;
             let length = dom.data.mazeOrderLength;
             if(iterator === length) {
-                $(".maze div:nth-child(" + order[length - 1] + ")").removeClass("mazeCorridor").addClass("mazeGenPointer");
+                $(".maze div").eq(order[length - 1]).removeClass("mazeCorridor").addClass("mazeGenPointer");
             } else if(iterator > 0){
-                $(".maze div:nth-child(" + order[iterator - 1] + ")").removeClass("mazeCorridor").addClass("mazeGenPointer");
+                $(".maze div").eq(order[iterator - 1]).removeClass("mazeCorridor").addClass("mazeGenPointer");
             }
             if(iterator < length) {
-                $(".maze div:nth-child(" + order[iterator] + ")").removeClass("mazeGenPointer").addClass("mazeWall");
+                $(".maze div").eq(order[iterator]).removeClass("mazeGenPointer").addClass("mazeWall");
             }
         },
 
