@@ -294,7 +294,7 @@ dom = {
                 case "showApi":
                     infoSection.html(dom.htmlStructures.apiInfo);
                     $(".apiValues").html(`wall=0&amp;algo=0&amp;width=18&amp;height=10`);
-                    $(".json").html(JSON.stringify(dom.data.mazeData));
+                    $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
                     break;
                 case "showCode":
                     infoSection.html(dom.htmlStructures.codeInfo);
@@ -355,7 +355,7 @@ dom = {
                         </div>
                     </div>
                     <div class="snippet">
-                        <code class="json"></code>
+                        <pre><code class="json"></code></pre>
                     </div>
         `,
 
