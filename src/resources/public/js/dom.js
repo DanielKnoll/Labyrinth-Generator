@@ -72,7 +72,6 @@ dom = {
                 }
                 dom.data.mazeOrderLength = dom.data.mazeOrder.length;
                 dom.initFunctions.createGrid();
-                dom.initFunctions.loadEventListeners();
             });
         },
 
