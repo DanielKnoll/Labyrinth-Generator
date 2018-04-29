@@ -1,214 +1,393 @@
 dom = {
     data: {
+        demoAreaString: "",
         mazeData: "",
         mazeColNum: 18,
         mazeRowNum: 10,
         mazeOrder: [],
+        mazeOrderLength: 0,
         iterator: 0,
         delay: 500,
         interrupted: false,
-    },
-    createGrid: function () {
-        apiData.getMazeData("dfs");  //TODO remove
-        let mazeDom = $(".maze");
-        for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-            mazeDom.append(`<div class="mazeWall"></div>`);
-        }
+        reverseOrder: false,
+        infoData: "",
     },
 
-    saveMazeDate: function (mazeData) {
-        dom.data.mazeData = mazeData;
-        dom.data.mazeOrder = mazeData.mazeOrder;
-    },
+    initFunctions: {
 
-    saveDemoArea: function () {
-        dom.createGrid();
-        return $("section.demoArea").html();
-    },
+        createGrid: function () {
+            let mazeDom = $(".maze");
+            let tiles = "";
 
-    navigationEventListener: function (demoAreaString) {
-        $("nav li").click(function(){
-            dom.data.interrupted = true;
-            $("nav li").removeClass("activeNav");
-            let selectedMenu = $(this);
-            let selectedMenuId = selectedMenu.attr("id");
-            if(selectedMenuId === "dfs") {
-                apiData.getMazeData(selectedMenuId);
+            $(".infoBtnsGrid").hide();
+            $(".playerBtns").hide();
+            $("#generate").show();
+
+            mazeDom.css("grid-template-columns", "repeat(" + dom.data.mazeColNum + ", auto)");
+            for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
+                tiles += `<div class="mazeWall"></div>`;
             }
-            selectedMenu.addClass("activeNav");
-            switch (selectedMenuId) { /*todo will need to return the menu point id or just the order*/
-                case "dfs":
-                    dom.loadDemoArea(demoAreaString);
-                    break;
-                default:
-                    $(".demoArea").html("<h2 class='title'>Next sprint</h2><h5 class='title'>hopefully</h5>");
-            }
-            dom.generateMazeBtnEventListener();
-        });
+            mazeDom.html(tiles);
+        },
+
+        loadEventListeners: function () {
+            dom.eventListeners.navigationEventListener();
+            dom.eventListeners.generateMazeBtnEventListener();
+            dom.eventListeners.anyMazeGenBtnEventListener();
+            dom.eventListeners.jumpToStartEventListener();
+            dom.eventListeners.rewindMazeGenEventListener();
+            dom.eventListeners.playPauseMazeGenEventListener();
+            dom.eventListeners.fastForwardMazeGenEventListener();
+            dom.eventListeners.jumpToEndEventListener();
+            dom.eventListeners.newMazeEventListener();
+            dom.eventListeners.infoBtnsEventListener();
+        },
     },
 
-    loadDemoArea: function (canvasString) {
-        $(".demoArea").html(canvasString);
-    },
+    eventListeners: {
 
-    generateMazeBtnEventListener: function () {
-        $("#generate").click(function() {
-            dom.resetIterAndDelay();
-            $(this).hide();
-            dom.loadButtons();  //TODO rename
-            dom.playerBtnEventlistener();
-            dom.mazeGeneration();
-        });
-    },
+        navigationEventListener: function () {
+            $("nav li").click(function () {
+                let selectedMenu = $(this);
+                let selectedMenuId = selectedMenu.attr("id");
+                dom.data.interrupted = true;
+                $("nav li").removeClass("activeNav");
+                selectedMenu.addClass("activeNav");
+                $(".infoBtnsGrid").hide();
+                $(".appInfoSection").html("");
 
-    resetIterAndDelay: function () {
-        dom.data.iterator = 0;
-        dom.data.delay = 500;
-    },
-
-    loadButtons: function () {
-        $(".playerBtns").html(`
-            <button class="btn lefBtn" id="start"><i class="fas fa-step-backward fa-2x"></i></button>
-            <button class="btn" id="rew"><i class="fas fa-backward fa-2x"></i></button>
-            <button class="btn" id="pause"><i class="fas fa-pause fa-2x"></i></button>
-            <button class="btn" id="ffwd"><i class="fas fa-forward fa-2x"></i></button>
-            <button class="btn rightBtn" id="end"><i class="fas fa-step-forward fa-2x"></i></button>`);
-    },
-
-    playerBtnEventlistener: function () {
-        $(".playerBtns button").click(function(){
-
-            switch ($(this).attr("id")) {
-                case "start":
-                    dom.jumpToStart();
-                    break;
-                case "rew":
-                    dom.rewindMazeGen();
-                    break;
-                case "pause":
-                    dom.stopMazeGen();
-                    break;
-                case "play":
-                    dom.playMazeGen();
-                    break;
-                case "ffwd":
-                    dom.fastForwardMazeGen();
-                    break;
-                case "end":
-                    dom.jumpToEnd();
-                    break;
-                case "generate":
-                    break;
-                default:
-                    console.log("error: button not exists " + $(this).attr("id"));
-            }
-        });
-    },
-
-    jumpToStart: function () {
-        dom.data.interrupted = true;
-        $(".maze > div").removeClass("mazeCorridor").removeClass("mazeGenPointer").addClass("mazeWall");
-        dom.resetBtnFontColor();
-        dom.resetIterAndDelay();
-        dom.changeBtnToPlay();
-    },
-
-    changeBtnToPlay: function () {
-        $("#rew").next().attr("id", "play").children().addClass("fa-play").removeClass("fa-pause");
-    },
-
-    resetBtnFontColor: function () {
-        let btnRew = $("#rew");
-        let btnFfwd = $("#ffwd");
-        if(btnRew.hasClass("activeBtn")) {
-            btnRew.removeClass("activeBtn");
-        }
-        if(btnFfwd.hasClass("activeBtn")) {
-            btnFfwd.removeClass("activeBtn");
-        }
-    },
-
-    rewindMazeGen: function () {
-        dom.data.interrupted = true;
-        dom.resetBtnFontColor();
-        $("#rew").addClass("activeBtn");
-        dom.data.delay = 1000;
-        dom.mazeGeneration();
-    },
-
-    stopMazeGen: function () {
-        dom.data.interrupted = true;
-        dom.togglePlayPauseBtn();
-        dom.resetBtnFontColor();
-    },
-
-    togglePlayPauseBtn: function () {
-        let btn = $("#rew").next();
-        let value = (btn.attr("id") === "pause") ? "play" : "pause";
-        btn.attr("id", value).children().toggleClass("fa-play").toggleClass("fa-pause");
-    },
-
-    playMazeGen: function () {
-        if(dom.data.iterator === 0 || dom.data.iterator === dom.data.mazeOrder.length) {
-            dom.jumpToStart();
-        }
-        dom.data.delay = 500;
-        dom.mazeGeneration();
-        dom.togglePlayPauseBtn();
-        dom.resetBtnFontColor();
-    },
-
-    mazeGeneration: function() {
-        dom.data.interrupted = false;
-        function f() {
-            let timeOutId;
-            dom.changeCurrentAndPreviousMazeTileColor();
-            dom.data.iterator++;  // Todo reverse
-            if( dom.data.iterator < dom.data.mazeOrder.length ){
-                timeOutId = setTimeout(f, dom.data.delay);
-                if(dom.data.interrupted) {
-                    clearTimeout(timeOutId); // TODO it will still do one more step
-                    $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").removeClass("mazeGenPointer").addClass("mazeWall");
-                    dom.data.iterator -= 1;
-                    $(".maze div:nth-child(" + dom.data.mazeOrder[dom.data.iterator] + ")").removeClass("mazeGenCorridor").addClass("mazeGenPointer");
-                    dom.changeBtnToPlay();
+                switch (selectedMenuId) {
+                    case "dfs":
+                        apiData.getMazeData("dfs"); // TODO generate?wall=0&...
+                        break;
+                    case "cellular":
+                        dom.data.mazeColNum = 50;
+                        dom.data.mazeRowNum = 30;
+                        dom.data.mazeOrder = [];
+                        break;
+                    default:
+                        dom.data.mazeColNum = 19;
+                        dom.data.mazeRowNum = 13;
+                        dom.data.mazeOrder = [96, 77, 58, 39, 20, 40, 60, 80, 100, 81, 62, 43, 24, 27, 28, 29, 49, 68, 87, 105, 104, 103, 83, 64, 45, 32, 33, 34, 35, 36, 53, 72, 91, 110, 134, 153, 173, 174, 175, 157, 138, 193, 212, 144, 143, 142, 141, 140, 159, 178, 197, 216, 217, 218, 219, 220, 179, 180, 146, 147, 148, 149, 150, 167, 186, 205, 224];
                 }
-            } else {
-                dom.togglePlayPauseBtn();
+                dom.data.mazeOrderLength = dom.data.mazeOrder.length;
+                dom.initFunctions.createGrid();
+            });
+        },
+
+        generateMazeBtnEventListener: function () {
+            $("#generate").click(function () {
+                dom.dataFunctions.resetIterDelayOrder();
+                $(this).hide();
+                $(".playerBtns").slideDown(100);
+                $(".infoBtnsGrid").slideDown(200);
+                dom.utility.mazeGeneration();
+            });
+        },
+
+        anyMazeGenBtnEventListener: function () {  //TODO how to include newMaze and Solve? is this a good practice?
+            let interruptorBtns = ["start", "rew", "pause", "ffwd", "end", "newMaze"];
+            let forwardBtns = ["start", "play", "ffwd", "end"];
+            let resetMazeBtns = ["start", "end", "newMaze"];
+            $(".playerBtns button").click(function () {
+                dom.utility.resetBtnFontColor();
+                let btnId = $(this).attr("id");
+
+                if(interruptorBtns.includes(btnId)) {
+                    dom.data.interrupted = true;
+                }
+                if(forwardBtns.includes(btnId)) {
+                    dom.data.reverseOrder = false;
+                }
+                if(resetMazeBtns.includes(btnId) || (btnId === "play" && (dom.data.iterator === 0 ||
+                        dom.data.iterator >= dom.data.mazeOrderLength))) {
+                    dom.utility.resetMaze();
+                }
+            });
+        },
+
+        jumpToStartEventListener: function () {
+            $("#start").click(function () {
+                dom.utility.changePauseToPlay();  // Todo any btn
+            });
+        },
+
+        rewindMazeGenEventListener: function () {
+            $("#rew").click(function () {
+                if(dom.data.iterator <= dom.data.mazeOrderLength + 1) {
+                    dom.utility.changePlayToPause();  // Todo any btn
+                    $("#rew").addClass("activeBtn");
+                    dom.data.delay = 100;
+                    dom.data.reverseOrder = true;
+                    dom.utility.mazeGeneration();
+                }
+            });
+        },
+
+        playPauseMazeGenEventListener: function () {
+            let btn = $("#rew").next();  // play/pause button
+            btn.click(function () {
+                switch (btn.attr("id")) {
+                    case "pause":
+                        dom.utility.changePauseToPlay();  // Todo any btn
+                        break;
+                    case "play":
+                        dom.data.delay = 500;
+                        dom.utility.changePlayToPause();  // Todo any btn
+                        dom.utility.mazeGeneration();
+                        break;
+                    default:
+                        console.log("error: button not exists");
+                }
+            });
+        },
+
+        fastForwardMazeGenEventListener: function () {
+            $("#ffwd").click(function () {
+                if(dom.data.iterator < dom.data.mazeOrderLength) {
+                    dom.utility.changePlayToPause();  // Todo any btn
+                    $("#ffwd").addClass("activeBtn");
+                    dom.data.delay = 100;
+                    dom.utility.mazeGeneration();
+                }
+            });
+        },
+
+        jumpToEndEventListener: function () {
+            $("#end").click(function () {
+                let tile;
+                for (let i = dom.data.iterator; i < dom.data.mazeOrderLength; i++) {
+                    tile = dom.data.mazeOrder[i];
+                    $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
+                }
+                dom.utility.changePauseToPlay();  // Todo any btn
+            });
+        },
+
+        newMazeEventListener: function () {
+            $("#newMaze").click(function () {
+                dom.data.interrupted = true;
+                dom.utility.resetMaze();
+                apiData.getMazeData("dfs");
+                dom.utility.changePlayToPause();  // Todo any btn
+                dom.utility.mazeGeneration();
+            });
+        },
+
+        infoBtnsEventListener: function () {
+            /**
+             * Info Area toggle.
+             * If you click a button and it is not active there is an active button, takes away class.
+             * If the area is not empty it slides up. And after the animation is done clears area.
+             * If you click a button which has info and it is active then it removes class
+             * otherwise it becomes active button and loads info with animation.
+             */
+            let showInfoBtns = ["showApi", "showCode", "showInfo"];
+            let infoSection = $(".appInfoSection");
+            let animationSpeed = 400;
+            $(".infoBtnsGrid > div").click(function () {  // TODO simplify
+                let clickedBtn = $(this);
+                if( !clickedBtn.hasClass("activeInfoBtn") && $(".infoBtnsGrid > div").hasClass("activeInfoBtn") ){
+                    $(".infoBtnsGrid  div.activeInfoBtn").removeClass("activeInfoBtn");
+                }
+                if(infoSection.html().toString().length > 0) {
+                    infoSection.slideUp(animationSpeed);
+                    setTimeout(function (){
+                        infoSection.html("");
+                    }, animationSpeed);
+                }
+                if(showInfoBtns.includes(clickedBtn.attr("id"))) {
+                    if (clickedBtn.hasClass("activeInfoBtn")) {
+                        clickedBtn.removeClass("activeInfoBtn");
+                    } else {
+                        clickedBtn.addClass("activeInfoBtn");
+                        setTimeout(function () {
+                            dom.utility.loadInfo(clickedBtn.attr("id"));
+                        }, animationSpeed);
+                        infoSection.slideDown(animationSpeed);
+                    }
+                }
+            });
+        }
+    },
+
+    utility: {
+
+        resetMaze: function () {
+            $(".maze > div").removeClass("mazeCorridor").removeClass("mazeGenPointer").addClass("mazeWall");
+            dom.dataFunctions.resetIterDelayOrder();
+        },
+
+        resetBtnFontColor: function () {
+            let btnRew = $("#rew");
+            let btnFfwd = $("#ffwd");
+            if(btnRew.hasClass("activeBtn")) {
+                btnRew.removeClass("activeBtn");
             }
-        }
-        f();
-    },
-
-    changeCurrentAndPreviousMazeTileColor: function () {
-        let order = dom.data.mazeOrder;
-        let iterator = dom.data.iterator;
-        if(iterator === 1) {
-            $(".maze div:nth-child(" + order[0] + ")").removeClass("mazeGenPointer").addClass("mazeCorridor");
-        } else if(iterator > 1){
-            $(".maze div:nth-child(" + order[iterator - 1] + ")").removeClass("mazeGenPointer").addClass("mazeCorridor");
-        }
-        if(iterator < order.length -1 ) {
-            $(".maze div:nth-child(" + order[iterator] + ")").removeClass("mazeWall").addClass("mazeGenPointer");
-        }
-    },
-
-    fastForwardMazeGen: function () {
-        dom.data.interrupted = true;
-        dom.resetBtnFontColor();
-        $("#ffwd").addClass("activeBtn");
-        dom.data.delay = 100;
-        dom.mazeGeneration();
-    },
-
-    jumpToEnd: function () {
-        dom.jumpToStart();
-        dom.data.iterator = dom.data.mazeOrder.length -1;
-        for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-            if(dom.data.mazeOrder.includes(i)) {
-                $(".maze div:nth-child(" + i + ")").addClass("mazeCorridor");
+            if(btnFfwd.hasClass("activeBtn")) {
+                btnFfwd.removeClass("activeBtn");
             }
+        },
+        changePauseToPlay: function () {
+            $("#rew").next().attr("id", "play").children().removeClass("fa-pause").addClass("fa-play");
+        },
+
+        changePlayToPause: function () {
+            $("#rew").next().attr("id", "pause").children().removeClass("fa-play").addClass("fa-pause");
+        },
+
+        mazeGeneration: function() {
+            dom.data.interrupted = false;
+            let timeOutId = setTimeout(function () {
+                if(!dom.data.interrupted && dom.data.iterator <= dom.data.mazeOrderLength) {
+                    if(dom.data.reverseOrder) {
+                        dom.utility.changeBackCurrentAndPreviousMazeTileColor();
+                        dom.data.iterator--;
+                    } else {
+                        dom.utility.changeCurrentAndPreviousMazeTileColor();
+                        dom.data.iterator++;
+                    }
+                } else {
+                    clearTimeout(timeOutId);
+                    return;
+                }
+                if ( (dom.data.iterator < dom.data.mazeOrderLength && !dom.data.reverseOrder) ||
+                    (dom.data.iterator >= 0 && dom.data.reverseOrder)) {
+                    dom.utility.mazeGeneration();
+                }  else {
+                    dom.data.iterator = (dom.data.reverseOrder) ? 0 : dom.data.mazeOrderLength;  //TODO still goes over.
+                    dom.utility.changePauseToPlay();
+                    dom.utility.resetBtnFontColor();
+                    clearTimeout(timeOutId);
+                }
+            }, dom.data.delay)
+        },
+
+        changeCurrentAndPreviousMazeTileColor: function () {
+            let order = dom.data.mazeOrder;
+            let iterator = dom.data.iterator;
+            if(iterator === 1) {
+                $(".maze div").eq(order[0]).removeClass("mazeGenPointer").addClass("mazeCorridor");
+            } else if(iterator > 1){
+                $(".maze div").eq(order[iterator - 1]).removeClass("mazeGenPointer").addClass("mazeCorridor");
+            }
+            if(iterator <= dom.data.mazeOrderLength -1 ) {
+                $(".maze div").eq(order[iterator]).removeClass("mazeWall").addClass("mazeGenPointer");
+            }
+        },
+
+        changeBackCurrentAndPreviousMazeTileColor: function () {
+            let order = dom.data.mazeOrder;
+            let iterator = dom.data.iterator;
+            let length = dom.data.mazeOrderLength;
+            if(iterator === length) {
+                $(".maze div").eq(order[length - 1]).removeClass("mazeCorridor").addClass("mazeGenPointer");
+            } else if(iterator > 0){
+                $(".maze div").eq(order[iterator - 1]).removeClass("mazeCorridor").addClass("mazeGenPointer");
+            }
+            if(iterator < length) {
+                $(".maze div").eq(order[iterator]).removeClass("mazeGenPointer").addClass("mazeWall");
+            }
+        },
+
+        loadInfo: function(btnId) {
+            let infoSection = $(".appInfoSection");
+            switch (btnId) {
+                case "showApi":
+                    infoSection.html(dom.htmlStructures.apiInfo);
+                    $(".apiValues").html(`wall=0&amp;algo=0&amp;width=18&amp;height=10`);
+                    $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
+                    break;
+                case "showCode":
+                    infoSection.html(dom.htmlStructures.codeInfo);
+                    break;
+                case "showInfo":
+                    infoSection.html(dom.htmlStructures.algoInfo);
+                    $(".algoInfoText > .title").html(dom.data.mazeData.algoName + " algorithm");
+                    break;
+                default:
+            }
+        },
+    },
+
+    dataFunctions: {
+
+        saveMazeData: function (mazeData) {
+            dom.data.mazeData = mazeData;
+            dom.data.mazeOrder = mazeData.mazeOrder;
+            dom.data.mazeOrderLength = dom.data.mazeOrder.length;
+        },
+
+        resetIterDelayOrder: function () {
+            dom.data.iterator = 0;
+            dom.data.delay = 500;
+            dom.data.reverseOrder = false;
         }
-        dom.resetBtnFontColor();
+    },
+
+    htmlStructures: {
+
+        apiInfo: `
+                <h3 class="title">API Info</h3>
+                    <div class="snippet">
+                        <code>http://www.future-domain-name.hu/api/generate?<span class="apiValues"></span></code>
+                    </div>
+                    <div class="apiInfo">
+                        <ol>
+                            <li>input: 0: thick wall / 1: thin wall</li>
+                            <li>input: 0-4 generation algorithms</li>
+                            <li>input: maze width (3-100)</li>
+                            <li>input: maze height (3-100)</li>
+                        </ol>
+                        <div class="form">
+                            <form>
+                                <select id="wallType" name="wall">
+                                    <option value="0">thick wall</option>
+                                    <option value="1">thin wall</option>
+                                </select>
+                                <select id="algoType" name="algo">
+                                    <option value="0">DFS</option>
+                                    <option value="1">Kruskal</option>
+                                    <option value="1">Random</option>
+                                </select>
+                                <input type="number" value="3" max="100"/>
+                                <input type="number" value="3" max="100"/>
+                                <input class="btn singleBtn formSubmit" type="submit" value="Send"/>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="snippet">
+                        <pre><code class="json"></code></pre>
+                    </div>
+        `,
+
+        algoInfo: `
+                <h3 class="title">Algorithm Info</h3>
+                <div class="algoInfo">
+                    <article class="algoInfoText">
+                        <h4 class="title"></h4>
+                        <div class="text">
+                            <p>Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.</p>
+                            <p>A version of depth-first search was investigated in the 19th century by French mathematician Charles Pierre Trémaux[1] as a strategy for solving mazes.</p>
+                            <p>Nunc condimentum, nulla in faucibus commodo, elit massa pharetra nibh, at tincidunt libero dolor quis augue. Donec pulvinar consectetur tortor, eget gravida ligula molestie at. Aenean ullamcorper tempor fermentum. Vestibulum metus ante, aliquam sed ligula vitae, auctor tempus quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vitae imperdiet justo, sed egestas nulla. Nunc sit amet malesuada mauris, sed pellentesque arcu. Sed venenatis mattis mi ac tincidunt. Pellentesque nec justo ullamcorper, cursus massa at, condimentum justo. Mauris pharetra ligula in nibh efficitur, ut facilisis nisi pulvinar. Nullam eu consectetur mi. In in dapibus sem, a pharetra sem. Pellentesque in blandit magna. Nulla in orci finibus, ornare massa ut, mollis velit.</p>
+                            <p>Etiam condimentum congue est, eget accumsan enim ornare eget. Morbi sed dui sit amet purus hendrerit egestas. Mauris at tellus sit amet dolor commodo suscipit sit amet eget elit. Curabitur nec diam id risus pulvinar euismod. Sed et rutrum lacus. Fusce sit amet augue auctor nulla semper luctus eget at dolor. Vivamus egestas tincidunt tincidunt. Donec sapien velit, venenatis eu tincidunt nec, consequat eu lacus. Nulla finibus sodales mauris, sed consequat urna hendrerit sed. Morbi eleifend consectetur imperdiet. Morbi eu venenatis mauris. Morbi non mi vel orci ultricies semper. Pellentesque rutrum, odio sit amet auctor accumsan, enim arcu vestibulum quam, vel fringilla leo odio eget lorem. Sed nisl purus, porttitor et sagittis vel, pharetra lacinia lectus.</p>
+                        </div>
+                    </article>
+                    <aside class="algoInfoAside">
+                        <h4 class="title">Images:</h4>
+                        <div class="images">
+                            <img src="img/300px-Depth-first-tree.svg.png"/>
+                            <img src="img/300px-Depth-first-tree.svg.png"/>
+                        </div>
+                    </aside>
+                </div>
+        `,
+
+        codeInfo: `
+                <h3 class="title">Class Name</h3>
+                    <div class="snippet">
+                        <pre><code class="algoCode">code will be here</code></pre>
+                    </div>
+        `
     }
 };

@@ -162,7 +162,7 @@ footer div:first-child {
 
 /***************************Info buttons***************************/
 
-.gridGenButtons {
+.infoBtnsGrid {
     display: grid;
     grid-template-columns: 1fr 2fr 2fr 3fr 2fr 2fr 1fr;
     color: white;
@@ -172,23 +172,23 @@ footer div:first-child {
     border-bottom: 1px solid #797979;
 }
 
-.gridGenButtons > div {
+.infoBtnsGrid > div {
     padding: 20px 0px;
     text-align: center;
     border: solid #cc562c;
     border-width: 0px 0px 0px 2px;
 }
 
-.gridGenButtons div:first-child {
+.infoBtnsGrid div:first-child {
     grid-column: 2 / 3;
     border-width: 0px;
 }
 
-.gridGenButtons > div:hover, activeInfoBtn {
-    background: linear-gradient(to bottom, #ffb928 0%, #f28736 100%);*/
+.infoBtnsGrid > div:hover, .activeInfoBtn {
+    background: linear-gradient(to bottom, #ffb928 0%, #f28736 100%);
 }
 
-.info {
+.appInfoSection {
     margin: 20px 10%;
 }
 
