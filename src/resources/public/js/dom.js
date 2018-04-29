@@ -2,8 +2,8 @@ dom = {
     data: {
         demoAreaString: "",
         mazeData: "",
-        mazeColNum: 18,
-        mazeRowNum: 10,
+        mazeColNum: 0,
+        mazeRowNum: 0,
         mazeOrder: [],
         mazeOrderLength: 0,
         iterator: 0,
@@ -58,7 +58,7 @@ dom = {
 
                 switch (selectedMenuId) {
                     case "dfs":
-                        apiData.getMazeData("dfs"); // TODO generate?wall=0&...
+                        apiData.getMazeData("0&18&10"); // TODO generate?wall=0&...
                         break;
                     case "cellular":
                         dom.data.mazeColNum = 50;
@@ -66,10 +66,9 @@ dom = {
                         dom.data.mazeOrder = [];
                         break;
                     default:
-                        dom.data.mazeColNum = 19;
-                        dom.data.mazeRowNum = 13;
-                        dom.data.mazeOrder = [96, 77, 58, 39, 20, 40, 60, 80, 100, 81, 62, 43, 24, 27, 28, 29, 49, 68, 87, 105, 104, 103, 83, 64, 45, 32, 33, 34, 35, 36, 53, 72, 91, 110, 134, 153, 173, 174, 175, 157, 138, 193, 212, 144, 143, 142, 141, 140, 159, 178, 197, 216, 217, 218, 219, 220, 179, 180, 146, 147, 148, 149, 150, 167, 186, 205, 224];
+                        apiData.getMazeData("1&19&13");
                 }
+                $(".demoArea > .title").html(dom.data.mazeData.algoName);
                 dom.data.mazeOrderLength = dom.data.mazeOrder.length;
                 dom.initFunctions.createGrid();
             });
@@ -168,7 +167,7 @@ dom = {
             $("#newMaze").click(function () {
                 dom.data.interrupted = true;
                 dom.utility.resetMaze();
-                apiData.getMazeData("dfs");
+                apiData.getMazeData("0&18&10");
                 dom.utility.changePlayToPause();  // Todo any btn
                 dom.utility.mazeGeneration();
             });
@@ -316,6 +315,8 @@ dom = {
             dom.data.mazeData = mazeData;
             dom.data.mazeOrder = mazeData.mazeOrder;
             dom.data.mazeOrderLength = dom.data.mazeOrder.length;
+            dom.data.mazeColNum = mazeData.mazeColNum;
+            dom.data.mazeRowNum = mazeData.mazeRowNum;
         },
 
         resetIterDelayOrder: function () {
