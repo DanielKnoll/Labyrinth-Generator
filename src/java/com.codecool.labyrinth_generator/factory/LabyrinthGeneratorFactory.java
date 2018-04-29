@@ -18,11 +18,11 @@ public class LabyrinthGeneratorFactory {
                 ( minDimension <= height && height <= maxDimension)) {
             switch (algoType) {
                 case DFS:
-                    return new Dfs(width, height);
+                    labyrinth = new Dfs(width, height);
                 case KRUSKAL:
-                    return new Kruskal(width, height);
+                    labyrinth = new Kruskal(width, height);
             default:
-                return null;
+                labyrinth =  null;
             }
         }
         return labyrinth;

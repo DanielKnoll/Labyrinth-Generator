@@ -1,7 +1,5 @@
 package com.codecool.labyrinth_generator.generator;
 
-import net.minidev.json.JSONArray;
-
 public abstract class Labyrinth {
 
     private String algoName;
@@ -45,7 +43,4 @@ public abstract class Labyrinth {
     }
 
     public abstract void generateLabyrinth(int mazeWidth, int mazeHeight);
-
-
-
 }

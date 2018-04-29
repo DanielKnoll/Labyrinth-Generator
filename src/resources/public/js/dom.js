@@ -331,7 +331,7 @@ dom = {
         apiInfo: `
                 <h3 class="title">API Info</h3>
                     <div class="snippet">
-                        <code>http://www.future-domain-name.hu/api/generate?<span class="apiValues"></span></code>
+                        <code>http://www.future-domain-name.hu/api/generate/<span class="apiValues"></span></code>
                     </div>
                     <div class="apiInfo">
                         <ol>
@@ -351,8 +351,8 @@ dom = {
                                     <option value="1">Kruskal</option>
                                     <option value="1">Random</option>
                                 </select>
-                                <input type="number" value="3" max="100"/>
-                                <input type="number" value="3" max="100"/>
+                                <input id="width" type="number" value="18" max="100"/>
+                                <input id="height" type="number" value="10" max="100"/>
                                 <input class="btn singleBtn formSubmit" type="submit" value="Send"/>
                             </form>
                         </div>
