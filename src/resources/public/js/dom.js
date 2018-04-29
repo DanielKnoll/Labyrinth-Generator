@@ -15,24 +15,23 @@ dom = {
 
     initFunctions: {
 
-        saveDemoArea: function () {
-            dom.initFunctions.createGrid();
+        createGrid: function () {
+            let mazeDom = $(".maze");
+            let tiles = "";
+
             $(".infoBtnsGrid").hide();
             $(".playerBtns").hide();
-            return $("section.demoArea").html();
-        },
+            $("#generate").show();
 
-        createGrid: function () {
-            apiData.getMazeData("dfs");  // TODO delete when page starts with choose algo
-            let mazeDom = $(".maze");
             mazeDom.css("grid-template-columns", "repeat(" + dom.data.mazeColNum + ", auto)");
             for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
-                mazeDom.append(`<div class="mazeWall"></div>`);
+                tiles += `<div class="mazeWall"></div>`;
             }
+            mazeDom.html(tiles);
         },
 
-        loadEventListeners: function (canvasString) {
-            dom.eventListeners.navigationEventListener(canvasString);
+        loadEventListeners: function () {
+            dom.eventListeners.navigationEventListener();
             dom.eventListeners.generateMazeBtnEventListener();
             dom.eventListeners.anyMazeGenBtnEventListener();
             dom.eventListeners.jumpToStartEventListener();
@@ -49,21 +48,30 @@ dom = {
 
         navigationEventListener: function () {
             $("nav li").click(function () {
-                dom.data.interrupted = true;
-                $(".infoBtnsGrid").hide();
-                $("nav li").removeClass("activeNav");
                 let selectedMenu = $(this);
-                selectedMenu.addClass("activeNav");
-
                 let selectedMenuId = selectedMenu.attr("id");
+                dom.data.interrupted = true;
+                $("nav li").removeClass("activeNav");
+                selectedMenu.addClass("activeNav");
+                $(".infoBtnsGrid").hide();
+                $(".appInfoSection").html("");
+
                 switch (selectedMenuId) {
                     case "dfs":
                         apiData.getMazeData("dfs"); // TODO generate?wall=0&...
-                        dom.utility.loadDemoArea(dom.data.demoAreaString);
+                        break;
+                    case "cellular":
+                        dom.data.mazeColNum = 50;
+                        dom.data.mazeRowNum = 30;
+                        dom.data.mazeOrder = [];
                         break;
                     default:
-                        $(".demoArea").html("<h2 class='title'>Next sprint</h2><h5 class='title'>hopefully</h5>");
+                        dom.data.mazeColNum = 19;
+                        dom.data.mazeRowNum = 13;
+                        dom.data.mazeOrder = [96, 77, 58, 39, 20, 40, 60, 80, 100, 81, 62, 43, 24, 27, 28, 29, 49, 68, 87, 105, 104, 103, 83, 64, 45, 32, 33, 34, 35, 36, 53, 72, 91, 110, 134, 153, 173, 174, 175, 157, 138, 193, 212, 144, 143, 142, 141, 140, 159, 178, 197, 216, 217, 218, 219, 220, 179, 180, 146, 147, 148, 149, 150, 167, 186, 205, 224];
                 }
+                dom.data.mazeOrderLength = dom.data.mazeOrder.length;
+                dom.initFunctions.createGrid();
                 dom.initFunctions.loadEventListeners();
             });
         },
@@ -101,21 +109,20 @@ dom = {
 
         jumpToStartEventListener: function () {
             $("#start").click(function () {
-                dom.utility.changePauseToPlay();
+                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
         rewindMazeGenEventListener: function () {
             $("#rew").click(function () {
                 if(dom.data.iterator <= dom.data.mazeOrderLength + 1) {
-                    dom.utility.changePlayToPause();
+                    dom.utility.changePlayToPause();  // Todo any btn
                     $("#rew").addClass("activeBtn");
                     dom.data.delay = 100;
                     dom.data.reverseOrder = true;
                     dom.utility.mazeGeneration();
                 }
             });
-
         },
 
         playPauseMazeGenEventListener: function () {
@@ -123,11 +130,11 @@ dom = {
             btn.click(function () {
                 switch (btn.attr("id")) {
                     case "pause":
-                        dom.utility.changePauseToPlay();
+                        dom.utility.changePauseToPlay();  // Todo any btn
                         break;
                     case "play":
                         dom.data.delay = 500;
-                        dom.utility.changePlayToPause();
+                        dom.utility.changePlayToPause();  // Todo any btn
                         dom.utility.mazeGeneration();
                         break;
                     default:
@@ -139,7 +146,7 @@ dom = {
         fastForwardMazeGenEventListener: function () {
             $("#ffwd").click(function () {
                 if(dom.data.iterator < dom.data.mazeOrderLength) {
-                    dom.utility.changePlayToPause();
+                    dom.utility.changePlayToPause();  // Todo any btn
                     $("#ffwd").addClass("activeBtn");
                     dom.data.delay = 100;
                     dom.utility.mazeGeneration();
@@ -154,7 +161,7 @@ dom = {
                     tile = dom.data.mazeOrder[i];
                     $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
                 }
-                dom.utility.changePauseToPlay();
+                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
@@ -163,7 +170,7 @@ dom = {
                 dom.data.interrupted = true;
                 dom.utility.resetMaze();
                 apiData.getMazeData("dfs");
-                dom.utility.changePlayToPause();
+                dom.utility.changePlayToPause();  // Todo any btn
                 dom.utility.mazeGeneration();
             });
         },
@@ -178,17 +185,17 @@ dom = {
              */
             let showInfoBtns = ["showApi", "showCode", "showInfo"];
             let infoSection = $(".appInfoSection");
-            let speed = 400;
-            $(".infoBtnsGrid > div").click(function () {
+            let animationSpeed = 400;
+            $(".infoBtnsGrid > div").click(function () {  // TODO simplify
                 let clickedBtn = $(this);
                 if( !clickedBtn.hasClass("activeInfoBtn") && $(".infoBtnsGrid > div").hasClass("activeInfoBtn") ){
                     $(".infoBtnsGrid  div.activeInfoBtn").removeClass("activeInfoBtn");
                 }
                 if(infoSection.html().toString().length > 0) {
-                    infoSection.slideUp(speed);
+                    infoSection.slideUp(animationSpeed);
                     setTimeout(function (){
                         infoSection.html("");
-                    }, speed);
+                    }, animationSpeed);
                 }
                 if(showInfoBtns.includes(clickedBtn.attr("id"))) {
                     if (clickedBtn.hasClass("activeInfoBtn")) {
@@ -197,8 +204,8 @@ dom = {
                         clickedBtn.addClass("activeInfoBtn");
                         setTimeout(function () {
                             dom.utility.loadInfo(clickedBtn.attr("id"));
-                        }, speed);
-                        infoSection.slideDown(speed);
+                        }, animationSpeed);
+                        infoSection.slideDown(animationSpeed);
                     }
                 }
             });
@@ -206,10 +213,6 @@ dom = {
     },
 
     utility: {
-
-        loadDemoArea: function (canvasString) {
-            $(".demoArea").html(canvasString);
-        },
 
         resetMaze: function () {
             $(".maze > div").removeClass("mazeCorridor").removeClass("mazeGenPointer").addClass("mazeWall");
