@@ -19,10 +19,6 @@ dom = {
             let mazeDom = $(".maze");
             let tiles = "";
 
-            $(".infoBtnsGrid").hide();
-            $(".playerBtns").hide();
-            $("#generate").show();
-
             mazeDom.css("grid-template-columns", "repeat(" + dom.data.mazeColNum + ", auto)");
             for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
                 tiles += `<div class="mazeWall"></div>`;
@@ -54,6 +50,8 @@ dom = {
                 $("nav li").removeClass("activeNav");
                 selectedMenu.addClass("activeNav");
                 $(".infoBtnsGrid").hide();
+                $(".playerBtns").hide();
+                $("#generate").show();
                 $(".appInfoSection").html("");
 
                 switch (selectedMenuId) {
@@ -209,6 +207,20 @@ dom = {
                     }
                 }
             });
+        },
+
+        formSubmitEventListener: function () {
+            $(".formSubmit").click(function () {
+                dom.data.interrupted = true;
+                let algoType = $("#algoType option:checked").val();
+                let mazeWidth = $("#width").val();
+                let mazeHeight = $("#height").val();
+                $(".apiValues").html("wall=0&amp;algo=" + algoType + "&amp;width=" + mazeWidth + "&amp;height=" +
+                    mazeHeight);
+                dom.utility.resetMaze();
+                dom.utility.changePauseToPlay();
+                apiData.postMazeData(algoType,mazeWidth, mazeHeight);
+            })
         }
     },
 
@@ -297,8 +309,8 @@ dom = {
                 case "showApi":
                     infoSection.html(dom.htmlStructures.apiInfo);
                     $(".apiValues").html(dom.data.infoData.apiValues);
-
                     $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
+                    dom.eventListeners.formSubmitEventListener();
                     break;
                 case "showCode":
                     infoSection.html("");
@@ -371,7 +383,7 @@ dom = {
                                 </select>
                                 <input id="width" type="number" value="18" max="100"/>
                                 <input id="height" type="number" value="10" max="100"/>
-                                <input class="btn singleBtn formSubmit" type="submit" value="Send"/>
+                                <div class="btn singleBtn formSubmit">Send</div>
                             </form>
                         </div>
                     </div>

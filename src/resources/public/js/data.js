@@ -16,6 +16,7 @@ apiData = {
         ).done(function( mazeData ) {
             dom.dataFunctions.saveMazeData(mazeData);
             dom.initFunctions.createGrid();
+            $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
         });
     },
 
