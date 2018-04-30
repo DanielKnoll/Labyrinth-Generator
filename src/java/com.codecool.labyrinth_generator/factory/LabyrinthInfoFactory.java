@@ -20,8 +20,10 @@ public class LabyrinthInfoFactory {
             switch (algoType) {
                 case DFS:
                     algoinfo =  new DfsInfo();
+                    break;
                 case KRUSKAL:
                     algoinfo = new KruskalInfo();
+                    break;
             default:
                 algoinfo = null;
             }

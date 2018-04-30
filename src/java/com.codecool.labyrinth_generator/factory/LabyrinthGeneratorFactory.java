@@ -19,8 +19,10 @@ public class LabyrinthGeneratorFactory {
             switch (algoType) {
                 case DFS:
                     labyrinth = new Dfs(width, height);
+                    break;
                 case KRUSKAL:
                     labyrinth = new Kruskal(width, height);
+                    break;
             default:
                 labyrinth =  null;
             }
