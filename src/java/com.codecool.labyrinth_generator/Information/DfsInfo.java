@@ -22,7 +22,9 @@ public class DfsInfo extends AlgorithmInfo {
 
     private void fillInfo() {
         classNames.add("Class name");
+        classNames.add("Class name2");
         classCodes.add("Code will be here");
+        classCodes.add("Code will be here2");
         imageNames.add("300px-Depth-first-tree.svg.png");
         imageNames.add("300px-Depth-first-tree.svg.png");
         algoWikiInfo =

@@ -59,18 +59,20 @@ dom = {
                 switch (selectedMenuId) {
                     case "dfs":
                         apiData.getMazeData("0&18&10"); // TODO generate?wall=0&...
+                        apiData.getMazeInfo(0);
                         break;
                     case "cellular":
-                        dom.data.mazeColNum = 50;
+                        dom.data.mazeColNum = 50;  // TODO update form. selected="selected"
                         dom.data.mazeRowNum = 30;
                         dom.data.mazeOrder = [];
+                        apiData.getMazeInfo(1);
                         break;
                     default:
                         apiData.getMazeData("1&19&13");
+                        apiData.getMazeInfo(1);
                 }
                 $(".demoArea > .title").html(dom.data.mazeData.algoName);
                 dom.data.mazeOrderLength = dom.data.mazeOrder.length;
-                dom.initFunctions.createGrid();
             });
         },
 
@@ -294,15 +296,27 @@ dom = {
             switch (btnId) {
                 case "showApi":
                     infoSection.html(dom.htmlStructures.apiInfo);
-                    $(".apiValues").html(`wall=0&amp;algo=0&amp;width=18&amp;height=10`);
+                    $(".apiValues").html(dom.data.infoData.apiValues);
+
                     $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
                     break;
                 case "showCode":
-                    infoSection.html(dom.htmlStructures.codeInfo);
+                    infoSection.html("");
+                    for(let i = 0; i < dom.data.infoData.classNames.length; i++) {
+                        infoSection.append(`<h3 class="title">` + dom.data.infoData.classNames[i] + `</h3>`);
+                        infoSection.append(`<div class="snippet">
+                                                <pre><code class="algoCode">` + dom.data.infoData.classCodes[i] + `</code></pre>
+                                            </div>`);
+                    }
                     break;
                 case "showInfo":
                     infoSection.html(dom.htmlStructures.algoInfo);
-                    $(".algoInfoText > .title").html(dom.data.mazeData.algoName + " algorithm");
+                    $(".algoInfoText > .title").html(dom.data.infoData.algoName);
+                    $(".algoInfoText > .text").html(dom.data.infoData.algoWikiInfo);
+                    $(".algoInfoAside > .images").html("");
+                    for(let i = 0; i < dom.data.infoData.imageNames.length; i++) {
+                        $(".algoInfoAside > .images").append(`<img src="img/` + dom.data.infoData.imageNames[i] + `"/>`)
+                    }
                     break;
                 default:
             }
@@ -323,6 +337,10 @@ dom = {
             dom.data.iterator = 0;
             dom.data.delay = 500;
             dom.data.reverseOrder = false;
+        },
+        
+        saveInfo: function (info) {
+            dom.data.infoData = info;
         }
     },
 
@@ -342,14 +360,14 @@ dom = {
                         </ol>
                         <div class="form">
                             <form>
-                                <select id="wallType" name="wall">
+                                <select id="wallType" name="wall" disabled="true">
                                     <option value="0">thick wall</option>
                                     <option value="1">thin wall</option>
                                 </select>
                                 <select id="algoType" name="algo">
                                     <option value="0">DFS</option>
                                     <option value="1">Kruskal</option>
-                                    <option value="1">Random</option>
+                                    <option value="2">Random</option>
                                 </select>
                                 <input id="width" type="number" value="18" max="100"/>
                                 <input id="height" type="number" value="10" max="100"/>

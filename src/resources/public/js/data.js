@@ -1,32 +1,42 @@
 apiData = {
     getMazeData: function (mazeType) {
-        $.getJSON(`http://localhost:60001/api/generate/` + mazeType, function (mazeData) {
+        $.getJSON(`/api/generate/` + mazeType, function (mazeData) {
             dom.dataFunctions.saveMazeData(mazeData);
+            dom.initFunctions.createGrid();
         });
     },
     
     postMazeData: function (type, width, height) {
-        $.jpost("http://localhost:60001/api/generate/",
+        $.postJSON("/api/generate/",
             {
                 algoType: type,
                 mazeColNum: width,
                 mazeRowNum: height
             }
-        ).then(res => {
-            let response = res;
-            console.log(response);
+        ).done(function( mazeData ) {
+            dom.dataFunctions.saveMazeData(mazeData);
+            dom.initFunctions.createGrid();
         });
     },
 
+    getMazeInfo: function (mazeType) {
+        $.postJSON( "/api/info/", { algoType: mazeType })
+            .done(function( infoData ) {
+                dom.dataFunctions.saveInfo(infoData);
+            });
+    }
 };
 
-$.extend({
-    jpost: function(url, body) {
-        return $.ajax({
-            type: 'POST',
-            url: url,
-            data: JSON.stringify(body),
-            contentType: 'application/json',
-        });
-    }
-});
+$.postJSON = function(url, data, callback) {
+    return jQuery.ajax({
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        'type': 'POST',
+        'url': url,
+        'data': JSON.stringify(data),
+        'dataType': 'json',
+        'success': callback
+    });
+};
