@@ -24,7 +24,20 @@ public class DfsInfo extends AlgorithmInfo {
         classNames.add("Class name");
         classNames.add("Class name2");
         classCodes.add("Code will be here");
-        classCodes.add("Code will be here2");
+        classCodes.add(
+                "    private void randomStart() {\n" +
+                "        int randomCol;\n" +
+                "        int randomRow = rnd.nextInt(mazeHeight);\n" +
+                "\n" +
+                "        if(randomRow == 0 || randomRow == mazeHeight -1) {\n" +
+                "            randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners -> between 1 - and width - 1\n" +
+                "        } else {\n" +
+                "            randomCol = (((int)rnd.nextInt(1) + 0.5) == 0) ? 0 : mazeWidth - 1;\n" +
+                "        }\n" +
+                "\n" +
+                "        Node tile = allTiles.get(randomRow).get(randomCol);\n" +
+                "        tile.setWall(false);\n" +
+                "    }");
         imageNames.add("300px-Depth-first-tree.svg.png");
         imageNames.add("300px-Depth-first-tree.svg.png");
         algoWikiInfo =

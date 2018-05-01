@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public abstract class AlgorithmInfo {
-    private String name;
+    private String name; // TODO package protected.
     private String defaultApiLink;
     private List<String> classNames = new ArrayList<String>();
     private List<String> classCodes = new ArrayList<String>();

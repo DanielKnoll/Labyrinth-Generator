@@ -357,7 +357,7 @@ dom = {
     },
 
     htmlStructures: {
-
+        // TODO write about POST method too. What is the valid GET link format? Add sliders to JSON preview area.
         apiInfo: `
                 <h3 class="title">API Info</h3>
                     <div class="snippet">
