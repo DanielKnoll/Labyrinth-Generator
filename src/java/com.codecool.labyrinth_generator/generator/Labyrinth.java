@@ -2,6 +2,7 @@ package com.codecool.labyrinth_generator.generator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class Labyrinth {
 
@@ -13,6 +14,7 @@ public abstract class Labyrinth {
     List<Integer> mazeOrder = new ArrayList<>();
     List<int[]> mazeOrder2D = new ArrayList<>();
     List<List<Node>> allTiles = new ArrayList<>();
+    Random rnd = new Random();
 
     public String getAlgoName() {
         return algoName;
@@ -70,5 +72,19 @@ public abstract class Labyrinth {
                 tile.addNeighbor(neighbor);
             }
         }
+    }
+
+    void randomStart() {
+        int randomCol;
+        int randomRow = rnd.nextInt(mazeHeight);
+
+        if(randomRow == 0 || randomRow == mazeHeight -1) {
+            randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners -> between 1 and width - 1
+        } else {
+            randomCol = (((int)(rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;
+        }
+
+        Node tile = allTiles.get(randomRow).get(randomCol);
+        tile.setWall(false);
     }
 }

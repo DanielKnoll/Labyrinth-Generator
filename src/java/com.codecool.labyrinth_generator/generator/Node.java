@@ -15,6 +15,10 @@ public class Node {
         place[1] = y;
     }
 
+    public void setWall(boolean wall) {
+        isWall = wall;
+    }
+
     public int[] getPlace() {
         return place;
     }

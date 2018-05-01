@@ -14,6 +14,7 @@ public class Dfs extends Labyrinth {
 
         super.createGrid();
         super.createAllNeighbors();
+        super.randomStart();
 
         generateLabyrinth(); //Hardcoded response.
     }
