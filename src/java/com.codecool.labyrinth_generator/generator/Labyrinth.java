@@ -32,7 +32,7 @@ public abstract class Labyrinth {
         return mazeHeight;
     }
 
-    public abstract void generateLabyrinth();
+    public abstract void generateLabyrinth(int[] start);
 
     void createGrid() {
         for (int i = 0; i < mazeHeight; i++) {
