@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Stack;
 
 public class Dfs extends Labyrinth {
+    Stack<Node> stack = new Stack<>();
 
     public Dfs(int mazeWidth, int mazeHeight) {
         algoName = "Depth-first search algorithm";
@@ -21,7 +22,6 @@ public class Dfs extends Labyrinth {
 
 
     public void generateLabyrinth(int[] start) {
-        Stack<Node> stack = new Stack<>();
         Node currentTile = allTiles.get(start[0]).get(start[1]);
         List<Node> neighbors = currentTile.getNeighbors();
         Node neighbor;
@@ -39,6 +39,12 @@ public class Dfs extends Labyrinth {
             setMazeValues(place[0], place[1]);
             stack.push(neighbor);
             generateLabyrinth(place);
+        } else {
+            if(!stack.empty()) {
+                neighbor = stack.pop();
+                place = neighbor.getPlace();
+                generateLabyrinth(place);
+            }
         }
     }
 
