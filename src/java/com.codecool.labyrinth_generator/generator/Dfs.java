@@ -1,10 +1,6 @@
 package com.codecool.labyrinth_generator.generator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Dfs extends Labyrinth {
-    private List<List<Node>> allTiles = new ArrayList<>();
 
     public Dfs(int mazeWidth, int mazeHeight) {
         algoName = "Depth-first search algorithm";
@@ -14,50 +10,10 @@ public class Dfs extends Labyrinth {
         maze2D = new int[mazeHeight][mazeWidth];
         maze = new int[mazeHeight*mazeWidth];
 
-        createGrid();
-        createAllNeighbors();
+        super.createGrid();
+        super.createAllNeighbors();
 
         generateLabyrinth(); //Hardcoded response.
-    }
-
-    private void createGrid() {
-        for (int i = 0; i < mazeHeight; i++) {
-            allTiles.add(new ArrayList<>());
-            for (int j = 0; j < mazeWidth; j++) {
-                Node tile = new Node(i, j);
-                if(i == 0 || i == mazeHeight -1 || j == 0 || j == mazeWidth - 1) {
-                    tile.setVisited(true);
-                }
-                allTiles.get(i).add(tile);
-            }
-        }
-    }
-
-    private void createAllNeighbors() {
-        Node tile;
-        for (int i = 0; i < allTiles.size(); i++) {
-            for (int j = 0; j < allTiles.get(i).size(); j++) {
-                tile = allTiles.get(i).get(j);
-                addNeighbors(tile);
-            }
-        }
-    }
-
-    private void addNeighbors(Node tile) {
-        int[][] dirs = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-        Node neighbor;
-        int[] tilePlace;
-
-        for (int[] dir: dirs) {
-            tilePlace = tile.getPlace();
-            // IndexOutOfBind protection
-            if(tilePlace[0] + dir[0] >= 0 && tilePlace[0] + dir[0] < mazeHeight &&
-               tilePlace[1] + dir[1] >= 0 && tilePlace[1] + dir[1] < mazeWidth) {
-
-                neighbor = allTiles.get(tilePlace[0] + dir[0]).get(tilePlace[1] + dir[1]);
-                tile.addNeighbor(neighbor);
-            }
-        }
     }
 
     public void generateLabyrinth() {
