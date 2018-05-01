@@ -10,15 +10,15 @@ public abstract class Labyrinth {
     int[][] maze2D;
     int mazeWidth;
     int mazeHeight;
-    int[] mazeOrder;
-    int[][] getMazeOrder2D;
+    List<Integer> mazeOrder = new ArrayList<>();
+    List<int[]> mazeOrder2D = new ArrayList<>();
     List<List<Node>> allTiles = new ArrayList<>();
 
     public String getAlgoName() {
         return algoName;
     }
 
-    public int[] getMazeOrder() {
+    public List<Integer> getMazeOrder() {
         return mazeOrder;
     }
 

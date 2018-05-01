@@ -30,11 +30,9 @@ public class CreateJson {
         return jsonObject;
     }
 
-    private JSONArray createIntJsonArray(int[] mazeOrderArray) {
+    private JSONArray createIntJsonArray(List<Integer> mazeOrderArray) {
         JSONArray jsonArray = new JSONArray();
-        for (int order : mazeOrderArray) {
-            jsonArray.add(order);
-        }
+        jsonArray.addAll(mazeOrderArray);
         return jsonArray;
     }
 
