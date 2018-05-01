@@ -2,8 +2,8 @@ dom = {
     data: {
         demoAreaString: "",
         mazeData: "",
-        mazeColNum: 18,
-        mazeRowNum: 10,
+        mazeColNum: 0,
+        mazeRowNum: 0,
         mazeOrder: [],
         mazeOrderLength: 0,
         iterator: 0,
@@ -18,10 +18,6 @@ dom = {
         createGrid: function () {
             let mazeDom = $(".maze");
             let tiles = "";
-
-            $(".infoBtnsGrid").hide();
-            $(".playerBtns").hide();
-            $("#generate").show();
 
             mazeDom.css("grid-template-columns", "repeat(" + dom.data.mazeColNum + ", auto)");
             for(let i = 0; i < (dom.data.mazeColNum * dom.data.mazeRowNum); i++) {
@@ -54,24 +50,27 @@ dom = {
                 $("nav li").removeClass("activeNav");
                 selectedMenu.addClass("activeNav");
                 $(".infoBtnsGrid").hide();
+                $(".playerBtns").hide();
+                $("#generate").show();
                 $(".appInfoSection").html("");
 
                 switch (selectedMenuId) {
                     case "dfs":
-                        apiData.getMazeData("dfs"); // TODO generate?wall=0&...
+                        apiData.getMazeData("0&18&10"); // TODO generate?wall=0&...
+                        apiData.getMazeInfo(0);
                         break;
                     case "cellular":
-                        dom.data.mazeColNum = 50;
+                        dom.data.mazeColNum = 50;  // TODO update form. selected="selected"
                         dom.data.mazeRowNum = 30;
                         dom.data.mazeOrder = [];
+                        apiData.getMazeInfo(1);
                         break;
                     default:
-                        dom.data.mazeColNum = 19;
-                        dom.data.mazeRowNum = 13;
-                        dom.data.mazeOrder = [96, 77, 58, 39, 20, 40, 60, 80, 100, 81, 62, 43, 24, 27, 28, 29, 49, 68, 87, 105, 104, 103, 83, 64, 45, 32, 33, 34, 35, 36, 53, 72, 91, 110, 134, 153, 173, 174, 175, 157, 138, 193, 212, 144, 143, 142, 141, 140, 159, 178, 197, 216, 217, 218, 219, 220, 179, 180, 146, 147, 148, 149, 150, 167, 186, 205, 224];
+                        apiData.getMazeData("1&19&13");
+                        apiData.getMazeInfo(1);
                 }
+                $(".demoArea > .title").html(dom.data.mazeData.algoName);
                 dom.data.mazeOrderLength = dom.data.mazeOrder.length;
-                dom.initFunctions.createGrid();
             });
         },
 
@@ -168,7 +167,7 @@ dom = {
             $("#newMaze").click(function () {
                 dom.data.interrupted = true;
                 dom.utility.resetMaze();
-                apiData.getMazeData("dfs");
+                apiData.getMazeData("0&18&10");
                 dom.utility.changePlayToPause();  // Todo any btn
                 dom.utility.mazeGeneration();
             });
@@ -208,6 +207,20 @@ dom = {
                     }
                 }
             });
+        },
+
+        formSubmitEventListener: function () {
+            $(".formSubmit").click(function () {
+                dom.data.interrupted = true;
+                let algoType = $("#algoType option:checked").val();
+                let mazeWidth = $("#width").val();
+                let mazeHeight = $("#height").val();
+                $(".apiValues").html("wall=0&amp;algo=" + algoType + "&amp;width=" + mazeWidth + "&amp;height=" +
+                    mazeHeight);
+                dom.utility.resetMaze();
+                dom.utility.changePauseToPlay();
+                apiData.postMazeData(algoType,mazeWidth, mazeHeight);
+            })
         }
     },
 
@@ -295,15 +308,27 @@ dom = {
             switch (btnId) {
                 case "showApi":
                     infoSection.html(dom.htmlStructures.apiInfo);
-                    $(".apiValues").html(`wall=0&amp;algo=0&amp;width=18&amp;height=10`);
+                    $(".apiValues").html(dom.data.infoData.apiValues);
                     $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
+                    dom.eventListeners.formSubmitEventListener();
                     break;
                 case "showCode":
-                    infoSection.html(dom.htmlStructures.codeInfo);
+                    infoSection.html("");
+                    for(let i = 0; i < dom.data.infoData.classNames.length; i++) {
+                        infoSection.append(`<h3 class="title">` + dom.data.infoData.classNames[i] + `</h3>`);
+                        infoSection.append(`<div class="snippet">
+                                                <pre><code class="algoCode">` + dom.data.infoData.classCodes[i] + `</code></pre>
+                                            </div>`);
+                    }
                     break;
                 case "showInfo":
                     infoSection.html(dom.htmlStructures.algoInfo);
-                    $(".algoInfoText > .title").html(dom.data.mazeData.algoName + " algorithm");
+                    $(".algoInfoText > .title").html(dom.data.infoData.algoName);
+                    $(".algoInfoText > .text").html(dom.data.infoData.algoWikiInfo);
+                    $(".algoInfoAside > .images").html("");
+                    for(let i = 0; i < dom.data.infoData.imageNames.length; i++) {
+                        $(".algoInfoAside > .images").append(`<img src="img/` + dom.data.infoData.imageNames[i] + `"/>`)
+                    }
                     break;
                 default:
             }
@@ -316,12 +341,18 @@ dom = {
             dom.data.mazeData = mazeData;
             dom.data.mazeOrder = mazeData.mazeOrder;
             dom.data.mazeOrderLength = dom.data.mazeOrder.length;
+            dom.data.mazeColNum = mazeData.mazeColNum;
+            dom.data.mazeRowNum = mazeData.mazeRowNum;
         },
 
         resetIterDelayOrder: function () {
             dom.data.iterator = 0;
             dom.data.delay = 500;
             dom.data.reverseOrder = false;
+        },
+        
+        saveInfo: function (info) {
+            dom.data.infoData = info;
         }
     },
 
@@ -330,7 +361,7 @@ dom = {
         apiInfo: `
                 <h3 class="title">API Info</h3>
                     <div class="snippet">
-                        <code>http://www.future-domain-name.hu/api/generate?<span class="apiValues"></span></code>
+                        <code>http://www.future-domain-name.hu/api/generate/<span class="apiValues"></span></code>
                     </div>
                     <div class="apiInfo">
                         <ol>
@@ -341,18 +372,18 @@ dom = {
                         </ol>
                         <div class="form">
                             <form>
-                                <select id="wallType" name="wall">
+                                <select id="wallType" name="wall" disabled="true">
                                     <option value="0">thick wall</option>
                                     <option value="1">thin wall</option>
                                 </select>
                                 <select id="algoType" name="algo">
                                     <option value="0">DFS</option>
                                     <option value="1">Kruskal</option>
-                                    <option value="1">Random</option>
+                                    <option value="2">Random</option>
                                 </select>
-                                <input type="number" value="3" max="100"/>
-                                <input type="number" value="3" max="100"/>
-                                <input class="btn singleBtn formSubmit" type="submit" value="Send"/>
+                                <input id="width" type="number" value="18" max="100"/>
+                                <input id="height" type="number" value="10" max="100"/>
+                                <div class="btn singleBtn formSubmit">Send</div>
                             </form>
                         </div>
                     </div>

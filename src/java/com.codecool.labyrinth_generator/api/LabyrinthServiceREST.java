@@ -1,30 +1,77 @@
 package com.codecool.labyrinth_generator.api;
 
-import net.minidev.json.JSONArray;
+import com.codecool.labyrinth_generator.factory.LabyrinthGeneratorFactory;
+import com.codecool.labyrinth_generator.Information.AlgorithmInfo;
+import com.codecool.labyrinth_generator.factory.LabyrinthInfoFactory;
+import com.codecool.labyrinth_generator.generator.Labyrinth;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 public class LabyrinthServiceREST {
-    String name = "Depth-first search algorithm";
-    int[] mazeOrder = {166, 148, 147, 129, 111, 112, 94, 76, 58, 40, 41, 42, 43, 61, 79, 78, 96, 114, 132, 150, 151, 152, 153, 154, 136, 118, 119, 120, 121, 103, 85, 86, 68, 69, 70, 71, 146, 145, 127, 109, 91, 75, 74, 56, 55, 37, 19, 20, 21, 23, 25, 26, 27, 45, 63, 81, 99, 98, 116, 28, 82, 83, 65, 47, 48, 49, 31, 32, 33, 34, 155, 156, 157, 158, 159, 160, 142, 124, 106, 105};
 
-    @GetMapping(value = "/dfs")
-    public ResponseEntity getAllMazeData() {
-        JSONObject jsonObject = new JSONObject();
-        JSONArray jsonArray = createRatingJsonArray(mazeOrder);
-        jsonObject.put("algoName", name);
-        jsonObject.put("mazeOrder", jsonArray);
+    @GetMapping(value = "/api/generate/{type}&{width}&{height}")
+    public ResponseEntity getAllMazeDataGet(@PathVariable("type") String typeString, @PathVariable("width") String widthString,
+                                         @PathVariable("height") String heightString) {
+        return generateLabyrinth(typeString, widthString, heightString);
+    }
+
+
+    @PostMapping(value = "/api/generate")
+    public ResponseEntity getAllMazeDataPost(@RequestBody Map<String, String> data) {
+        String typeString = data.get("algoType");
+        String widthString = data.get("mazeColNum");
+        String heightString = data.get("mazeRowNum");
+        return generateLabyrinth(typeString, widthString, heightString);
+    }
+
+    @PostMapping(value = "/api/info")
+    public ResponseEntity getAlgoInfoPost(@RequestBody Map<String, String> data) {
+        int type;
+        String typeString = data.get("algoType");
+        try {
+            type = Integer.parseInt(typeString);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+        LabyrinthInfoFactory factory = new LabyrinthInfoFactory();
+        AlgorithmInfo algorithm = factory.getInfo(type);
+
+        if(algorithm == null){
+            return new ResponseEntity("Wrong type. (0-8)", HttpStatus.BAD_REQUEST);
+        }
+
+        CreateJson createJson = new CreateJson();
+        JSONObject jsonObject = createJson.getInfoJson(algorithm);
         return new ResponseEntity(jsonObject, HttpStatus.OK);
     }
 
-    private JSONArray createRatingJsonArray(int[] mazeOrderArray) {
-        JSONArray jsonArray = new JSONArray();
-        for (int order : mazeOrderArray) {
-            jsonArray.add(order);
+    private ResponseEntity generateLabyrinth(String typeString, String widthString, String heightString) {
+        int type;
+        int width;
+        int height;
+        try {
+            type = Integer.parseInt(typeString);
+            width = Integer.parseInt(widthString);
+            height = Integer.parseInt(heightString);
+        } catch (NumberFormatException e) {
+            return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return jsonArray;
+
+        LabyrinthGeneratorFactory labyrinthFactory = new LabyrinthGeneratorFactory();
+
+        Labyrinth labyrinth = labyrinthFactory.generateLabyrinth(type,width,height);
+
+        if(labyrinth != null) {
+            CreateJson createJson = new CreateJson();
+            JSONObject jsonObject = createJson.getLabyrinthJson(labyrinth);
+            return new ResponseEntity(jsonObject, HttpStatus.OK);
+        } else {
+            return new ResponseEntity("Wrong input", HttpStatus.BAD_REQUEST);
+        }
     }
 }
