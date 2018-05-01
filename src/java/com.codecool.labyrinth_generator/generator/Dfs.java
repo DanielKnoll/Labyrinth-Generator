@@ -8,13 +8,13 @@ public class Dfs extends Labyrinth {
         algoName = "Depth-first search algorithm";
         this.mazeWidth = mazeWidth;
         this.mazeHeight = mazeHeight;
-
         maze2D = new int[mazeHeight][mazeWidth];
         maze = new int[mazeHeight*mazeWidth];
+        int[] currentTile = new int[2];
 
         super.createGrid();
         super.createAllNeighbors();
-        super.randomStart();
+        currentTile = super.randomStart();
 
         generateLabyrinth(); //Hardcoded response.
     }

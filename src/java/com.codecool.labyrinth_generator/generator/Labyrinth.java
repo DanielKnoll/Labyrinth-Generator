@@ -74,7 +74,7 @@ public abstract class Labyrinth {
         }
     }
 
-    void randomStart() {
+    int[] randomStart() {
         int randomCol;
         int randomRow = rnd.nextInt(mazeHeight);
 
@@ -86,5 +86,14 @@ public abstract class Labyrinth {
 
         Node tile = allTiles.get(randomRow).get(randomCol);
         tile.setWall(false);
+        setMazeValues(randomRow, randomCol);
+        return new int[]{randomRow, randomCol};
+    }
+
+    void setMazeValues(int x, int y) {
+        maze[x * mazeWidth + y] = 1;
+        maze2D[x][y] = 1;
+        mazeOrder.add(x * mazeWidth + y);
+        mazeOrder2D.add(new int[]{x, y});
     }
 }
