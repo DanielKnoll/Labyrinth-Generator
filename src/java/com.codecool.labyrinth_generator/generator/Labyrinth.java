@@ -86,6 +86,7 @@ public abstract class Labyrinth {
 
         Node tile = allTiles.get(randomRow).get(randomCol);
         tile.setWall(false);
+        tile.setVisited(true);
         setMazeValues(randomRow, randomCol);
         return new int[]{randomRow, randomCol};
     }
