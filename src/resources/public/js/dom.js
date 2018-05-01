@@ -63,14 +63,13 @@ dom = {
                         dom.data.mazeColNum = 50;  // TODO update form. selected="selected"
                         dom.data.mazeRowNum = 30;
                         dom.data.mazeOrder = [];
+                        dom.initFunctions.createGrid();
                         apiData.getMazeInfo(1);
                         break;
                     default:
                         apiData.getMazeData("1&19&13");
                         apiData.getMazeInfo(1);
                 }
-                $(".demoArea > .title").html(dom.data.mazeData.algoName);
-                dom.data.mazeOrderLength = dom.data.mazeOrder.length;
             });
         },
 
@@ -155,8 +154,8 @@ dom = {
         jumpToEndEventListener: function () {
             $("#end").click(function () {
                 let tile;
-                for (let i = dom.data.iterator; i < dom.data.mazeOrderLength; i++) {
-                    tile = dom.data.mazeOrder[i];
+                for (dom.data.iterator; dom.data.iterator < dom.data.mazeOrderLength; dom.data.iterator++) {
+                    tile = dom.data.mazeOrder[dom.data.iterator];
                     $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
                 }
                 dom.utility.changePauseToPlay();  // Todo any btn
@@ -343,6 +342,7 @@ dom = {
             dom.data.mazeOrderLength = dom.data.mazeOrder.length;
             dom.data.mazeColNum = mazeData.mazeColNum;
             dom.data.mazeRowNum = mazeData.mazeRowNum;
+            $(".demoArea > .title").html(dom.data.mazeData.algoName);
         },
 
         resetIterDelayOrder: function () {
@@ -350,7 +350,7 @@ dom = {
             dom.data.delay = 500;
             dom.data.reverseOrder = false;
         },
-        
+
         saveInfo: function (info) {
             dom.data.infoData = info;
         }
@@ -379,7 +379,6 @@ dom = {
                                 <select id="algoType" name="algo">
                                     <option value="0">DFS</option>
                                     <option value="1">Kruskal</option>
-                                    <option value="2">Random</option>
                                 </select>
                                 <input id="width" type="number" value="18" max="100"/>
                                 <input id="height" type="number" value="10" max="100"/>
