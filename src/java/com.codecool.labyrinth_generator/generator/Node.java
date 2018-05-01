@@ -1,18 +1,22 @@
 package com.codecool.labyrinth_generator.generator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class Node {
     private boolean isWall = true;
     private int[] place = new int[2];
-    private Set<Node> neighbor = new HashSet<>();
+    private List<Node> neighbors = new ArrayList<>();
     private boolean isVisited = false;  //TODO delete?
 
     public Node(int x, int y) {
         place[0] = x;
         place[1] = y;
+    }
+
+    public boolean isWall() {
+        return isWall;
     }
 
     public void setWall(boolean wall) {
@@ -23,8 +27,16 @@ public class Node {
         return place;
     }
 
+    public List<Node> getNeighbors() {
+        return neighbors;
+    }
+
     public void addNeighbor(Node tile) {
-        neighbor.add(tile);
+        neighbors.add(tile);
+    }
+
+    public boolean isVisited() {
+        return isVisited;
     }
 
     public void setVisited(boolean visited) {
