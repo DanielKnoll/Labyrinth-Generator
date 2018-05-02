@@ -24,26 +24,24 @@ public class Dfs extends Labyrinth {
     public void generateLabyrinth(int[] start) {
         Node currentTile = allTiles.get(start[0]).get(start[1]);
         List<Node> neighbors = currentTile.getNeighbors();
-        Node neighbor;
-        int[] place;  // Todo naming convention...
-
+        Node nextTile;
+        int[] nextPlace;  // Todo naming convention...
 
         if (isThereUnvisitedNeighbor(currentTile)) {
-            do {
-                neighbor = neighbors.get(rnd.nextInt(neighbors.size()));
-            } while (neighbor.isVisited());
+            do {  // TODO overhead
+                nextTile = neighbors.get(rnd.nextInt(neighbors.size()));
+            } while (nextTile.isVisited());
 
-            neighbor.setWall(false);
-            neighbor.setVisited(true);
-            place = neighbor.getPlace();
-            setMazeValues(place[0], place[1]);
-            stack.push(neighbor);
-            generateLabyrinth(place);
+            nextTile.setWall(false);
+            nextTile.setVisited(true);
+            nextPlace = nextTile.getPlace();
+            setMazeValues(nextPlace[0], nextPlace[1]);
+            stack.push(nextTile);
+            createCorridor(currentTile, nextTile);
+            generateLabyrinth(nextPlace);
         } else {
             if(!stack.empty()) {
-                neighbor = stack.pop();
-                place = neighbor.getPlace();
-                generateLabyrinth(place);
+                generateLabyrinth(stack.pop().getPlace());
             }
         }
     }
@@ -52,9 +50,29 @@ public class Dfs extends Labyrinth {
         for (Node neighbor: tile.getNeighbors()) {
             if(!neighbor.isVisited()) {
                 return true;
-            }
+            }  // TODO return a list of unvisited neighbor places and random from those.
         }
         return false;
+    }
+
+    private void createCorridor(Node currentTile, Node nextTile) {
+        int[] currentPlace = currentTile.getPlace();
+        int[] nextPlace = nextTile.getPlace();
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int startLoop = 0;
+        int endLoop = 4;
+
+        if(currentPlace[0] == nextPlace[0]) {
+            startLoop = 0;
+            endLoop = 2;
+        } else {
+            startLoop = 2;
+            endLoop = 4;
+        }
+
+        for (int i = startLoop; i < endLoop; i++) {
+            allTiles.get(currentPlace[0] + dirs[i][0]).get(currentPlace[1] + dirs[i][1]).setVisited(true);
+        }
     }
 
     /*public void generateLabyrinth() {
