@@ -84,14 +84,14 @@ public abstract class Labyrinth {
             randomCol = (((int)(rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;
         }
 
-        Node tile = allTiles.get(randomRow).get(randomCol);
-        tile.setWall(false);
-        tile.setVisited(true);
-        setMazeValues(randomRow, randomCol);
+        setMazeTileCorridor(randomRow, randomCol);
         return new int[]{randomRow, randomCol};
     }
 
-    void setMazeValues(int x, int y) {
+    void setMazeTileCorridor(int x, int y) {
+        Node tile = allTiles.get(x).get(y);
+        tile.setWall(false);
+        tile.setVisited(true);
         maze[x * mazeWidth + y] = 1;
         maze2D[x][y] = 1;
         mazeOrder.add(x * mazeWidth + y);

@@ -1,5 +1,6 @@
 package com.codecool.labyrinth_generator.generator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
@@ -23,19 +24,18 @@ public class Dfs extends Labyrinth {
 
     public void generateLabyrinth(int[] start) {
         Node currentTile = allTiles.get(start[0]).get(start[1]);
-        List<Node> neighbors = currentTile.getNeighbors();
         Node nextTile;
         int[] nextPlace;  // Todo naming convention...
+        List<int[]> unvisitedNeighbors = unvisitedNeighbors(currentTile);
 
-        if (isThereUnvisitedNeighbor(currentTile)) {
-            do {  // TODO overhead
-                nextTile = neighbors.get(rnd.nextInt(neighbors.size()));
+        if (unvisitedNeighbors.size() > 0) {
+            do {
+                nextPlace = unvisitedNeighbors.get(rnd.nextInt(unvisitedNeighbors.size()));
+                nextTile = allTiles.get(nextPlace[0]).get(nextPlace[1]);
             } while (nextTile.isVisited());
 
-            nextTile.setWall(false);
-            nextTile.setVisited(true);
             nextPlace = nextTile.getPlace();
-            setMazeValues(nextPlace[0], nextPlace[1]);
+            setMazeTileCorridor(nextPlace[0], nextPlace[1]);
             stack.push(nextTile);
             createCorridor(currentTile, nextTile);
             generateLabyrinth(nextPlace);
@@ -46,13 +46,15 @@ public class Dfs extends Labyrinth {
         }
     }
 
-    private boolean isThereUnvisitedNeighbor(Node tile) {
-        for (Node neighbor: tile.getNeighbors()) {
+    private List<int[]> unvisitedNeighbors(Node tile) {
+        List<Node> allNeighbors = tile.getNeighbors();
+        List<int[]> unvisitedNeighbors = new ArrayList<>();
+        for (Node neighbor: allNeighbors) {
             if(!neighbor.isVisited()) {
-                return true;
-            }  // TODO return a list of unvisited neighbor places and random from those.
+                unvisitedNeighbors.add(neighbor.getPlace());
+            }
         }
-        return false;
+        return unvisitedNeighbors;
     }
 
     private void createCorridor(Node currentTile, Node nextTile) {
