@@ -253,6 +253,11 @@ select {
     grid-gap: 5px;
 }
 
+.algoInfoAside .images img{
+    width: 100%;
+    height: auto;
+}
+
 .snippet {
     padding: 10px;
     background-color: rgba(162, 162, 162, 0.8);

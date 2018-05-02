@@ -59,16 +59,21 @@ dom = {
                         apiData.getMazeData("0&18&10"); // TODO generate?wall=0&...
                         apiData.getMazeInfo(0);
                         break;
-                    case "cellular":
+                    case "myAlgo":
+                        apiData.getMazeData("2&25&15");
+                        apiData.getMazeInfo(2);
+                        break;
+                    case "recDivision":
                         dom.data.mazeColNum = 50;  // TODO update form. selected="selected"
                         dom.data.mazeRowNum = 30;
                         dom.data.mazeOrder = [];
                         dom.initFunctions.createGrid();
-                        apiData.getMazeInfo(1);
+                        $(".demoArea > .title").html("Under Development");
                         break;
                     default:
                         apiData.getMazeData("1&19&13");
                         apiData.getMazeInfo(1);
+                        $(".demoArea > .title").html("Under Development");
                 }
             });
         },
@@ -379,6 +384,7 @@ dom = {
                                 <select id="algoType" name="algo">
                                     <option value="0">DFS</option>
                                     <option value="1">Kruskal</option>
+                                    <option value="1">My algorithm</option>
                                 </select>
                                 <input id="width" type="number" value="18" max="50"/>
                                 <input id="height" type="number" value="10" max="50"/>

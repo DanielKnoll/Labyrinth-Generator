@@ -4,6 +4,7 @@ import com.codecool.labyrinth_generator.generator.Algorithms;
 import com.codecool.labyrinth_generator.generator.Dfs;
 import com.codecool.labyrinth_generator.generator.Kruskal;
 import com.codecool.labyrinth_generator.generator.Labyrinth;
+import com.codecool.labyrinth_generator.generator.MyAlgo;
 
 public class LabyrinthGeneratorFactory {
 
@@ -23,6 +24,9 @@ public class LabyrinthGeneratorFactory {
                 case KRUSKAL:
                     labyrinth = new Kruskal(width, height);
                     break;
+                case MYALGO:
+                    labyrinth = new MyAlgo(width, height);
+                    break;
             default:
                 labyrinth =  null;
             }
@@ -36,6 +40,8 @@ public class LabyrinthGeneratorFactory {
                 return Algorithms.DFS;
             case 1:
                 return Algorithms.KRUSKAL;
+            case 2:
+                return Algorithms.MYALGO;
             default:
                 return null;
         }
