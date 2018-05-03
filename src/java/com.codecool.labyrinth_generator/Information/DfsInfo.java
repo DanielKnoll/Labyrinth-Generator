@@ -21,29 +21,176 @@ public class DfsInfo extends AlgorithmInfo {
     }
 
     private void fillInfo() {
-        classNames.add("Class name");
-        classNames.add("Class name2");
-        classCodes.add("Code will be here");
+        classNames.add("Node Class");
         classCodes.add(
-                "    private void randomStart() {\n" +
-                "        int randomCol;\n" +
-                "        int randomRow = rnd.nextInt(mazeHeight);\n" +
-                "\n" +
-                "        if(randomRow == 0 || randomRow == mazeHeight -1) {\n" +
-                "            randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners -> between 1 - and width - 1\n" +
-                "        } else {\n" +
-                "            randomCol = (((int)rnd.nextInt(1) + 0.5) == 0) ? 0 : mazeWidth - 1;\n" +
+                "    public class Node {\n" +
+                "        private boolean isWall = true;\n" +
+                "        private int[] place = new int[2];\n" +
+                "    \n" +
+                "        public Node(int x, int y) {\n" +
+                "            place[0] = x;\n" +
+                "            place[1] = y;\n" +
                 "        }\n" +
-                "\n" +
-                "        Node tile = allTiles.get(randomRow).get(randomCol);\n" +
-                "        tile.setWall(false);\n" +
+                "    \n" +
+                "        public boolean isWall() {\n" +
+                "            return isWall;\n" +
+                "        }\n" +
+                "    \n" +
+                "        public void removeWall() {\n" +
+                "            isWall = false;\n" +
+                "        }\n" +
+                "    \n" +
+                "        public int[] getCoordinate() {\n" +
+                "            return place;\n" +
+                "        }\n" +
+                "    \n" +
+                "        @Override\n" +
+                "        public String toString() {\n" +
+                "            return (isWall) ? \"0\": \"1\";\n" +
+                "        }\n" +
+                "    }\n");
+        classNames.add("Dfs Class");
+        classCodes.add(
+                "    import java.util.*;\n" +
+                "    \n" +
+                "    public class Dfs {\n" +
+                "        List<Node> mazeOrder = new ArrayList<>();\n" +
+                "        Stack<Node> stack = new Stack<>();\n" +
+                "        private int mazeWidth;\n" +
+                "        private int mazeHeight;\n" +
+                "        private List<List<Node>> allTiles = new ArrayList<>();\n" +
+                "        private Random rnd = new Random(12345);\n" +
+                "    \n" +
+                "        public Dfs(int width, int height) {\n" +
+                "            mazeHeight = height;\n" +
+                "            mazeWidth = width;\n" +
+                "    \n" +
+                "            createGrid();\n" +
+                "            printMaze();\n" +
+                "            Node startTile = randomStart();\n" +
+                "            startTile.removeWall();\n" +
+                "            stack.push(startTile);\n" +
+                "            mazeOrder.add(startTile);\n" +
+                "            generateLabyrinth(startTile);\n" +
+                "        }\n" +
+                "    \n" +
+                "        public void generateLabyrinth(Node start) {\n" +
+                "            Node currentTile = start;\n" +
+                "            while(!stack.empty()) {\n" +
+                "                List<Node> nextTiles = checkNeighbors(currentTile);\n" +
+                "                if (nextTiles.size() > 0) {\n" +
+                "                    int num = rnd.nextInt(nextTiles.size());\n" +
+                "                    Node next = nextTiles.get(num);\n" +
+                "                    next.removeWall();\n" +
+                "                    stack.push(next);\n" +
+                "                    mazeOrder.add(next);\n" +
+                "                    currentTile = next;\n" +
+                "                } else if (!stack.empty()) {\n" +
+                "                    currentTile = stack.pop();\n" +
+                "                }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    \n" +
+                "        /**\n" +
+                "         * Checks 4 adjacent neighbor. 1 is only OK, if:\n" +
+                "         * - It is a wall\n" +
+                "         * - Not maze edge\n" +
+                "         * - That neighbor has 8 neighbors and all of them are walls OR\n" +
+                "         *      the neighbor is one of the top two element in the stack\n" +
+                "         */\n" +
+                "        private List<Node> checkNeighbors(Node node) {\n" +
+                "            List<Node> result = new ArrayList<>();\n" +
+                "    \n" +
+                "            for (Node neighbour : getAdjacentNeighbours(node)) {\n" +
+                "                if (neighbour.isWall() && // do not go back\n" +
+                "                    !isEdge(neighbour) && // do not dig into edges\n" +
+                "                    hasNoVisitedNearby(neighbour)) { // do not dig if there is a tunnel nearby\n" +
+                "                    result.add(neighbour);\n" +
+                "                }\n" +
+                "            }\n" +
+                "            return result;\n" +
+                "        }\n" +
+                "    \n" +
+                "        /**\n" +
+                "         * Returns north, east, south, west neighbours if they exist\n" +
+                "         */\n" +
+                "        private List<Node> getAdjacentNeighbours(Node node) {\n" +
+                "            List<Node> neighbors = new ArrayList<>();\n" +
+                "            int[] nodeCoordinate = node.getCoordinate();\n" +
+                "            int[][] adjacentDirections = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};\n" +
+                "    \n" +
+                "            for (int[] direction : adjacentDirections) {\n" +
+                "                if (isCoordinateInBound(nodeCoordinate, direction)) {\n" +
+                "                    Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);\n" +
+                "                    neighbors.add(neighbor);\n" +
+                "                }\n" +
+                "            }\n" +
+                "            return neighbors;\n" +
+                "        }\n" +
+                "    \n" +
+                "        private boolean isCoordinateInBound(int[] nodeCoordinate, int[] direction) {\n" +
+                "            return nodeCoordinate[0] + direction[0] >= 0 && nodeCoordinate[0] + direction[0] < mazeHeight &&\n" +
+                "                    nodeCoordinate[1] + direction[1] >= 0 && nodeCoordinate[1] + direction[1] < mazeWidth;\n" +
+                "        }\n" +
+                "    \n" +
+                "        /**\n" +
+                "         * Checks if there are no corridor tiles nearby\n" +
+                "         * except for the current searches head (top 2 elements of the Stack)\n" +
+                "         */\n" +
+                "        private boolean hasNoVisitedNearby(Node node) {\n" +
+                "            int[] nodeCoordinate = node.getCoordinate();\n" +
+                "            int[][] allDirections = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}};\n" +
+                "    \n" +
+                "            for (int[] direction : allDirections) {\n" +
+                "                    Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);\n" +
+                "                    if (!neighbor.isWall() && !(stack.search(neighbor) == 1 || stack.search(neighbor) == 2)) {\n" +
+                "                        return false;  // Todo bug\n" +
+                "                    }\n" +
+                "            }\n" +
+                "            return true;\n" +
+                "        }\n" +
+                "    \n" +
+                "        /**\n" +
+                "         * returns true if the node is on the edge\n" +
+                "         */\n" +
+                "        private boolean isEdge(Node node) {\n" +
+                "            int[] nodeCoordinate = node.getCoordinate();\n" +
+                "            if(nodeCoordinate[0] == 0 || nodeCoordinate[0] == mazeHeight - 1 ||\n" +
+                "                nodeCoordinate[1] == 0 || nodeCoordinate[1] == mazeWidth - 1) {\n" +
+                "                return true;\n" +
+                "            }\n" +
+                "            return false;\n" +
+                "        }\n" +
+                "    \n" +
+                "    \n" +
+                "        private void createGrid() {\n" +
+                "            allTiles.clear();\n" +
+                "            for (int i = 0; i < mazeHeight; i++) {\n" +
+                "                allTiles.add(new ArrayList<>());\n" +
+                "                for (int j = 0; j < mazeWidth; j++) {\n" +
+                "                    Node tile = new Node(i, j);\n" +
+                "                    allTiles.get(i).add(tile);\n" +
+                "                }\n" +
+                "            }\n" +
+                "        }\n" +
+                "    \n" +
+                "        private Node randomStart() {\n" +
+                "            int randomCol;\n" +
+                "            int randomRow = rnd.nextInt(mazeHeight);\n" +
+                "    \n" +
+                "            if (randomRow == 0 || randomRow == mazeHeight - 1) {\n" +
+                "                randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners: between 1 and width-1\n" +
+                "            } else {\n" +
+                "                randomCol = (((int) (rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;\n" +
+                "            }\n" +
+                "            return allTiles.get(randomRow).get(randomCol);\n" +
+                "        }\n" +
                 "    }");
         imageNames.add("300px-Depth-first-tree.svg.png");
-        imageNames.add("300px-Depth-first-tree.svg.png");
+        imageNames.add("DFSimg.png");
         algoWikiInfo =
-                "<p>Depth-first search (DFS) is an algorithm for traversing or searching tree or graph data structures. One starts at the root (selecting some arbitrary node as the root in the case of a graph) and explores as far as possible along each branch before backtracking.</p>" +
-                "<p>A version of depth-first search was investigated in the 19th century by French mathematician Charles Pierre Trémaux[1] as a strategy for solving mazes.</p>" +
-                "<p>Nunc condimentum, nulla in faucibus commodo, elit massa pharetra nibh, at tincidunt libero dolor quis augue. Donec pulvinar consectetur tortor, eget gravida ligula molestie at. Aenean ullamcorper tempor fermentum. Vestibulum metus ante, aliquam sed ligula vitae, auctor tempus quam. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Cras vitae imperdiet justo, sed egestas nulla. Nunc sit amet malesuada mauris, sed pellentesque arcu. Sed venenatis mattis mi ac tincidunt. Pellentesque nec justo ullamcorper, cursus massa at, condimentum justo. Mauris pharetra ligula in nibh efficitur, ut facilisis nisi pulvinar. Nullam eu consectetur mi. In in dapibus sem, a pharetra sem. Pellentesque in blandit magna. Nulla in orci finibus, ornare massa ut, mollis velit.</p>" +
-                "<p>Etiam condimentum congue est, eget accumsan enim ornare eget. Morbi sed dui sit amet purus hendrerit egestas. Mauris at tellus sit amet dolor commodo suscipit sit amet eget elit. Curabitur nec diam id risus pulvinar euismod. Sed et rutrum lacus. Fusce sit amet augue auctor nulla semper luctus eget at dolor. Vivamus egestas tincidunt tincidunt. Donec sapien velit, venenatis eu tincidunt nec, consequat eu lacus. Nulla finibus sodales mauris, sed consequat urna hendrerit sed. Morbi eleifend consectetur imperdiet. Morbi eu venenatis mauris. Morbi non mi vel orci ultricies semper. Pellentesque rutrum, odio sit amet auctor accumsan, enim arcu vestibulum quam, vel fringilla leo odio eget lorem. Sed nisl purus, porttitor et sagittis vel, pharetra lacinia lectus.</p>";
+                "<p>This algorithm is a randomized version of the depth-first search algorithm. Frequently implemented with a stack, this approach is one of the simplest ways to generate a maze using a computer. Consider the space for a maze being a large grid of cells (like a large chess board), each cell starting with four walls. Starting from a random cell, the computer then selects a random neighbouring cell that has not yet been visited. The computer removes the wall between the two cells and marks the new cell as visited, and adds it to the stack to facilitate backtracking. The computer continues this process, with a cell that has no unvisited neighbours being considered a dead-end. When at a dead-end it backtracks through the path until it reaches a cell with an unvisited neighbour, continuing the path generation by visiting this new, unvisited cell (creating a new junction). This process continues until every cell has been visited, causing the computer to backtrack all the way back to the beginning cell. We can be sure every cell is visited.</p>" +
+                "<p>As given above this algorithm involves deep recursion which may cause stack overflow issues on some computer architectures. The algorithm can be rearranged into a loop by storing backtracking information in the maze itself. This also provides a quick way to display a solution, by starting at any given point and backtracking to the beginning.</p>" +
+                "<p>Mazes generated with a depth-first search have a low branching factor and contain many long corridors, because the algorithm explores as far as possible along each branch before backtracking.</p>";
     }
 }
