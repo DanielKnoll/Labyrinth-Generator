@@ -392,7 +392,7 @@ dom = {
                                 <select id="algoType" name="algo">
                                     <option value="0">DFS</option>
                                     <option value="1">Kruskal</option>
-                                    <option value="1">My algorithm</option>
+                                    <option value="2">My algorithm</option>
                                 </select>
                                 <input id="width" type="number" value="18" max="50"/>
                                 <input id="height" type="number" value="10" max="50"/>

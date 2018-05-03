@@ -16,11 +16,12 @@ public class MyAlgo extends Labyrinth {
         maze = new int[mazeHeight*mazeWidth];
 
         super.createGrid();
-        //super.createAllNeighbors();
-
-        generateLabyrinth(super.randomStart()); //Hardcoded response.
+        createEdge();
+        generateLabyrinth(randomStart2()); //Hardcoded response.
+        System.out.println();
     }
 
+    public void generateLabyrinth(Node start){}
 
     public void generateLabyrinth(int[] start) {
         Node currentTile = allTiles.get(start[0]).get(start[1]);
@@ -33,7 +34,7 @@ public class MyAlgo extends Labyrinth {
             nextTile = allTiles.get(nextPlace[0]).get(nextPlace[1]);
 
             super.setMazeTileCorridor(nextPlace[0], nextPlace[1]);
-            setEndTile(nextPlace[0], nextPlace[1]);
+            setEndTile(nextPlace);
             stack.push(nextTile);
             createCorridor(currentTile, nextTile);
             generateLabyrinth(nextPlace);
@@ -88,8 +89,7 @@ public class MyAlgo extends Labyrinth {
         }
     }
 
-    private void setEndTile(int x, int y) {  // TODO WET
-        int[] curentTile = new int[]{x, y};
+    private void setEndTile(int[] curentTile) {  // TODO WET
         int[] startTile = mazeOrder2D.get(0);
 
         if(mazeOrder.size() > 1 && !isEndTileFound) {
@@ -107,5 +107,31 @@ public class MyAlgo extends Labyrinth {
                 isEndTileFound = true;
             }
         }
+    }
+
+    private void createEdge() {
+        for (int i = 0; i < mazeHeight; i++) {
+            allTiles.add(new ArrayList<>());
+            for (int j = 0; j < mazeWidth; j++) {
+                Node tile = allTiles.get(i).get(j);
+                if(i == 0 || i == mazeHeight -1 || j == 0 || j == mazeWidth - 1) {
+                    tile.setVisited(true);
+                }
+            }
+        }
+    }
+
+    int[] randomStart2() {
+        int randomCol;
+        int randomRow = rnd.nextInt(mazeHeight);
+
+        if(randomRow == 0 || randomRow == mazeHeight -1) {
+            randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners -> between 1 and width - 1
+        } else {
+            randomCol = (((int)(rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;
+        }
+
+        setMazeTileCorridor(randomRow, randomCol);
+        return new int[]{randomRow, randomCol};
     }
 }

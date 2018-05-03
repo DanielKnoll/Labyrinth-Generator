@@ -19,8 +19,8 @@ public class Node {
         return isWall;
     }
 
-    public void setWall(boolean wall) {
-        isWall = wall;
+    public void removeWall() {
+        isWall = false;
     }
 
     public int[] getPlace() {
