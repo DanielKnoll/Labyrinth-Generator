@@ -3,6 +3,7 @@ package com.codecool.labyrinth_generator.api;
 import com.codecool.labyrinth_generator.factory.LabyrinthGeneratorFactory;
 import com.codecool.labyrinth_generator.Information.AlgorithmInfo;
 import com.codecool.labyrinth_generator.factory.LabyrinthInfoFactory;
+import com.codecool.labyrinth_generator.generator.Algorithms;
 import com.codecool.labyrinth_generator.generator.Labyrinth;
 import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class LabyrinthServiceREST {
             return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
         LabyrinthInfoFactory factory = new LabyrinthInfoFactory();
-        AlgorithmInfo algorithm = factory.getInfo(type);
+        AlgorithmInfo algorithm = factory.getInfo(convertType(type));
 
         if(algorithm == null){
             return new ResponseEntity("Wrong type. (0-8)", HttpStatus.BAD_REQUEST);
@@ -64,7 +65,7 @@ public class LabyrinthServiceREST {
 
         LabyrinthGeneratorFactory labyrinthFactory = new LabyrinthGeneratorFactory();
 
-        Labyrinth labyrinth = labyrinthFactory.generateLabyrinth(type,width,height);
+        Labyrinth labyrinth = labyrinthFactory.generateLabyrinth(convertType(type), width, height);
 
         if(labyrinth != null) {
             CreateJson createJson = new CreateJson();
@@ -72,6 +73,19 @@ public class LabyrinthServiceREST {
             return new ResponseEntity(jsonObject, HttpStatus.OK);
         } else {
             return new ResponseEntity("Wrong input", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public Algorithms convertType(int type) {
+        switch (type) {
+            case 0:
+                return Algorithms.DFS;
+            case 1:
+                return Algorithms.KRUSKAL;
+            case 2:
+                return Algorithms.MYALGO;
+            default:
+                return null;
         }
     }
 }

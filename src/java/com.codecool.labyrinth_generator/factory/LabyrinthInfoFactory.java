@@ -11,11 +11,9 @@ import com.codecool.labyrinth_generator.generator.Labyrinth;
 
 public class LabyrinthInfoFactory {
 
-    public AlgorithmInfo getInfo(int type) {
+    public AlgorithmInfo getInfo(Algorithms algoType) {
 
         AlgorithmInfo algoinfo = null;
-        LabyrinthGeneratorFactory factory = new LabyrinthGeneratorFactory();
-        Algorithms algoType = factory.convertType(type);
 
         if (algoType != null) {
             switch (algoType) {
