@@ -85,3 +85,5 @@ buildNumber.properties
 \.idea/
 
 Labyrinth-Generator\.iml
+
+*.iml

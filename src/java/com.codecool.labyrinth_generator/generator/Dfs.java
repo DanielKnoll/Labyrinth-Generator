@@ -93,11 +93,22 @@ public class Dfs extends Labyrinth {
 
         for (int[] direction : allDirections) {
             Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
-            if (!neighbor.isWall() && !(stack.search(neighbor) == 1 || stack.search(neighbor) == 2)) {
+            if (!neighbor.isWall() && !(stack.search(neighbor) == 1 || stack.search(neighbor) == 2) && //Last 2 step
+                    !getLastStepCorridorNeighbors().contains(neighbor)) {  //
                 return false;  // Todo bug
             }
         }
         return true;
+    }
+    private List<Node> getLastStepCorridorNeighbors() {
+        List<Node> neighbors = getAdjacentNeighbours(stack.peek());
+        for (int i = 0; i < neighbors.size(); i++) {
+            Node node = neighbors.get(i);
+            if (node.isWall()) {
+                neighbors.remove(node);
+            }
+        }
+        return neighbors;
     }
 
     /**
