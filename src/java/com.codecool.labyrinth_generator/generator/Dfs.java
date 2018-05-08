@@ -90,14 +90,17 @@ public class Dfs extends Labyrinth {
     private boolean hasNoVisitedNearby(Node node) {
         int[] nodeCoordinate = node.getPlace();
         int[][] allDirections = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}};
+        int corridorCounter = 0;
 
         for (int[] direction : allDirections) {
             Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
+            if(!neighbor.isWall()) {corridorCounter++;}
             if (!neighbor.isWall() && !(stack.search(neighbor) == 1 || stack.search(neighbor) == 2) && //Last 2 step
                     !getLastStepCorridorNeighbors().contains(neighbor)) {  //
                 return false;  // Todo bug
             }
         }
+        if(corridorCounter > 2) return false;
         return true;
     }
     private List<Node> getLastStepCorridorNeighbors() {
