@@ -31,11 +31,13 @@ dom = {
             dom.eventListeners.navigationEventListener();
             dom.eventListeners.generateMazeBtnEventListener();
             dom.eventListeners.anyMazeGenBtnEventListener();
+            dom.eventListeners.jumpToStartEventListener();
             dom.eventListeners.rewindMazeGenEventListener();
             dom.eventListeners.stepBackEventListener();
-            dom.eventListeners.stepForwardEndEventListener();
             dom.eventListeners.playPauseMazeGenEventListener();
+            dom.eventListeners.stepForwardEndEventListener();
             dom.eventListeners.fastForwardMazeGenEventListener();
+            dom.eventListeners.jumpToEndEventListener();
             dom.eventListeners.newMazeEventListener();
             dom.eventListeners.infoBtnsEventListener();
         },
@@ -94,13 +96,14 @@ dom = {
                 $(".playerBtns").slideDown(100);
                 $(".infoBtnsGrid").slideDown(200);
                 dom.utility.mazeGeneration();
+                dom.utility.changePlayToPause();
             });
         },
 
         anyMazeGenBtnEventListener: function () {  //TODO how to include newMaze and Solve? is this a good practice?
-            let interruptorBtns = ["back", "rew", "pause", "ffwd", "forward", "newMaze"];
-            let forwardBtns = ["play", "ffwd", "forward"];
-            let resetMazeBtns = ["newMaze"];
+            let interruptorBtns = ["start", "back", "rew", "pause", "ffwd", "forward", "end", "newMaze"];
+            let forwardBtns = ["start", "play", "ffwd", "forward"];
+            let resetMazeBtns = ["start", "end", "newMaze"];
             $(".playerBtns button").click(function () {
                 dom.utility.resetBtnFontColor();
                 let btnId = $(this).attr("id");
@@ -118,14 +121,20 @@ dom = {
             });
         },
 
+        jumpToStartEventListener: function () {
+            $("#start").click(function () {
+                dom.utility.changePauseToPlay();  // Todo any btn
+            });
+        },
+
         rewindMazeGenEventListener: function () {
             $("#rew").click(function () {
                 if(dom.data.iterator <= dom.data.mazeOrderLength + 1) {
-                    dom.utility.changePlayToPause();  // Todo any btn
                     $("#rew").addClass("activeBtn");
                     dom.data.delay = 50;
                     dom.data.reverseOrder = true;
                     dom.utility.mazeGeneration();
+                    dom.utility.changePlayToPause();  // Todo any btn
                 }
             });
         },
@@ -172,6 +181,17 @@ dom = {
                     dom.data.delay = 50;
                     dom.utility.mazeGeneration();
                 }
+            });
+        },
+
+        jumpToEndEventListener: function () {
+            $("#end").click(function () {
+                let tile;
+                for (dom.data.iterator; dom.data.iterator < dom.data.mazeOrderLength; dom.data.iterator++) {
+                    tile = dom.data.mazeOrder[dom.data.iterator];
+                    $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
+                }
+                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
