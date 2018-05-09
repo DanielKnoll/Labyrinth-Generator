@@ -31,7 +31,6 @@ dom = {
             dom.eventListeners.navigationEventListener();
             dom.eventListeners.generateMazeBtnEventListener();
             dom.eventListeners.anyMazeGenBtnEventListener();
-            dom.eventListeners.jumpToStartEventListener();
             dom.eventListeners.rewindMazeGenEventListener();
             dom.eventListeners.stepBackEventListener();
             dom.eventListeners.playPauseMazeGenEventListener();
@@ -104,6 +103,8 @@ dom = {
             let interruptorBtns = ["start", "back", "rew", "pause", "ffwd", "forward", "end", "newMaze"];
             let forwardBtns = ["start", "play", "ffwd", "forward"];
             let resetMazeBtns = ["start", "end", "newMaze"];
+            let pauseToPlayBtns = ["start", "back", "forward", "end"];
+            let playToPauseBtns = ["rew", "ffwd"];
             $(".playerBtns button").click(function () {
                 dom.utility.resetBtnFontColor();
                 let btnId = $(this).attr("id");
@@ -118,12 +119,12 @@ dom = {
                         dom.data.iterator >= dom.data.mazeOrderLength))) {
                     dom.utility.resetMaze();
                 }
-            });
-        },
-
-        jumpToStartEventListener: function () {
-            $("#start").click(function () {
-                dom.utility.changePauseToPlay();  // Todo any btn
+                if(pauseToPlayBtns.includes(btnId)) {
+                    dom.utility.changePauseToPlay();
+                }
+                if(playToPauseBtns.includes(btnId)) {
+                    dom.utility.changePlayToPause();
+                }
             });
         },
 
@@ -134,7 +135,6 @@ dom = {
                     dom.data.delay = 50;
                     dom.data.reverseOrder = true;
                     dom.utility.mazeGeneration();
-                    dom.utility.changePlayToPause();  // Todo any btn
                 }
             });
         },
@@ -143,20 +143,19 @@ dom = {
             $("#back").click(function () {
                 dom.data.iterator--;
                 dom.utility.changeBackCurrentAndPreviousMazeTileColor();
-                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
         playPauseMazeGenEventListener: function () {
-            let btn = $("#back").next();  // play/pause button
+            let btn = $("#back").next();
             btn.click(function () {
                 switch (btn.attr("id")) {
                     case "pause":
-                        dom.utility.changePauseToPlay();  // Todo any btn
+                        dom.utility.changePauseToPlay();
                         break;
                     case "play":
                         dom.data.delay = 300;
-                        dom.utility.changePlayToPause();  // Todo any btn
+                        dom.utility.changePlayToPause();
                         dom.utility.mazeGeneration();
                         break;
                     default:
@@ -169,14 +168,12 @@ dom = {
             $("#forward").click(function () {
                 dom.utility.changeCurrentAndPreviousMazeTileColor();
                 dom.data.iterator++;
-                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
         fastForwardMazeGenEventListener: function () {
             $("#ffwd").click(function () {
                 if(dom.data.iterator < dom.data.mazeOrderLength) {
-                    dom.utility.changePlayToPause();  // Todo any btn
                     $("#ffwd").addClass("activeBtn");
                     dom.data.delay = 50;
                     dom.utility.mazeGeneration();
@@ -191,7 +188,6 @@ dom = {
                     tile = dom.data.mazeOrder[dom.data.iterator];
                     $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
                 }
-                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
