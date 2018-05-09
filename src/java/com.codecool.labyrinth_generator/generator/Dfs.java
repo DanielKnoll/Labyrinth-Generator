@@ -1,7 +1,6 @@
 package com.codecool.labyrinth_generator.generator;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
@@ -95,15 +94,14 @@ public class Dfs extends Labyrinth {
         for (int[] direction : allDirections) {
             Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
             if(!neighbor.isWall()) {corridorCounter++;}
-            if (!neighbor.isWall() && !(stack.search(neighbor) == 1 || stack.search(neighbor) == 2) && //Last 2 step
-                    !getLastStepCorridorNeighbors().contains(neighbor)) {  //
+            if (!neighbor.isWall() && !getLastStepAndNeighbors().contains(neighbor)) {
                 return false;  // Todo bug
             }
         }
         if(corridorCounter > 2) return false;
         return true;
     }
-    private List<Node> getLastStepCorridorNeighbors() {
+    private List<Node> getLastStepAndNeighbors() {
         List<Node> neighbors = getAdjacentNeighbours(stack.peek());
         for (int i = 0; i < neighbors.size(); i++) {
             Node node = neighbors.get(i);
@@ -111,6 +109,7 @@ public class Dfs extends Labyrinth {
                 neighbors.remove(node);
             }
         }
+        neighbors.add(stack.peek());
         return neighbors;
     }
 
