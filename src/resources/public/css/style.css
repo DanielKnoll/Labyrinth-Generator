@@ -243,6 +243,7 @@ select {
     padding: 5px 0;
     font-size: 1em;
 }
+
 /***************************Code Info***************************/
 
 .keyWord {  /* TODO variable, method name, constant+string, annotation, comment*/
@@ -267,4 +268,28 @@ select {
     background-color: rgba(162, 162, 162, 0.8);
     border: 1px solid #333333;
     border-radius: 5px;
+    max-height: 450px;
+    overflow: auto;
+}
+
+
+/***************************Srcollbar***************************/
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #f28636;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #ef6d36;
 }
