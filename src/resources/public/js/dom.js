@@ -39,6 +39,7 @@ dom = {
             dom.eventListeners.jumpToEndEventListener();
             dom.eventListeners.newMazeEventListener();
             dom.eventListeners.infoBtnsEventListener();
+            dom.eventListeners.solveMazeEventListener();
         },
     },
 
@@ -183,11 +184,7 @@ dom = {
 
         jumpToEndEventListener: function () {
             $("#end").click(function () {
-                let tile;
-                for (dom.data.iterator; dom.data.iterator < dom.data.mazeOrderLength; dom.data.iterator++) {
-                    tile = dom.data.mazeOrder[dom.data.iterator];
-                    $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
-                }
+                dom.utility.finishMazeGeneration();
             });
         },
 
@@ -250,8 +247,14 @@ dom = {
                 $(".postHeight").html(mazeHeight);
                 dom.utility.resetMaze();
                 dom.utility.changePauseToPlay();
-                apiData.postMazeData(algoType,mazeWidth, mazeHeight);
+                apiData.getMazeDataPost(algoType,mazeWidth, mazeHeight);
             })
+        },
+
+        solveMazeEventListener: function () {
+            $("#solveMaze").click(function () {
+                apiData.getMazeSolveOrder(dom.data.mazeData.maze, );
+            });
         }
     },
 
@@ -367,6 +370,21 @@ dom = {
                 default:
             }
         },
+        
+        finishMazeGeneration: function () {
+            let tile;
+            for (dom.data.iterator; dom.data.iterator < dom.data.mazeOrderLength; dom.data.iterator++) {
+                tile = dom.data.mazeOrder[dom.data.iterator];
+                $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
+            }
+        },
+
+        showMazeSolve: function (solutionOrderJson) {
+            dom.utility.finishMazeGeneration();
+            for(let i = 0; i < solutionOrderJson.solutionOrder.length; i++){
+                $(".maze div").eq(i).removeClass("mazeWall").addClass("solution");
+            }
+        }
     },
 
     dataFunctions: {

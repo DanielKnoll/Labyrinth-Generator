@@ -51,6 +51,16 @@ public class LabyrinthServiceREST {
         return new ResponseEntity(jsonObject, HttpStatus.OK);
     }
 
+    @PostMapping(value = "/api/solve")
+    public ResponseEntity getSolveMazePost(@RequestBody Map<String, String> data) {
+        String typeString = data.get("maze");
+        String widthString = data.get("start");
+        String heightString = data.get("end");
+        CreateJson createJson = new CreateJson();
+        JSONObject jsonObject = createJson.getSolutionJson(typeString);
+        return new ResponseEntity(jsonObject, HttpStatus.OK);
+    }
+
     private ResponseEntity generateLabyrinth(String typeString, String widthString, String heightString) {
         int type;
         int width;

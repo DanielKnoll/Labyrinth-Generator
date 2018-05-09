@@ -117,6 +117,10 @@ footer div:first-child {
     background-color: #ff6b33;
 }
 
+.solution {
+    background-color: #cc562d;
+}
+
 /***************************Player buttons***************************/
 
 .playerBtns {
