@@ -12,7 +12,7 @@ public class DfsInfo extends AlgorithmInfo {
     public DfsInfo() {
         fillInfo();
         setName("Depth-first search algorithm");
-        setDefaultApiLink("wall=0&amp;algo=0&amp;width=18&amp;height=10");
+        setDefaultApiLink("wall=0&amp;algo=0&amp;width=19&amp;height=13");
         setClassNames(classNames);
         setClassCodes(classCodes);
         setAlgoWikiInfo(algoWikiInfo);

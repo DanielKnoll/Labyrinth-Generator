@@ -245,6 +245,9 @@ dom = {
                 let mazeHeight = $("#height").val();
                 $(".apiValues").html("wall=0&amp;algo=" + algoType + "&amp;width=" + mazeWidth + "&amp;height=" +
                     mazeHeight);
+                $(".postAlgoType").html(algoType);
+                $(".postWidth").html(mazeWidth);
+                $(".postHeight").html(mazeHeight);
                 dom.utility.resetMaze();
                 dom.utility.changePauseToPlay();
                 apiData.postMazeData(algoType,mazeWidth, mazeHeight);
@@ -337,6 +340,9 @@ dom = {
                 case "showApi":
                     infoSection.html(dom.htmlStructures.apiInfo);
                     $(".apiValues").html(dom.data.infoData.apiValues);
+                    $(".postAlgoType").html(dom.data.algoType);
+                    $(".postWidth").html(dom.data.mazeColNum);
+                    $(".postHeight").html(dom.data.mazeRowNum);
                     $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
                     dom.eventListeners.formSubmitEventListener();
                     break;
@@ -389,36 +395,62 @@ dom = {
         // TODO write about POST method too. What is the valid GET link format? Add sliders to JSON preview area.
         apiInfo: `
                 <h3 class="title">API Info</h3>
-                    <div class="snippet">
-                        <code>http://www.future-domain-name.hu/api/generate/<span class="apiValues"></span></code>
+                <p>
+                    There are two way to get maze information from server: GET and POST method.</br>
+                    For GET method you simply copy-paste the generated link below and you will get the JSON file on screen. You can see it at the bottom of the section.</br>
+                    Alternatively you can create a different type and size of maze with the form below the link. The link will be updated too.
+                </p>
+                <h4>GET method:</h4>
+                <div class="snippet">
+                    <code>http://www.future-domain-name.hu/api/generate/<span class="apiValues"></span></code>
+                </div>
+                <div class="apiInfo">
+                    <ol>
+                        <li>input: 0: thick wall / 1: thin wall</li>
+                        <li>input: 0-4 generation algorithms</li>
+                        <li>input: maze width (3-50)</li>
+                        <li>input: maze height (3-50)</li>
+                    </ol>
+                    <div class="form">
+                        <form>
+                            <select id="wallType" name="wall" disabled="true">
+                                <option value="0">thick wall</option>
+                                <option value="1">thin wall</option>
+                            </select>
+                            <select id="algoType" name="algo">
+                                <option value="0">DFS</option>
+                                <option value="1">Kruskal</option>
+                                <option value="2">My algorithm</option>
+                            </select>
+                            <input id="width" type="number" value="19" max="50"/>
+                            <input id="height" type="number" value="13" max="50"/>
+                            <div class="btn singleBtn formSubmit">Send</div>
+                        </form>
                     </div>
-                    <div class="apiInfo">
-                        <ol>
-                            <li>input: 0: thick wall / 1: thin wall</li>
-                            <li>input: 0-4 generation algorithms</li>
-                            <li>input: maze width (3-50)</li>
-                            <li>input: maze height (3-50)</li>
-                        </ol>
-                        <div class="form">
-                            <form>
-                                <select id="wallType" name="wall" disabled="true">
-                                    <option value="0">thick wall</option>
-                                    <option value="1">thin wall</option>
-                                </select>
-                                <select id="algoType" name="algo">
-                                    <option value="0">DFS</option>
-                                    <option value="1">Kruskal</option>
-                                    <option value="2">My algorithm</option>
-                                </select>
-                                <input id="width" type="number" value="18" max="50"/>
-                                <input id="height" type="number" value="10" max="50"/>
-                                <div class="btn singleBtn formSubmit">Send</div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="snippet">
-                        <pre><code class="json"></code></pre>
-                    </div>
+                </div>
+                
+                <h4>POST method:</h4>
+                <div class="snippet">
+                    <code>http://www.future-domain-name.hu/api/generate/</code>
+                </div>
+                <p>
+                    Or you can send the server to link above the object below.</br>
+                </p>
+                <div class="snippet">
+                   <code>
+                        &nbsp;&nbsp;{</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;algoType: <span class="postAlgoType">0</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;mazeColNum: <span class="postWidth">18</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;mazeRowNum: <span class="postHeight">10</span></br>
+                        &nbsp;&nbsp;}
+                    </code>
+                </div>
+                <h4>Output:</h4>
+                <div class="snippet">
+                    <pre>
+                        <code class="json"></code>
+                    </pre>
+                </div>
         `,
 
         algoInfo: `

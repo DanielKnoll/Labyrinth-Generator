@@ -12,7 +12,7 @@ public class MyAlgoInfo extends AlgorithmInfo {
     public MyAlgoInfo() {
         fillInfo();
         setName("My algorithm");
-        setDefaultApiLink("wall=0&amp;algo=2&amp;width=25&amp;height=15");
+        setDefaultApiLink("wall=0&amp;algo=2&amp;width=19&amp;height=13");
         setClassNames(classNames);
         setClassCodes(classCodes);
         setAlgoWikiInfo(algoWikiInfo);
