@@ -11,6 +11,7 @@ dom = {
         interrupted: false,
         reverseOrder: false,
         infoData: "",
+        algoType: 0
     },
 
     initFunctions: {
@@ -30,11 +31,11 @@ dom = {
             dom.eventListeners.navigationEventListener();
             dom.eventListeners.generateMazeBtnEventListener();
             dom.eventListeners.anyMazeGenBtnEventListener();
-            dom.eventListeners.jumpToStartEventListener();
             dom.eventListeners.rewindMazeGenEventListener();
+            dom.eventListeners.stepBackEventListener();
+            dom.eventListeners.stepForwardEndEventListener();
             dom.eventListeners.playPauseMazeGenEventListener();
             dom.eventListeners.fastForwardMazeGenEventListener();
-            dom.eventListeners.jumpToEndEventListener();
             dom.eventListeners.newMazeEventListener();
             dom.eventListeners.infoBtnsEventListener();
         },
@@ -56,21 +57,33 @@ dom = {
 
                 switch (selectedMenuId) {
                     case "dfs":
-                        apiData.getMazeData("0&18&10"); // TODO generate?wall=0&...
+                        apiData.getMazeData("0&19&13"); // TODO generate?wall=0&...
                         apiData.getMazeInfo(0);
+                        dom.data.algoType = 0;
                         break;
-                    case "cellular":
+                    case "myAlgo":
+                        apiData.getMazeData("2&19&13");
+                        apiData.getMazeInfo(2);
+                        dom.data.algoType = 2;
+                        break;
+                    case "kruskal":
+                        apiData.getMazeData("1&19&13");
+                        apiData.getMazeInfo(1);
+                        dom.data.algoType = 1;
+                        break;
+                    case "recDivision":
                         dom.data.mazeColNum = 50;  // TODO update form. selected="selected"
                         dom.data.mazeRowNum = 30;
                         dom.data.mazeOrder = [];
-                        apiData.getMazeInfo(1);
+                        dom.initFunctions.createGrid();
+                        $(".demoArea > .title").html("Under Development");
                         break;
                     default:
                         apiData.getMazeData("1&19&13");
-                        apiData.getMazeInfo(1);
+                        dom.data.algoType = 1;
+                        dom.data.infoData = "";
+                        $(".demoArea > .title").html("Under Development");
                 }
-                $(".demoArea > .title").html(dom.data.mazeData.algoName);
-                dom.data.mazeOrderLength = dom.data.mazeOrder.length;
             });
         },
 
@@ -85,9 +98,9 @@ dom = {
         },
 
         anyMazeGenBtnEventListener: function () {  //TODO how to include newMaze and Solve? is this a good practice?
-            let interruptorBtns = ["start", "rew", "pause", "ffwd", "end", "newMaze"];
-            let forwardBtns = ["start", "play", "ffwd", "end"];
-            let resetMazeBtns = ["start", "end", "newMaze"];
+            let interruptorBtns = ["back", "rew", "pause", "ffwd", "forward", "newMaze"];
+            let forwardBtns = ["play", "ffwd", "forward"];
+            let resetMazeBtns = ["newMaze"];
             $(".playerBtns button").click(function () {
                 dom.utility.resetBtnFontColor();
                 let btnId = $(this).attr("id");
@@ -105,33 +118,35 @@ dom = {
             });
         },
 
-        jumpToStartEventListener: function () {
-            $("#start").click(function () {
-                dom.utility.changePauseToPlay();  // Todo any btn
-            });
-        },
-
         rewindMazeGenEventListener: function () {
             $("#rew").click(function () {
                 if(dom.data.iterator <= dom.data.mazeOrderLength + 1) {
                     dom.utility.changePlayToPause();  // Todo any btn
                     $("#rew").addClass("activeBtn");
-                    dom.data.delay = 100;
+                    dom.data.delay = 50;
                     dom.data.reverseOrder = true;
                     dom.utility.mazeGeneration();
                 }
             });
         },
 
+        stepBackEventListener: function () {
+            $("#back").click(function () {
+                dom.data.iterator--;
+                dom.utility.changeBackCurrentAndPreviousMazeTileColor();
+                dom.utility.changePauseToPlay();  // Todo any btn
+            });
+        },
+
         playPauseMazeGenEventListener: function () {
-            let btn = $("#rew").next();  // play/pause button
+            let btn = $("#back").next();  // play/pause button
             btn.click(function () {
                 switch (btn.attr("id")) {
                     case "pause":
                         dom.utility.changePauseToPlay();  // Todo any btn
                         break;
                     case "play":
-                        dom.data.delay = 500;
+                        dom.data.delay = 300;
                         dom.utility.changePlayToPause();  // Todo any btn
                         dom.utility.mazeGeneration();
                         break;
@@ -141,25 +156,22 @@ dom = {
             });
         },
 
+        stepForwardEndEventListener: function () {
+            $("#forward").click(function () {
+                dom.utility.changeCurrentAndPreviousMazeTileColor();
+                dom.data.iterator++;
+                dom.utility.changePauseToPlay();  // Todo any btn
+            });
+        },
+
         fastForwardMazeGenEventListener: function () {
             $("#ffwd").click(function () {
                 if(dom.data.iterator < dom.data.mazeOrderLength) {
                     dom.utility.changePlayToPause();  // Todo any btn
                     $("#ffwd").addClass("activeBtn");
-                    dom.data.delay = 100;
+                    dom.data.delay = 50;
                     dom.utility.mazeGeneration();
                 }
-            });
-        },
-
-        jumpToEndEventListener: function () {
-            $("#end").click(function () {
-                let tile;
-                for (let i = dom.data.iterator; i < dom.data.mazeOrderLength; i++) {
-                    tile = dom.data.mazeOrder[i];
-                    $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
-                }
-                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
@@ -167,7 +179,7 @@ dom = {
             $("#newMaze").click(function () {
                 dom.data.interrupted = true;
                 dom.utility.resetMaze();
-                apiData.getMazeData("0&18&10");
+                apiData.getMazeData(dom.data.algoType + "&19&13");
                 dom.utility.changePlayToPause();  // Todo any btn
                 dom.utility.mazeGeneration();
             });
@@ -242,11 +254,11 @@ dom = {
             }
         },
         changePauseToPlay: function () {
-            $("#rew").next().attr("id", "play").children().removeClass("fa-pause").addClass("fa-play");
+            $("#back").next().attr("id", "play").children().removeClass("fa-pause").addClass("fa-play");
         },
 
         changePlayToPause: function () {
-            $("#rew").next().attr("id", "pause").children().removeClass("fa-play").addClass("fa-pause");
+            $("#back").next().attr("id", "pause").children().removeClass("fa-play").addClass("fa-pause");
         },
 
         mazeGeneration: function() {
@@ -343,6 +355,7 @@ dom = {
             dom.data.mazeOrderLength = dom.data.mazeOrder.length;
             dom.data.mazeColNum = mazeData.mazeColNum;
             dom.data.mazeRowNum = mazeData.mazeRowNum;
+            $(".demoArea > .title").html(dom.data.mazeData.algoName);
         },
 
         resetIterDelayOrder: function () {
@@ -350,14 +363,14 @@ dom = {
             dom.data.delay = 500;
             dom.data.reverseOrder = false;
         },
-        
+
         saveInfo: function (info) {
             dom.data.infoData = info;
         }
     },
 
     htmlStructures: {
-
+        // TODO write about POST method too. What is the valid GET link format? Add sliders to JSON preview area.
         apiInfo: `
                 <h3 class="title">API Info</h3>
                     <div class="snippet">
@@ -367,8 +380,8 @@ dom = {
                         <ol>
                             <li>input: 0: thick wall / 1: thin wall</li>
                             <li>input: 0-4 generation algorithms</li>
-                            <li>input: maze width (3-100)</li>
-                            <li>input: maze height (3-100)</li>
+                            <li>input: maze width (3-50)</li>
+                            <li>input: maze height (3-50)</li>
                         </ol>
                         <div class="form">
                             <form>
@@ -379,10 +392,10 @@ dom = {
                                 <select id="algoType" name="algo">
                                     <option value="0">DFS</option>
                                     <option value="1">Kruskal</option>
-                                    <option value="2">Random</option>
+                                    <option value="2">My algorithm</option>
                                 </select>
-                                <input id="width" type="number" value="18" max="100"/>
-                                <input id="height" type="number" value="10" max="100"/>
+                                <input id="width" type="number" value="18" max="50"/>
+                                <input id="height" type="number" value="10" max="50"/>
                                 <div class="btn singleBtn formSubmit">Send</div>
                             </form>
                         </div>
