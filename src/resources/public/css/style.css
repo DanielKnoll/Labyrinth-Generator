@@ -60,6 +60,7 @@ nav li {
     list-style-type: none;
     padding: 10px;
     text-align: center;
+    cursor: pointer;
 }
 
 nav li:first-child {
@@ -123,6 +124,7 @@ footer div:first-child {
     width: 50%;
     display: grid;
     grid-template-columns: repeat(7, auto);
+    cursor: pointer;
 }
 
 .btn {
@@ -152,6 +154,7 @@ footer div:first-child {
 
 .singleBtn {
     border-radius: 10px;
+    cursor: pointer;
 }
 
 #generate {
@@ -177,6 +180,7 @@ footer div:first-child {
     text-align: center;
     border: solid #cc562c;
     border-width: 0px 0px 0px 2px;
+    cursor: pointer;
 }
 
 .infoBtnsGrid div:first-child {
