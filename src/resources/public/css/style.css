@@ -30,7 +30,6 @@ header h1 {
 .grid {
     display: grid;
     grid-template-columns: 1fr 11fr 1fr;
-    /*grid-auto-rows:minmax(calc(100vh - 183px), auto);*/
 }
 
 .gridWrap {
@@ -297,4 +296,23 @@ select {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #ef6d36;
+}
+
+/***************************Error page***************************/
+
+.fillPage{
+    display: grid;
+    min-height: calc(100vh - 387px);
+    grid-template-columns: 1fr 2fr 1fr;
+
+}
+
+.errorImage {
+    grid-column: 2 / 3;
+    margin: auto;
+}
+
+.errorMessage {
+    text-align: center;
+    grid-column: 2/3;
 }

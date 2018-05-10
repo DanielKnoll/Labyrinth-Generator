@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Labyrinth Generator</title>
+        <script src="/jquery/jquery.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+        <script src="/js/main.js"></script>
+        <script src="/js/dom.js"></script>
+        <script src="/js/data.js"></script>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css"
+              integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg" crossorigin="anonymous"/>
+        <link href="/css/style.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <header>
+            <h1 class="title">Labyrinth Generator</h1>
+        </header>
+
+        <div class="grid">
+            <div class="gridWrap">
+                <nav>
+                    <ul>
+                        <li class="activeNav" id="dfs">Depth-first search</li>
+                        <li id="myAlgo">My algorithm</li>
+                        <li id="kruskal">Kruskal algorithm</li>
+                        <li id="rndPrim">Random Prim</li>
+                        <li id="recDivision">Recursive division</li>
+                    </ul>
+                </nav>
+
+                <div class="fillPage">
+                    <img src="../img/error.png" class="errorImage"></img>
+                    <h2 class="errorMessage" th:text="${errormsg}"></h2>
+                </div>
+            </div>
+        </div>
+        <footer>
+            <div>
+                Description:<br/>
+                <p>
+                    Maze generator application with REST API
+                </p>
+                Copyright &copy; Codecool 2017/2 - Daniel Knoll
+            </div>
+            <div>
+                Used technologies:<br/>
+                <ul>
+                    <li>Spring-Boot</li>
+                    <li>JQuery</li>
+                    <li>HTML5/CSS3</li>
+                </ul>
+
+            </div>
+            <div>
+                Contact:<br/><br/>
+                knoll.dani@gmail.com<br/><br/>
+                <i class="fab fa-github"></i> <i class="fab fa-linkedin"></i>
+            </div>
+        </footer>
+    </body>
+</html>
