@@ -8,7 +8,7 @@ public class Node {
     private boolean isWall = true;
     private int[] coordinate = new int[2];
     private List<Node> neighbors = new ArrayList<>();
-    private boolean isVisited = false;  //TODO delete?
+    private boolean unbreakable = false;
 
     public Node(int x, int y) {
         coordinate[0] = x;
@@ -31,12 +31,12 @@ public class Node {
         neighbors.add(tile);
     }
 
-    public boolean isVisited() {
-        return isVisited;
+    public boolean isUnbreakable() {
+        return unbreakable;
     }
 
-    public void setVisited(boolean visited) {
-        isVisited = visited;
+    public void setUnbreakable() {
+        this.unbreakable = true;
     }
 
     @Override

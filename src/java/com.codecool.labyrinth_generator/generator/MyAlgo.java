@@ -54,7 +54,7 @@ public class MyAlgo extends Labyrinth {
 
         List<int[]> unvisitedNeighbors = new ArrayList<>();
         for (Node neighbor: adjacentNeighbors) {
-            if(!neighbor.isVisited() && !super.isEdge(neighbor)) {
+            if(!neighbor.isUnbreakable() && !super.isEdge(neighbor)) {
                 unvisitedNeighbors.add(neighbor.getCoordinate());
             }
         }
@@ -77,7 +77,7 @@ public class MyAlgo extends Labyrinth {
         }
 
         for (int i = startLoop; i < endLoop; i++) {
-            maze.get(currentCoordinate[0] + dirs[i][0]).get(currentCoordinate[1] + dirs[i][1]).setVisited(true);
+            maze.get(currentCoordinate[0] + dirs[i][0]).get(currentCoordinate[1] + dirs[i][1]).setUnbreakable();
         }
     }
 
@@ -104,7 +104,7 @@ public class MyAlgo extends Labyrinth {
     void setMazeTileCorridor(int x, int y) {
         Node tile = maze.get(x).get(y);
         tile.removeWall();
-        tile.setVisited(true);
+        tile.setUnbreakable();
         mazeOrder.add(x * mazeWidth + y);
     }
 }
