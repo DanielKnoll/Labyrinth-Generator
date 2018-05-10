@@ -47,7 +47,7 @@ public class Dfs extends Labyrinth {
 
         for (Node neighbour : getAdjacentNeighbours(node)) {
             if (neighbour.isWall() && // do not go back
-                    !isEdge(neighbour) && // do not dig into edges
+                    !super.isEdge(neighbour) && // do not dig into edges
                     hasNoVisitedNearby(neighbour)) { // do not dig if there is a tunnel nearby
                 result.add(neighbour);
             }
@@ -64,18 +64,13 @@ public class Dfs extends Labyrinth {
         int[][] adjacentDirections = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
 
         for (int[] direction : adjacentDirections) {
-            if (isCoordinateInBound(nodeCoordinate, direction)) {
-                Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
-                neighbors.add(neighbor);
+            if (super.isCoordinateInBound(nodeCoordinate, direction)) {
+                neighbors.add(maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]));
             }
         }
         return neighbors;
     }
 
-    private boolean isCoordinateInBound(int[] nodeCoordinate, int[] direction) {
-        return nodeCoordinate[0] + direction[0] >= 0 && nodeCoordinate[0] + direction[0] < mazeHeight &&
-                nodeCoordinate[1] + direction[1] >= 0 && nodeCoordinate[1] + direction[1] < mazeWidth;
-    }
 
     /**
      * Checks if there are no corridor tiles nearby
@@ -93,8 +88,7 @@ public class Dfs extends Labyrinth {
                 return false;  // Todo bug
             }
         }
-        if(corridorCounter > 2) return false;
-        return true;
+        return corridorCounter <= 2;
     }
 
     private List<Node> getLastStepAndNeighbors() {
@@ -107,17 +101,5 @@ public class Dfs extends Labyrinth {
         }
         neighbors.add(stack.peek());
         return neighbors;
-    }
-
-    /**
-     * returns true if the node is on the edge
-     */
-    private boolean isEdge(Node node) {
-        int[] nodeCoordinate = node.getCoordinate();
-        if(nodeCoordinate[0] == 0 || nodeCoordinate[0] == mazeHeight - 1 ||
-                nodeCoordinate[1] == 0 || nodeCoordinate[1] == mazeWidth - 1) {
-            return true;
-        }
-        return false;
     }
 }

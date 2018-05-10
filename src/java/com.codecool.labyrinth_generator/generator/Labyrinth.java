@@ -44,6 +44,20 @@ public abstract class Labyrinth {
         randomStart();
     }
 
+    boolean isCoordinateInBound(int[] nodeCoordinate, int[] direction) {
+        return nodeCoordinate[0] + direction[0] >= 0 && nodeCoordinate[0] + direction[0] < mazeHeight &&
+                nodeCoordinate[1] + direction[1] >= 0 && nodeCoordinate[1] + direction[1] < mazeWidth;
+    }
+
+    /**
+     * returns true if the node is on the edge
+     */
+    boolean isEdge(Node node) {
+        int[] nodeCoordinate = node.getCoordinate();
+        return nodeCoordinate[0] == 0 || nodeCoordinate[0] == mazeHeight - 1 ||
+                nodeCoordinate[1] == 0 || nodeCoordinate[1] == mazeWidth - 1;
+    }
+
     void createAllNeighbors() {
         Node tile;
         for (int i = 0; i < maze.size(); i++) {
@@ -57,15 +71,13 @@ public abstract class Labyrinth {
     private void addNeighbors(Node tile) {
         int[][] dirs = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
         Node neighbor;
-        int[] tilePlace;
+        int[] tileCoordinate;
 
         for (int[] dir: dirs) {
-            tilePlace = tile.getCoordinate();
-            // IndexOutOfBind protection
-            if(tilePlace[0] + dir[0] >= 0 && tilePlace[0] + dir[0] < mazeHeight &&
-                    tilePlace[1] + dir[1] >= 0 && tilePlace[1] + dir[1] < mazeWidth) {
+            tileCoordinate = tile.getCoordinate();
+            if(isCoordinateInBound(tileCoordinate, dir)) {
 
-                neighbor = maze.get(tilePlace[0] + dir[0]).get(tilePlace[1] + dir[1]);
+                neighbor = maze.get(tileCoordinate[0] + dir[0]).get(tileCoordinate[1] + dir[1]);
                 tile.addNeighbor(neighbor);
             }
         }
@@ -84,12 +96,5 @@ public abstract class Labyrinth {
         start.removeWall();
         int[] startTileCoord = start.getCoordinate(); // TODO temporary
         mazeOrder.add(startTileCoord[0] * mazeWidth + startTileCoord[1]); // TODO change mazeOrder to Node
-    }
-
-    void setMazeTileCorridor(int x, int y) {
-        Node tile = maze.get(x).get(y);
-        tile.removeWall();
-        tile.setVisited(true);
-        mazeOrder.add(x * mazeWidth + y);
     }
 }
