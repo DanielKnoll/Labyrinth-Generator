@@ -14,12 +14,8 @@ public class Dfs extends Labyrinth {
         this.mazeHeight = mazeHeight;
 
         super.createGrid();
-        Node startTile = super.randomStart();
-        startTile.removeWall();
-        stack.push(startTile);
-        int[] startTileCoord = startTile.getCoordinate(); // TODO temporary
-        mazeOrder.add(startTileCoord[0] * mazeWidth + startTileCoord[1]); // TODO change mazeOrder to Node
-        generateLabyrinth(startTile);
+        stack.push(start);
+        generateLabyrinth(start);
     }
 
     public void generateLabyrinth(Node start) {
@@ -69,7 +65,7 @@ public class Dfs extends Labyrinth {
 
         for (int[] direction : adjacentDirections) {
             if (isCoordinateInBound(nodeCoordinate, direction)) {
-                Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
+                Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
                 neighbors.add(neighbor);
             }
         }
@@ -91,7 +87,7 @@ public class Dfs extends Labyrinth {
         int corridorCounter = 0;
 
         for (int[] direction : allDirections) {
-            Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
+            Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
             if(!neighbor.isWall()) {corridorCounter++;}
             if (!neighbor.isWall() && !getLastStepAndNeighbors().contains(neighbor)) {
                 return false;  // Todo bug
@@ -100,6 +96,7 @@ public class Dfs extends Labyrinth {
         if(corridorCounter > 2) return false;
         return true;
     }
+
     private List<Node> getLastStepAndNeighbors() {
         List<Node> neighbors = getAdjacentNeighbours(stack.peek());
         for (int i = 0; i < neighbors.size(); i++) {

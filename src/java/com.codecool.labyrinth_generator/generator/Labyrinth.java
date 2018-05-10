@@ -7,14 +7,12 @@ import java.util.Random;
 public abstract class Labyrinth {
 
     String algoName;
-    int[] maze;  //TODO helper method
-    int[][] maze2D;  //TODO helper method
     int mazeWidth;
     int mazeHeight;
     List<Integer> mazeOrder = new ArrayList<>();  //TODO Node
-    List<int[]> mazeOrder2D = new ArrayList<>();  //TODO helper method
-    List<List<Node>> allTiles = new ArrayList<>();
+    List<List<Node>> maze = new ArrayList<>();
     Random rnd = new Random();
+    Node start;
 
     public String getAlgoName() {
         return algoName;
@@ -35,21 +33,22 @@ public abstract class Labyrinth {
     public abstract void generateLabyrinth(Node start);
 
     void createGrid() {
-        allTiles.clear();
+        maze.clear();
         for (int i = 0; i < mazeHeight; i++) {
-            allTiles.add(new ArrayList<>());
+            maze.add(new ArrayList<>());
             for (int j = 0; j < mazeWidth; j++) {
                 Node tile = new Node(i, j);
-                allTiles.get(i).add(tile);
+                maze.get(i).add(tile);
             }
         }
+        randomStart();
     }
 
     void createAllNeighbors() {
         Node tile;
-        for (int i = 0; i < allTiles.size(); i++) {
-            for (int j = 0; j < allTiles.get(i).size(); j++) {
-                tile = allTiles.get(i).get(j);
+        for (int i = 0; i < maze.size(); i++) {
+            for (int j = 0; j < maze.get(i).size(); j++) {
+                tile = maze.get(i).get(j);
                 addNeighbors(tile);
             }
         }
@@ -66,13 +65,13 @@ public abstract class Labyrinth {
             if(tilePlace[0] + dir[0] >= 0 && tilePlace[0] + dir[0] < mazeHeight &&
                     tilePlace[1] + dir[1] >= 0 && tilePlace[1] + dir[1] < mazeWidth) {
 
-                neighbor = allTiles.get(tilePlace[0] + dir[0]).get(tilePlace[1] + dir[1]);
+                neighbor = maze.get(tilePlace[0] + dir[0]).get(tilePlace[1] + dir[1]);
                 tile.addNeighbor(neighbor);
             }
         }
     }
 
-    Node randomStart() {
+    private void randomStart() {
         int randomCol;
         int randomRow = rnd.nextInt(mazeHeight);
 
@@ -81,16 +80,16 @@ public abstract class Labyrinth {
         } else {
             randomCol = (((int) (rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;
         }
-        return allTiles.get(randomRow).get(randomCol);
+        start = maze.get(randomRow).get(randomCol);
+        start.removeWall();
+        int[] startTileCoord = start.getCoordinate(); // TODO temporary
+        mazeOrder.add(startTileCoord[0] * mazeWidth + startTileCoord[1]); // TODO change mazeOrder to Node
     }
 
     void setMazeTileCorridor(int x, int y) {
-        Node tile = allTiles.get(x).get(y);
+        Node tile = maze.get(x).get(y);
         tile.removeWall();
         tile.setVisited(true);
-        maze[x * mazeWidth + y] = 1;
-        maze2D[x][y] = 1;
         mazeOrder.add(x * mazeWidth + y);
-        mazeOrder2D.add(new int[]{x, y});
     }
 }
