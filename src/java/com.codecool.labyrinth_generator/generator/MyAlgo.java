@@ -15,22 +15,20 @@ public class MyAlgo extends Labyrinth {
 
         super.createGrid();
         stack.push(start);
-        createEdge();
-        generateLabyrinth(start); //Hardcoded response.
-        System.out.println();
+        generateLabyrinth(start);
     }
 
     public void generateLabyrinth(Node start){
         Node currentTile = start;
         Node nextTile;
-        int[] nextCoordinate;  // Todo naming convention...
+        int[] nextCoordinate;
         List<int[]> unvisitedNeighbors = unvisitedNeighbors(currentTile);
 
         if (unvisitedNeighbors.size() > 0) {
             nextCoordinate = unvisitedNeighbors.get(rnd.nextInt(unvisitedNeighbors.size()));
             nextTile = maze.get(nextCoordinate[0]).get(nextCoordinate[1]);
 
-            super.setMazeTileCorridor(nextCoordinate[0], nextCoordinate[1]);
+            setMazeTileCorridor(nextCoordinate[0], nextCoordinate[1]);
             setEndTile(nextCoordinate);
             stack.push(nextTile);
             createCorridor(currentTile, nextTile);
@@ -43,23 +41,20 @@ public class MyAlgo extends Labyrinth {
     }
 
     private List<int[]> unvisitedNeighbors(Node tile) {
-        List<Node> allNeighbors = new ArrayList<>();
+        List<Node> adjacentNeighbors = new ArrayList<>();
         int[][] dirs = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-        int[] tilePlace;
+        int[] tileCoordinate;
 
         for (int[] dir: dirs) {
-            tilePlace = tile.getCoordinate();
-            // IndexOutOfBind protection
-            if(tilePlace[0] + dir[0] >= 0 && tilePlace[0] + dir[0] < mazeHeight &&
-                    tilePlace[1] + dir[1] >= 0 && tilePlace[1] + dir[1] < mazeWidth) {
-
-                allNeighbors.add(maze.get(tilePlace[0] + dir[0]).get(tilePlace[1] + dir[1]));
+            tileCoordinate = tile.getCoordinate();
+            if(super.isCoordinateInBound(tileCoordinate, dir)) {
+                adjacentNeighbors.add(maze.get(tileCoordinate[0] + dir[0]).get(tileCoordinate[1] + dir[1]));
             }
         }
 
         List<int[]> unvisitedNeighbors = new ArrayList<>();
-        for (Node neighbor: allNeighbors) {
-            if(!neighbor.isVisited()) {
+        for (Node neighbor: adjacentNeighbors) {
+            if(!neighbor.isVisited() && !super.isEdge(neighbor)) {
                 unvisitedNeighbors.add(neighbor.getCoordinate());
             }
         }
@@ -67,13 +62,13 @@ public class MyAlgo extends Labyrinth {
     }
 
     private void createCorridor(Node currentTile, Node nextTile) {
-        int[] currentPlace = currentTile.getCoordinate();
-        int[] nextPlace = nextTile.getCoordinate();
+        int[] currentCoordinate = currentTile.getCoordinate();
+        int[] nextCoordinate = nextTile.getCoordinate();
         int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         int startLoop;
         int endLoop;
 
-        if(currentPlace[0] == nextPlace[0]) {
+        if(currentCoordinate[0] == nextCoordinate[0]) {
             startLoop = 0;
             endLoop = 2;
         } else {
@@ -82,39 +77,34 @@ public class MyAlgo extends Labyrinth {
         }
 
         for (int i = startLoop; i < endLoop; i++) {
-            maze.get(currentPlace[0] + dirs[i][0]).get(currentPlace[1] + dirs[i][1]).setVisited(true);
+            maze.get(currentCoordinate[0] + dirs[i][0]).get(currentCoordinate[1] + dirs[i][1]).setVisited(true);
         }
     }
 
     private void setEndTile(int[] curentTile) {  // TODO WET
-        int[] startTile = start.getCoordinate();
+        int[] startCoordinate = start.getCoordinate();
 
         if(mazeOrder.size() > 1 && !isEndTileFound) {
-            if (startTile[0] == 0 && curentTile[0] + 1 == mazeHeight - 1) {
-                super.setMazeTileCorridor(curentTile[0] + 1, curentTile[1]);
+            if (startCoordinate[0] == 0 && curentTile[0] + 1 == mazeHeight - 1) {
+                setMazeTileCorridor(curentTile[0] + 1, curentTile[1]);
                 isEndTileFound = true;
-            } else if (startTile[0] == mazeHeight && curentTile[0] - 1 == 0) {
-                super.setMazeTileCorridor(curentTile[0] - 1, curentTile[1]);
+            } else if (startCoordinate[0] == mazeHeight && curentTile[0] - 1 == 0) {
+                setMazeTileCorridor(curentTile[0] - 1, curentTile[1]);
                 isEndTileFound = true;
-            } else if (startTile[1] == 0 && curentTile[1] + 1 == mazeWidth - 1) {
-                super.setMazeTileCorridor(curentTile[0], curentTile[1] + 1);
+            } else if (startCoordinate[1] == 0 && curentTile[1] + 1 == mazeWidth - 1) {
+                setMazeTileCorridor(curentTile[0], curentTile[1] + 1);
                 isEndTileFound = true;
-            } else if (startTile[1] == mazeWidth && curentTile[1] - 1 == 0) {
-                super.setMazeTileCorridor(curentTile[0], curentTile[1] - 1);
+            } else if (startCoordinate[1] == mazeWidth && curentTile[1] - 1 == 0) {
+                setMazeTileCorridor(curentTile[0], curentTile[1] - 1);
                 isEndTileFound = true;
             }
         }
     }
 
-    private void createEdge() {
-        for (int i = 0; i < mazeHeight; i++) {
-            maze.add(new ArrayList<>());
-            for (int j = 0; j < mazeWidth; j++) {
-                Node tile = maze.get(i).get(j);
-                if(i == 0 || i == mazeHeight -1 || j == 0 || j == mazeWidth - 1) {
-                    tile.setVisited(true);
-                }
-            }
-        }
+    void setMazeTileCorridor(int x, int y) {
+        Node tile = maze.get(x).get(y);
+        tile.removeWall();
+        tile.setVisited(true);
+        mazeOrder.add(x * mazeWidth + y);
     }
 }
