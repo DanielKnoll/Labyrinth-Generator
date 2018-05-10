@@ -161,7 +161,7 @@ footer div:first-child {
 }
 
 #generate {
-    width: 50%; /*todo not the same width as player btns*/
+    width: 50%;
     margin: 0px auto;
     font-size: 2em;
 }
@@ -247,11 +247,6 @@ select {
     font-size: 1em;
 }
 
-/***************************Code Info***************************/
-
-.keyWord {  /* TODO variable, method name, constant+string, annotation, comment*/
-    color: #ff6b33;
-}
 
 /***************************Algo Info***************************/
 

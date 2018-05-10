@@ -12,8 +12,6 @@ public class MyAlgo extends Labyrinth {
         algoName = "My algorithm";
         this.mazeWidth = mazeWidth;
         this.mazeHeight = mazeHeight;
-        maze2D = new int[mazeHeight][mazeWidth];
-        maze = new int[mazeHeight*mazeWidth];
 
         super.createGrid();
         createEdge();
@@ -40,7 +38,7 @@ public class MyAlgo extends Labyrinth {
             generateLabyrinth(nextPlace);
         } else {
             if(!stack.empty()) {
-                generateLabyrinth(stack.pop().getPlace());
+                generateLabyrinth(stack.pop().getCoordinate());
             }
         }
     }
@@ -51,7 +49,7 @@ public class MyAlgo extends Labyrinth {
         int[] tilePlace;
 
         for (int[] dir: dirs) {
-            tilePlace = tile.getPlace();
+            tilePlace = tile.getCoordinate();
             // IndexOutOfBind protection
             if(tilePlace[0] + dir[0] >= 0 && tilePlace[0] + dir[0] < mazeHeight &&
                     tilePlace[1] + dir[1] >= 0 && tilePlace[1] + dir[1] < mazeWidth) {
@@ -63,15 +61,15 @@ public class MyAlgo extends Labyrinth {
         List<int[]> unvisitedNeighbors = new ArrayList<>();
         for (Node neighbor: allNeighbors) {
             if(!neighbor.isVisited()) {
-                unvisitedNeighbors.add(neighbor.getPlace());
+                unvisitedNeighbors.add(neighbor.getCoordinate());
             }
         }
         return unvisitedNeighbors;
     }
 
     private void createCorridor(Node currentTile, Node nextTile) {
-        int[] currentPlace = currentTile.getPlace();
-        int[] nextPlace = nextTile.getPlace();
+        int[] currentPlace = currentTile.getCoordinate();
+        int[] nextPlace = nextTile.getCoordinate();
         int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
         int startLoop;
         int endLoop;

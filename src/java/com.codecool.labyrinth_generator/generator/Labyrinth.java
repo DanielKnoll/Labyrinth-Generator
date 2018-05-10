@@ -11,7 +11,7 @@ public abstract class Labyrinth {
     int[][] maze2D;  //TODO helper method
     int mazeWidth;
     int mazeHeight;
-    List<Integer> mazeOrder = new ArrayList<>();
+    List<Integer> mazeOrder = new ArrayList<>();  //TODO Node
     List<int[]> mazeOrder2D = new ArrayList<>();  //TODO helper method
     List<List<Node>> allTiles = new ArrayList<>();
     Random rnd = new Random();
@@ -61,7 +61,7 @@ public abstract class Labyrinth {
         int[] tilePlace;
 
         for (int[] dir: dirs) {
-            tilePlace = tile.getPlace();
+            tilePlace = tile.getCoordinate();
             // IndexOutOfBind protection
             if(tilePlace[0] + dir[0] >= 0 && tilePlace[0] + dir[0] < mazeHeight &&
                     tilePlace[1] + dir[1] >= 0 && tilePlace[1] + dir[1] < mazeWidth) {

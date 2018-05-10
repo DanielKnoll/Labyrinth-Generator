@@ -100,10 +100,10 @@ dom = {
             });
         },
 
-        anyMazeGenBtnEventListener: function () {  //TODO how to include newMaze and Solve? is this a good practice?
-            let interruptorBtns = ["start", "back", "rew", "pause", "ffwd", "forward", "end", "newMaze"];
+        anyMazeGenBtnEventListener: function () {  //TODO is this a good practice?
+            let interruptorBtns = ["start", "back", "rew", "pause", "ffwd", "forward", "end"];
             let forwardBtns = ["start", "play", "ffwd", "forward"];
-            let resetMazeBtns = ["start", "end", "newMaze"];
+            let resetMazeBtns = ["start", "end"];
             let pauseToPlayBtns = ["start", "back", "forward", "end"];
             let playToPauseBtns = ["rew", "ffwd"];
             $(".playerBtns button").click(function () {
@@ -410,7 +410,7 @@ dom = {
     },
 
     htmlStructures: {
-        // TODO write about POST method too. What is the valid GET link format? Add sliders to JSON preview area.
+        // TODO What is the valid GET link format?
         apiInfo: `
                 <h3 class="title">API Info</h3>
                 <p>

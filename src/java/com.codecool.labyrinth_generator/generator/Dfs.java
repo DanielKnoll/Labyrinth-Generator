@@ -17,7 +17,7 @@ public class Dfs extends Labyrinth {
         Node startTile = super.randomStart();
         startTile.removeWall();
         stack.push(startTile);
-        int[] startTileCoord = startTile.getPlace(); // TODO temporary
+        int[] startTileCoord = startTile.getCoordinate(); // TODO temporary
         mazeOrder.add(startTileCoord[0] * mazeWidth + startTileCoord[1]); // TODO change mazeOrder to Node
         generateLabyrinth(startTile);
     }
@@ -27,11 +27,10 @@ public class Dfs extends Labyrinth {
         while(!stack.empty()) {
             List<Node> nextTiles = checkNeighbors(currentTile);
             if (nextTiles.size() > 0) {
-                int num = rnd.nextInt(nextTiles.size());
-                Node next = nextTiles.get(num);  // TODO one line
+                Node next = nextTiles.get(rnd.nextInt(nextTiles.size()));
                 next.removeWall();
                 stack.push(next);
-                int[] nextCoord = next.getPlace(); // TODO helper method for conversion (x * mazeWidth + y)
+                int[] nextCoord = next.getCoordinate(); // TODO helper method for conversion (x * mazeWidth + y)
                 mazeOrder.add(nextCoord[0] * mazeWidth + nextCoord[1]);
                 currentTile = next;
             } else if (!stack.empty()) {
@@ -65,7 +64,7 @@ public class Dfs extends Labyrinth {
      */
     private List<Node> getAdjacentNeighbours(Node node) {
         List<Node> neighbors = new ArrayList<>();
-        int[] nodeCoordinate = node.getPlace();
+        int[] nodeCoordinate = node.getCoordinate();
         int[][] adjacentDirections = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
 
         for (int[] direction : adjacentDirections) {
@@ -87,7 +86,7 @@ public class Dfs extends Labyrinth {
      * except for the current searches head (top 2 elements of the Stack)
      */
     private boolean hasNoVisitedNearby(Node node) {
-        int[] nodeCoordinate = node.getPlace();
+        int[] nodeCoordinate = node.getCoordinate();
         int[][] allDirections = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}};
         int corridorCounter = 0;
 
@@ -117,7 +116,7 @@ public class Dfs extends Labyrinth {
      * returns true if the node is on the edge
      */
     private boolean isEdge(Node node) {
-        int[] nodeCoordinate = node.getPlace();
+        int[] nodeCoordinate = node.getCoordinate();
         if(nodeCoordinate[0] == 0 || nodeCoordinate[0] == mazeHeight - 1 ||
                 nodeCoordinate[1] == 0 || nodeCoordinate[1] == mazeWidth - 1) {
             return true;

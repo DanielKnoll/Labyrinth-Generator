@@ -20,7 +20,7 @@ apiData = {
         });
     },
 
-    getMazeInfo: function (mazeType) {  // TODO post method would be better
+    getMazeInfo: function (mazeType) {
         $.postJSON( "/api/info/", { algoType: mazeType })
             .done(function( infoData ) {
                 dom.dataFunctions.saveInfo(infoData);

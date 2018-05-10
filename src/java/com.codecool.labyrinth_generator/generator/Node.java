@@ -6,13 +6,13 @@ import java.util.List;
 
 public class Node {
     private boolean isWall = true;
-    private int[] place = new int[2];
+    private int[] coordinate = new int[2];
     private List<Node> neighbors = new ArrayList<>();
     private boolean isVisited = false;  //TODO delete?
 
     public Node(int x, int y) {
-        place[0] = x;
-        place[1] = y;
+        coordinate[0] = x;
+        coordinate[1] = y;
     }
 
     public boolean isWall() {
@@ -23,8 +23,8 @@ public class Node {
         isWall = false;
     }
 
-    public int[] getPlace() {
-        return place;
+    public int[] getCoordinate() {
+        return coordinate;
     }
 
     public List<Node> getNeighbors() {
@@ -46,6 +46,6 @@ public class Node {
     @Override
     public String toString() {
         //return (isWall) ? "0" : "1";
-        return Arrays.toString(place);
+        return Arrays.toString(coordinate);
     }
 }
