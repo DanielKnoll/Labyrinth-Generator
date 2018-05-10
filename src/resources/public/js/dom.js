@@ -33,11 +33,13 @@ dom = {
             dom.eventListeners.anyMazeGenBtnEventListener();
             dom.eventListeners.rewindMazeGenEventListener();
             dom.eventListeners.stepBackEventListener();
-            dom.eventListeners.stepForwardEndEventListener();
             dom.eventListeners.playPauseMazeGenEventListener();
+            dom.eventListeners.stepForwardEndEventListener();
             dom.eventListeners.fastForwardMazeGenEventListener();
+            dom.eventListeners.jumpToEndEventListener();
             dom.eventListeners.newMazeEventListener();
             dom.eventListeners.infoBtnsEventListener();
+            dom.eventListeners.solveMazeEventListener();
         },
     },
 
@@ -94,13 +96,16 @@ dom = {
                 $(".playerBtns").slideDown(100);
                 $(".infoBtnsGrid").slideDown(200);
                 dom.utility.mazeGeneration();
+                dom.utility.changePlayToPause();
             });
         },
 
         anyMazeGenBtnEventListener: function () {  //TODO how to include newMaze and Solve? is this a good practice?
-            let interruptorBtns = ["back", "rew", "pause", "ffwd", "forward", "newMaze"];
-            let forwardBtns = ["play", "ffwd", "forward"];
-            let resetMazeBtns = ["newMaze"];
+            let interruptorBtns = ["start", "back", "rew", "pause", "ffwd", "forward", "end", "newMaze"];
+            let forwardBtns = ["start", "play", "ffwd", "forward"];
+            let resetMazeBtns = ["start", "end", "newMaze"];
+            let pauseToPlayBtns = ["start", "back", "forward", "end"];
+            let playToPauseBtns = ["rew", "ffwd"];
             $(".playerBtns button").click(function () {
                 dom.utility.resetBtnFontColor();
                 let btnId = $(this).attr("id");
@@ -115,13 +120,18 @@ dom = {
                         dom.data.iterator >= dom.data.mazeOrderLength))) {
                     dom.utility.resetMaze();
                 }
+                if(pauseToPlayBtns.includes(btnId)) {
+                    dom.utility.changePauseToPlay();
+                }
+                if(playToPauseBtns.includes(btnId)) {
+                    dom.utility.changePlayToPause();
+                }
             });
         },
 
         rewindMazeGenEventListener: function () {
             $("#rew").click(function () {
                 if(dom.data.iterator <= dom.data.mazeOrderLength + 1) {
-                    dom.utility.changePlayToPause();  // Todo any btn
                     $("#rew").addClass("activeBtn");
                     dom.data.delay = 50;
                     dom.data.reverseOrder = true;
@@ -134,20 +144,19 @@ dom = {
             $("#back").click(function () {
                 dom.data.iterator--;
                 dom.utility.changeBackCurrentAndPreviousMazeTileColor();
-                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
         playPauseMazeGenEventListener: function () {
-            let btn = $("#back").next();  // play/pause button
+            let btn = $("#back").next();
             btn.click(function () {
                 switch (btn.attr("id")) {
                     case "pause":
-                        dom.utility.changePauseToPlay();  // Todo any btn
+                        dom.utility.changePauseToPlay();
                         break;
                     case "play":
                         dom.data.delay = 300;
-                        dom.utility.changePlayToPause();  // Todo any btn
+                        dom.utility.changePlayToPause();
                         dom.utility.mazeGeneration();
                         break;
                     default:
@@ -160,18 +169,22 @@ dom = {
             $("#forward").click(function () {
                 dom.utility.changeCurrentAndPreviousMazeTileColor();
                 dom.data.iterator++;
-                dom.utility.changePauseToPlay();  // Todo any btn
             });
         },
 
         fastForwardMazeGenEventListener: function () {
             $("#ffwd").click(function () {
                 if(dom.data.iterator < dom.data.mazeOrderLength) {
-                    dom.utility.changePlayToPause();  // Todo any btn
                     $("#ffwd").addClass("activeBtn");
                     dom.data.delay = 50;
                     dom.utility.mazeGeneration();
                 }
+            });
+        },
+
+        jumpToEndEventListener: function () {
+            $("#end").click(function () {
+                dom.utility.finishMazeGeneration();
             });
         },
 
@@ -229,10 +242,19 @@ dom = {
                 let mazeHeight = $("#height").val();
                 $(".apiValues").html("wall=0&amp;algo=" + algoType + "&amp;width=" + mazeWidth + "&amp;height=" +
                     mazeHeight);
+                $(".postAlgoType").html(algoType);
+                $(".postWidth").html(mazeWidth);
+                $(".postHeight").html(mazeHeight);
                 dom.utility.resetMaze();
                 dom.utility.changePauseToPlay();
-                apiData.postMazeData(algoType,mazeWidth, mazeHeight);
+                apiData.getMazeDataPost(algoType,mazeWidth, mazeHeight);
             })
+        },
+
+        solveMazeEventListener: function () {
+            $("#solveMaze").click(function () {
+                apiData.getMazeSolveOrder(dom.data.mazeData.maze, );
+            });
         }
     },
 
@@ -321,6 +343,9 @@ dom = {
                 case "showApi":
                     infoSection.html(dom.htmlStructures.apiInfo);
                     $(".apiValues").html(dom.data.infoData.apiValues);
+                    $(".postAlgoType").html(dom.data.algoType);
+                    $(".postWidth").html(dom.data.mazeColNum);
+                    $(".postHeight").html(dom.data.mazeRowNum);
                     $(".json").html(JSON.stringify(dom.data.mazeData, null, 2));
                     dom.eventListeners.formSubmitEventListener();
                     break;
@@ -345,6 +370,21 @@ dom = {
                 default:
             }
         },
+        
+        finishMazeGeneration: function () {
+            let tile;
+            for (dom.data.iterator; dom.data.iterator < dom.data.mazeOrderLength; dom.data.iterator++) {
+                tile = dom.data.mazeOrder[dom.data.iterator];
+                $(".maze div").eq(tile).removeClass("mazeWall").addClass("mazeCorridor");
+            }
+        },
+
+        showMazeSolve: function (solutionOrderJson) {
+            dom.utility.finishMazeGeneration();
+            for(let i = 0; i < solutionOrderJson.solutionOrder.length; i++){
+                $(".maze div").eq(i).removeClass("mazeWall").addClass("solution");
+            }
+        }
     },
 
     dataFunctions: {
@@ -373,36 +413,62 @@ dom = {
         // TODO write about POST method too. What is the valid GET link format? Add sliders to JSON preview area.
         apiInfo: `
                 <h3 class="title">API Info</h3>
-                    <div class="snippet">
-                        <code>http://www.future-domain-name.hu/api/generate/<span class="apiValues"></span></code>
+                <p>
+                    There are two way to get maze information from server: GET and POST method.</br>
+                    For GET method you simply copy-paste the generated link below and you will get the JSON file on screen. You can see it at the bottom of the section.</br>
+                    Alternatively you can create a different type and size of maze with the form below the link. The link will be updated too.
+                </p>
+                <h4>GET method:</h4>
+                <div class="snippet">
+                    <code>http://www.future-domain-name.hu/api/generate/<span class="apiValues"></span></code>
+                </div>
+                <div class="apiInfo">
+                    <ol>
+                        <li>input: 0: thick wall / 1: thin wall</li>
+                        <li>input: 0-4 generation algorithms</li>
+                        <li>input: maze width (3-50)</li>
+                        <li>input: maze height (3-50)</li>
+                    </ol>
+                    <div class="form">
+                        <form>
+                            <select id="wallType" name="wall" disabled="true">
+                                <option value="0">thick wall</option>
+                                <option value="1">thin wall</option>
+                            </select>
+                            <select id="algoType" name="algo">
+                                <option value="0">DFS</option>
+                                <option value="1">Kruskal</option>
+                                <option value="2">My algorithm</option>
+                            </select>
+                            <input id="width" type="number" value="19" max="50"/>
+                            <input id="height" type="number" value="13" max="50"/>
+                            <div class="btn singleBtn formSubmit">Send</div>
+                        </form>
                     </div>
-                    <div class="apiInfo">
-                        <ol>
-                            <li>input: 0: thick wall / 1: thin wall</li>
-                            <li>input: 0-4 generation algorithms</li>
-                            <li>input: maze width (3-50)</li>
-                            <li>input: maze height (3-50)</li>
-                        </ol>
-                        <div class="form">
-                            <form>
-                                <select id="wallType" name="wall" disabled="true">
-                                    <option value="0">thick wall</option>
-                                    <option value="1">thin wall</option>
-                                </select>
-                                <select id="algoType" name="algo">
-                                    <option value="0">DFS</option>
-                                    <option value="1">Kruskal</option>
-                                    <option value="2">My algorithm</option>
-                                </select>
-                                <input id="width" type="number" value="18" max="50"/>
-                                <input id="height" type="number" value="10" max="50"/>
-                                <div class="btn singleBtn formSubmit">Send</div>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="snippet">
-                        <pre><code class="json"></code></pre>
-                    </div>
+                </div>
+                
+                <h4>POST method:</h4>
+                <div class="snippet">
+                    <code>http://www.future-domain-name.hu/api/generate/</code>
+                </div>
+                <p>
+                    Or you can send the server to link above the object below.</br>
+                </p>
+                <div class="snippet">
+                   <code>
+                        &nbsp;&nbsp;{</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;algoType: <span class="postAlgoType">0</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;mazeColNum: <span class="postWidth">18</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;mazeRowNum: <span class="postHeight">10</span></br>
+                        &nbsp;&nbsp;}
+                    </code>
+                </div>
+                <h4>Output:</h4>
+                <div class="snippet">
+                    <pre>
+                        <code class="json"></code>
+                    </pre>
+                </div>
         `,
 
         algoInfo: `

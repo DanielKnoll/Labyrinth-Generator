@@ -6,7 +6,7 @@ apiData = {
         });
     },
     
-    postMazeData: function (type, width, height) {
+    getMazeDataPost: function (type, width, height) {
         $.postJSON("/api/generate/",
             {
                 algoType: type,
@@ -20,12 +20,24 @@ apiData = {
         });
     },
 
-    getMazeInfo: function (mazeType) {
+    getMazeInfo: function (mazeType) {  // TODO post method would be better
         $.postJSON( "/api/info/", { algoType: mazeType })
             .done(function( infoData ) {
                 dom.dataFunctions.saveInfo(infoData);
             });
-    }
+    },
+
+    getMazeSolveOrder: function (maze, start, end) {
+        $.postJSON("/api/solve/",
+            {
+                maze: maze,
+                start: start,
+                end: end
+            }
+        ).done(function( solutionOrder ) {
+            dom.utility.showMazeSolve(solutionOrder);
+        });
+    },
 };
 
 $.postJSON = function(url, data, callback) {

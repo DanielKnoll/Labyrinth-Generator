@@ -12,7 +12,7 @@ public class DfsInfo extends AlgorithmInfo {
     public DfsInfo() {
         fillInfo();
         setName("Depth-first search algorithm");
-        setDefaultApiLink("wall=0&amp;algo=0&amp;width=18&amp;height=10");
+        setDefaultApiLink("wall=0&amp;algo=0&amp;width=19&amp;height=13");
         setClassNames(classNames);
         setClassCodes(classCodes);
         setAlgoWikiInfo(algoWikiInfo);
@@ -144,7 +144,7 @@ public class DfsInfo extends AlgorithmInfo {
                 "            for (int[] direction : allDirections) {\n" +
                 "                    Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);\n" +
                 "                    if (!neighbor.isWall() && !(stack.search(neighbor) == 1 || stack.search(neighbor) == 2)) {\n" +
-                "                        return false;  // Todo bug\n" +
+                "                        return false;\n" +
                 "                    }\n" +
                 "            }\n" +
                 "            return true;\n" +
@@ -186,7 +186,7 @@ public class DfsInfo extends AlgorithmInfo {
                 "            return allTiles.get(randomRow).get(randomCol);\n" +
                 "        }\n" +
                 "    }");
-        imageNames.add("300px-Depth-first-tree.svg.png");
+        imageNames.add("dfs.gif");
         imageNames.add("DFSimg.png");
         algoWikiInfo =
                 "<p>This algorithm is a randomized version of the depth-first search algorithm. Frequently implemented with a stack, this approach is one of the simplest ways to generate a maze using a computer. Consider the space for a maze being a large grid of cells (like a large chess board), each cell starting with four walls. Starting from a random cell, the computer then selects a random neighbouring cell that has not yet been visited. The computer removes the wall between the two cells and marks the new cell as visited, and adds it to the stack to facilitate backtracking. The computer continues this process, with a cell that has no unvisited neighbours being considered a dead-end. When at a dead-end it backtracks through the path until it reaches a cell with an unvisited neighbour, continuing the path generation by visiting this new, unvisited cell (creating a new junction). This process continues until every cell has been visited, causing the computer to backtrack all the way back to the beginning cell. We can be sure every cell is visited.</p>" +
