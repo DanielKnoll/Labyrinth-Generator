@@ -26,22 +26,16 @@ public class ErrorHandler implements ErrorController {
             case 400:
                 errorMsg = "Error 400: Bad Request";
                 break;
-
-            case 401:
-                errorMsg = "Error 401: Unauthorized";
-                break;
-
             case 404:
                 errorMsg = "Error 404: Resource not found";
                 break;
-
             case 500:
                 errorMsg = "Error 500: Internal Server Error";
                 break;
         }
 
         model.addAttribute("errormsg", errorMsg);
-        return "main";
+        return "error";
     }
 
     private int getErrorCode(HttpServletResponse response) {
