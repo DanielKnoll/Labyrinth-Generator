@@ -74,32 +74,22 @@ public class Dfs extends Labyrinth {
 
     /**
      * Checks if there are no corridor tiles nearby
-     * except for the current searches head (top 2 elements of the Stack)
+     * except for the current searches head and or its neighbors
      */
     private boolean hasNoVisitedNearby(Node node) {
         int[] nodeCoordinate = node.getCoordinate();
         int[][] allDirections = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}};
         int corridorCounter = 0;
+        List<Node> lastStepAndNeighbors = getAdjacentNeighbours(stack.peek());
+        lastStepAndNeighbors.add(stack.peek());
 
         for (int[] direction : allDirections) {
             Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
             if(!neighbor.isWall()) {corridorCounter++;}
-            if (!neighbor.isWall() && !getLastStepAndNeighbors().contains(neighbor)) {
+            if (!neighbor.isWall() && !lastStepAndNeighbors.contains(neighbor)) {
                 return false;  // Todo bug
             }
         }
         return corridorCounter <= 2;
-    }
-
-    private List<Node> getLastStepAndNeighbors() {
-        List<Node> neighbors = getAdjacentNeighbours(stack.peek());
-        for (int i = 0; i < neighbors.size(); i++) {
-            Node node = neighbors.get(i);
-            if (node.isWall()) {
-                neighbors.remove(node);
-            }
-        }
-        neighbors.add(stack.peek());
-        return neighbors;
     }
 }
