@@ -27,10 +27,6 @@ public class Node {
         return coordinate;
     }
 
-    public List<Node> getNeighbors() {
-        return neighbors;
-    }
-
     public void addNeighbor(Node tile) {
         neighbors.add(tile);
     }
