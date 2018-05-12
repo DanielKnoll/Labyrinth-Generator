@@ -14,6 +14,7 @@ public class MyAlgo extends Labyrinth {
         this.mazeHeight = mazeHeight;
 
         super.createGrid();
+        Node start = super.randomStart();
         stack.push(start);
         generateLabyrinth(start);
     }
@@ -81,7 +82,7 @@ public class MyAlgo extends Labyrinth {
     }
 
     private void setEndTile(Node curentTile) {  // TODO WET, need that end Node
-        int[] startCoordinate = start.getCoordinate();
+        int[] startCoordinate = stack.get(0).getCoordinate();
         int[] curentCoordintate = curentTile.getCoordinate();
 
         if(mazeOrder.size() > 1 && !isEndTileFound) {
@@ -105,5 +106,6 @@ public class MyAlgo extends Labyrinth {
         tile.removeWall();
         tile.setUnbreakable();
         mazeOrder.add(tile);
+        super.end = tile;
     }
 }

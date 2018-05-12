@@ -12,25 +12,23 @@ import java.util.List;
 public class CreateJson {
 
     public JSONObject getLabyrinthJson(Labyrinth labyrinth) {
-        int[] mazeStart2D = labyrinth.getMazeOrder().get(0).getCoordinate();
         int mazeWidth = labyrinth.getMazeWidth();
-        int mazeStart = mazeStart2D[0] * mazeWidth + mazeStart2D[1];  // x * width + y = 1D array
+        int[] mazeStart2D = labyrinth.getMazeOrder().get(0).getCoordinate();
         List<int[]> mazeOrder2D = getMazeOrder2D(labyrinth.getMazeOrder());
-        List<Integer> mazeOrder = getMazeOrder(mazeOrder2D, mazeWidth);
         List<List<Short>> maze2D = getMaze2D(labyrinth.getMaze());
-        List<Short> maze = getMaze(maze2D);
+        int[] end2D = labyrinth.getEnd().getCoordinate();
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("algoName", labyrinth.getAlgoName());
         jsonObject.put("mazeColNum", mazeWidth);
         jsonObject.put("mazeRowNum", labyrinth.getMazeHeight());
-        jsonObject.put("maze", maze);
-        jsonObject.put("start", mazeStart);
-        jsonObject.put("end", "coming soon");
-        jsonObject.put("mazeOrder", mazeOrder);
+        jsonObject.put("maze", getMaze(maze2D));
+        jsonObject.put("start", mazeStart2D[0] * mazeWidth + mazeStart2D[1]); // x * width + y = 1D array
+        jsonObject.put("end", end2D[0] * mazeWidth + end2D[1]);
+        jsonObject.put("mazeOrder", getMazeOrder(mazeOrder2D, mazeWidth));
         jsonObject.put("maze2D", maze2D);
         jsonObject.put("start2D", mazeStart2D);
-        jsonObject.put("end2D", "coming soon");
+        jsonObject.put("end2D", end2D);
         jsonObject.put("mazeOrder2D", mazeOrder2D);
         return jsonObject;
     }

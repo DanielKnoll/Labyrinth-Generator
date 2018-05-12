@@ -12,7 +12,7 @@ public abstract class Labyrinth {
     List<Node> mazeOrder = new ArrayList<>();
     List<List<Node>> maze = new ArrayList<>();
     Random rnd = new Random();
-    Node start;
+    Node end = new Node(0,0); // Fail safe
 
     public String getAlgoName() {
         return algoName;
@@ -34,6 +34,10 @@ public abstract class Labyrinth {
         return maze;
     }
 
+    public Node getEnd() {
+        return end;
+    }
+
     public abstract void generateLabyrinth(Node start);
 
     void createGrid() {
@@ -45,7 +49,21 @@ public abstract class Labyrinth {
                 maze.get(i).add(tile);
             }
         }
-        randomStart();
+    }
+
+    Node randomStart() {
+        int randomCol;
+        int randomRow = rnd.nextInt(mazeHeight);
+
+        if (randomRow == 0 || randomRow == mazeHeight - 1) {
+            randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners: between 1 and width-1
+        } else {
+            randomCol = (((int) (rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;
+        }
+        Node start = maze.get(randomRow).get(randomCol);
+        start.removeWall();
+        mazeOrder.add(start);
+        return start;
     }
 
     boolean isCoordinateInBound(int[] nodeCoordinate, int[] direction) {
@@ -85,19 +103,5 @@ public abstract class Labyrinth {
                 tile.addNeighbor(neighbor);
             }
         }
-    }
-
-    private void randomStart() {
-        int randomCol;
-        int randomRow = rnd.nextInt(mazeHeight);
-
-        if (randomRow == 0 || randomRow == mazeHeight - 1) {
-            randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners: between 1 and width-1
-        } else {
-            randomCol = (((int) (rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;
-        }
-        start = maze.get(randomRow).get(randomCol);
-        start.removeWall();
-        mazeOrder.add(start);
     }
 }

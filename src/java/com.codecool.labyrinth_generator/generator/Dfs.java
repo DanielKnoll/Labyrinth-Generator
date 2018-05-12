@@ -14,6 +14,7 @@ public class Dfs extends Labyrinth {
         this.mazeHeight = mazeHeight;
 
         super.createGrid();
+        Node start = super.randomStart();
         stack.push(start);
         generateLabyrinth(start);
     }
