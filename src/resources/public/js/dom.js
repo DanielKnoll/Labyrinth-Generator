@@ -69,7 +69,8 @@ dom = {
                         dom.data.algoType = 2;
                         break;
                     case "kruskal":
-                        apiData.getMazeData("1&19&13");
+                        apiData.getMazeData("1&19&13"); //TODO get rid of next line
+                        dom.data.mazeOrder = [96, 77, 58, 39, 20, 40, 60, 80, 100, 81, 62, 43, 24, 27, 28, 29, 49, 68, 87, 105, 104, 103, 83, 64, 45, 32, 33, 34, 35, 36, 53, 72, 91, 110, 134, 153, 173, 174, 175, 157, 138, 193, 212, 144, 143, 142, 141, 140, 159, 178, 197, 216, 217, 218, 219, 220, 179, 180, 146, 147, 148, 149, 150, 167, 186, 205, 224];
                         apiData.getMazeInfo(1);
                         dom.data.algoType = 1;
                         break;

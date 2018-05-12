@@ -9,7 +9,7 @@ public abstract class Labyrinth {
     String algoName;
     int mazeWidth;
     int mazeHeight;
-    List<Integer> mazeOrder = new ArrayList<>();  //TODO Node
+    List<Node> mazeOrder = new ArrayList<>();
     List<List<Node>> maze = new ArrayList<>();
     Random rnd = new Random();
     Node start;
@@ -18,7 +18,7 @@ public abstract class Labyrinth {
         return algoName;
     }
 
-    public List<Integer> getMazeOrder() {
+    public List<Node> getMazeOrder() {
         return mazeOrder;
     }
 
@@ -28,6 +28,10 @@ public abstract class Labyrinth {
 
     public int getMazeHeight() {
         return mazeHeight;
+    }
+
+    public List<List<Node>> getMaze() {
+        return maze;
     }
 
     public abstract void generateLabyrinth(Node start);
@@ -94,7 +98,6 @@ public abstract class Labyrinth {
         }
         start = maze.get(randomRow).get(randomCol);
         start.removeWall();
-        int[] startTileCoord = start.getCoordinate(); // TODO temporary
-        mazeOrder.add(startTileCoord[0] * mazeWidth + startTileCoord[1]); // TODO change mazeOrder to Node
+        mazeOrder.add(start);
     }
 }

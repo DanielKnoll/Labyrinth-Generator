@@ -26,8 +26,7 @@ public class Dfs extends Labyrinth {
                 Node next = nextTiles.get(rnd.nextInt(nextTiles.size()));
                 next.removeWall();
                 stack.push(next);
-                int[] nextCoord = next.getCoordinate(); // TODO helper method for conversion (x * mazeWidth + y)
-                mazeOrder.add(nextCoord[0] * mazeWidth + nextCoord[1]);
+                mazeOrder.add(next);
                 currentTile = next;
             } else if (!stack.empty()) {
                 currentTile = stack.pop();
@@ -61,7 +60,7 @@ public class Dfs extends Labyrinth {
     private List<Node> getAdjacentNeighbours(Node node) {
         List<Node> neighbors = new ArrayList<>();
         int[] nodeCoordinate = node.getCoordinate();
-        int[][] adjacentDirections = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};
+        int[][] adjacentDirections = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};  // Left, Top, Right, Bottom
 
         for (int[] direction : adjacentDirections) {
             if (super.isCoordinateInBound(nodeCoordinate, direction)) {
