@@ -12,15 +12,26 @@ import java.util.List;
 public class CreateJson {
 
     public JSONObject getLabyrinthJson(Labyrinth labyrinth) {
+        int[] mazeStart2D = labyrinth.getMazeOrder().get(0).getCoordinate();
+        int mazeWidth = labyrinth.getMazeWidth();
+        int mazeStart = mazeStart2D[0] * mazeWidth + mazeStart2D[1];  // x * width + y = 1D array
+        List<int[]> mazeOrder2D = getMazeOrder2D(labyrinth.getMazeOrder());
+        List<Integer> mazeOrder = getMazeOrder(mazeOrder2D, mazeWidth);
+        List<List<Short>> maze2D = getMaze2D(labyrinth.getMaze());
+        List<Short> maze = getMaze(maze2D);
+
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("algoName", labyrinth.getAlgoName());
-        jsonObject.put("mazeColNum", labyrinth.getMazeWidth());
+        jsonObject.put("mazeColNum", mazeWidth);
         jsonObject.put("mazeRowNum", labyrinth.getMazeHeight());
-        jsonObject.put("start", labyrinth.getMazeOrder().get(0).getCoordinate());
-        jsonObject.put("maze", getMaze(labyrinth.getMaze()));
-        jsonObject.put("maze2D", getMaze2D(labyrinth.getMaze()));
-        jsonObject.put("mazeOrder", getMazeOrder(labyrinth.getMazeOrder(), labyrinth.getMazeWidth()));
-        jsonObject.put("mazeOrder2D", getMazeOrder2D(labyrinth.getMazeOrder(), labyrinth.getMazeWidth()));
+        jsonObject.put("maze", maze);
+        jsonObject.put("start", mazeStart);
+        jsonObject.put("end", "coming soon");
+        jsonObject.put("mazeOrder", mazeOrder);
+        jsonObject.put("maze2D", maze2D);
+        jsonObject.put("start2D", mazeStart2D);
+        jsonObject.put("end2D", "coming soon");
+        jsonObject.put("mazeOrder2D", mazeOrder2D);
         return jsonObject;
     }
 
@@ -43,17 +54,15 @@ public class CreateJson {
         return jsonObject;
     }
 
-    private List<Integer> getMazeOrder(List<Node> mazeOrder, int mazeWidth) {
+    private List<Integer> getMazeOrder(List<int[]> mazeOrder, int mazeWidth) {
         List<Integer> result = new ArrayList<>();
-
-            for (Node node : mazeOrder) {
-                int[] coordinate = node.getCoordinate();
-                result.add(coordinate[0] * mazeWidth + coordinate[1]);
+            for (int[] coordinate : mazeOrder) {
+                result.add(coordinate[0] * mazeWidth + coordinate[1]);  // x * width + y = 1D array
             }
         return result;
     }
 
-    private List<int[]> getMazeOrder2D(List<Node> mazeOrder, int mazeWidth) {
+    private List<int[]> getMazeOrder2D(List<Node> mazeOrder) {
         List<int[]> result = new ArrayList<>();
 
         for (Node node : mazeOrder) {
@@ -62,13 +71,11 @@ public class CreateJson {
         return result;
     }
 
-    private List<Short> getMaze(List<List<Node>> maze) {
+    private List<Short> getMaze(List<List<Short>> maze2D) {
         List<Short> result = new ArrayList<>();
 
-        for (List<Node> row : maze) {
-            for (Node node : row) {
-                result.add((short)(node.isWall() ? 0 : 1));
-            }
+        for (List<Short> row : maze2D) {
+            result.addAll(row);
         }
         return result;
     }
