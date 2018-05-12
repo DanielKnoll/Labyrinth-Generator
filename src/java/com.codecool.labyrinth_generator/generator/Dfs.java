@@ -6,7 +6,6 @@ import java.util.Stack;
 
 public class Dfs extends Labyrinth {
     private Stack<Node> stack = new Stack<>();
-    private boolean isEndTileFound = false;
 
     public Dfs(int mazeWidth, int mazeHeight) {
         algoName = "Depth-first search algorithm";
@@ -28,6 +27,7 @@ public class Dfs extends Labyrinth {
                 next.removeWall();
                 stack.push(next);
                 mazeOrder.add(next);
+                setEndTile(stack.get(0), next);
                 currentTile = next;
             } else if (!stack.empty()) {
                 currentTile = stack.pop();

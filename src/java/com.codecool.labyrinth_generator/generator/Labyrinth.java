@@ -13,6 +13,7 @@ public abstract class Labyrinth {
     List<List<Node>> maze = new ArrayList<>();
     Random rnd = new Random();
     Node end = new Node(0,0); // Fail safe
+    private boolean isEndTileFound = false;
 
     public String getAlgoName() {
         return algoName;
@@ -80,6 +81,27 @@ public abstract class Labyrinth {
                 nodeCoordinate[1] == 0 || nodeCoordinate[1] == mazeWidth - 1;
     }
 
+    void setEndTile(Node start, Node curentTile) {  // TODO WET
+        int[] startCoordinate = start.getCoordinate();
+        int[] curentCoordintate = curentTile.getCoordinate();
+
+        if(mazeOrder.size() > 1 && !isEndTileFound) {
+            if (startCoordinate[0] == 0 && curentCoordintate[0] + 1 == mazeHeight - 1) {
+                setEndToCorridor(maze.get(curentCoordintate[0] + 1).get(curentCoordintate[1]));
+                isEndTileFound = true;
+            } else if (startCoordinate[0] == mazeHeight && curentCoordintate[0] - 1 == 0) {
+                setEndToCorridor(maze.get(curentCoordintate[0] - 1).get(curentCoordintate[1]));
+                isEndTileFound = true;
+            } else if (startCoordinate[1] == 0 && curentCoordintate[1] + 1 == mazeWidth - 1) {
+                setEndToCorridor(maze.get(curentCoordintate[0]).get(curentCoordintate[1] + 1));
+                isEndTileFound = true;
+            } else if (startCoordinate[1] == mazeWidth && curentCoordintate[1] - 1 == 0) {
+                setEndToCorridor(maze.get(curentCoordintate[0]).get(curentCoordintate[1] - 1));
+                isEndTileFound = true;
+            }
+        }
+    }
+
     void createAllNeighbors() {
         Node tile;
         for (int i = 0; i < maze.size(); i++) {
@@ -88,6 +110,12 @@ public abstract class Labyrinth {
                 addNeighbors(tile);
             }
         }
+    }
+
+    private void setEndToCorridor(Node tile) {
+        tile.removeWall();
+        mazeOrder.add(tile);
+        end = tile;
     }
 
     private void addNeighbors(Node tile) {

@@ -6,7 +6,6 @@ import java.util.Stack;
 
 public class MyAlgo extends Labyrinth {
     private Stack<Node> stack = new Stack<>();
-    private boolean isEndTileFound = false;
 
     public MyAlgo(int mazeWidth, int mazeHeight) {
         algoName = "My algorithm";
@@ -28,7 +27,7 @@ public class MyAlgo extends Labyrinth {
                 Node nextTile = maze.get(nextCoordinate[0]).get(nextCoordinate[1]);
 
                 setMazeTileCorridor(nextTile);
-                setEndTile(nextTile);
+                setEndTile(stack.get(0), nextTile);
                 stack.push(nextTile);
                 createCorridor(currentTile, nextTile);
                 currentTile = nextTile;
@@ -81,31 +80,9 @@ public class MyAlgo extends Labyrinth {
         }
     }
 
-    private void setEndTile(Node curentTile) {  // TODO WET, need that end Node
-        int[] startCoordinate = stack.get(0).getCoordinate();
-        int[] curentCoordintate = curentTile.getCoordinate();
-
-        if(mazeOrder.size() > 1 && !isEndTileFound) {
-            if (startCoordinate[0] == 0 && curentCoordintate[0] + 1 == mazeHeight - 1) {
-                setMazeTileCorridor(maze.get(curentCoordintate[0] + 1).get(curentCoordintate[1]));
-                isEndTileFound = true;
-            } else if (startCoordinate[0] == mazeHeight && curentCoordintate[0] - 1 == 0) {
-                setMazeTileCorridor(maze.get(curentCoordintate[0] - 1).get(curentCoordintate[1]));
-                isEndTileFound = true;
-            } else if (startCoordinate[1] == 0 && curentCoordintate[1] + 1 == mazeWidth - 1) {
-                setMazeTileCorridor(maze.get(curentCoordintate[0]).get(curentCoordintate[1] + 1));
-                isEndTileFound = true;
-            } else if (startCoordinate[1] == mazeWidth && curentCoordintate[1] - 1 == 0) {
-                setMazeTileCorridor(maze.get(curentCoordintate[0]).get(curentCoordintate[1] - 1));
-                isEndTileFound = true;
-            }
-        }
-    }
-
-    void setMazeTileCorridor(Node tile) {
+    private void setMazeTileCorridor(Node tile) {
         tile.removeWall();
         tile.setUnbreakable();
         mazeOrder.add(tile);
-        super.end = tile;
     }
 }
