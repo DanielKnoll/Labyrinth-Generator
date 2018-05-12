@@ -458,9 +458,9 @@ dom = {
                 <div class="snippet">
                    <code>
                         &nbsp;&nbsp;{</br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;algoType: <span class="postAlgoType">0</span>,</br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;mazeColNum: <span class="postWidth">18</span>,</br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;mazeRowNum: <span class="postHeight">10</span></br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"algoType": <span class="postAlgoType">0</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeColNum": <span class="postWidth">18</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeRowNum": <span class="postHeight">10</span></br>
                         &nbsp;&nbsp;}
                     </code>
                 </div>
@@ -469,6 +469,24 @@ dom = {
                     <pre>
                         <code class="json"></code>
                     </pre>
+                </div>
+                <h4>Simple readable example:</h4>
+                <div class="snippet">
+                     <code>
+                        &nbsp;&nbsp;{</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"algoName":"Depth-first search algorithm",</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeColNum":3,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeRowNum":3,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"maze":[0,1,0,0,1,0,0,0,0],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"start":[1],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"end":[7],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeOrder":[1,4],  // Generation order</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"maze2D":[[0,1,0],[0,1,0],[0,0,0]],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"start2D":[0,1],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"end2D":[2,1],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeOrder2D":[[0,1],[1,1]]</br>
+                        &nbsp;&nbsp;}
+                    </code>
                 </div>
         `,
 
