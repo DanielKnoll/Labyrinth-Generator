@@ -426,8 +426,8 @@ dom = {
                     <ol>
                         <li>input: 0: thick wall / 1: thin wall</li>
                         <li>input: 0-4 generation algorithms</li>
-                        <li>input: maze width (3-50)</li>
-                        <li>input: maze height (3-50)</li>
+                        <li>input: maze width (3-100)</li>
+                        <li>input: maze height (3-100)</li>
                     </ol>
                     <div class="form">
                         <form>
@@ -440,8 +440,8 @@ dom = {
                                 <option value="1">Kruskal</option>
                                 <option value="2">My algorithm</option>
                             </select>
-                            <input id="width" type="number" value="19" max="50"/>
-                            <input id="height" type="number" value="13" max="50"/>
+                            <input id="width" type="number" value="19" max="100"/>
+                            <input id="height" type="number" value="13" max="100"/>
                             <div class="btn singleBtn formSubmit">Send</div>
                         </form>
                     </div>

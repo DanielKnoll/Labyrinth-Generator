@@ -20,22 +20,21 @@ public class MyAlgo extends Labyrinth {
 
     public void generateLabyrinth(Node start){
         Node currentTile = start;
-        Node nextTile;
-        int[] nextCoordinate;
-        List<int[]> unvisitedNeighbors = unvisitedNeighbors(currentTile);
+        while(!stack.empty()) {
+            List<int[]> unvisitedNeighbors = unvisitedNeighbors(currentTile);
+            if (unvisitedNeighbors.size() > 0) {
+                int[] nextCoordinate = unvisitedNeighbors.get(rnd.nextInt(unvisitedNeighbors.size()));
+                Node nextTile = maze.get(nextCoordinate[0]).get(nextCoordinate[1]);
 
-        if (unvisitedNeighbors.size() > 0) {
-            nextCoordinate = unvisitedNeighbors.get(rnd.nextInt(unvisitedNeighbors.size()));
-            nextTile = maze.get(nextCoordinate[0]).get(nextCoordinate[1]);
-
-            setMazeTileCorridor(nextCoordinate[0], nextCoordinate[1]);
-            setEndTile(nextCoordinate);
-            stack.push(nextTile);
-            createCorridor(currentTile, nextTile);
-            generateLabyrinth(nextTile);
-        } else {
-            if(!stack.empty()) {
-                generateLabyrinth(stack.pop());
+                setMazeTileCorridor(nextCoordinate[0], nextCoordinate[1]);
+                setEndTile(nextCoordinate);
+                stack.push(nextTile);
+                createCorridor(currentTile, nextTile);
+                currentTile = nextTile;
+            } else {
+                if(!stack.empty()) {
+                    currentTile = stack.pop();
+                }
             }
         }
     }
