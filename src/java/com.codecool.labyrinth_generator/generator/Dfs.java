@@ -6,6 +6,7 @@ import java.util.Stack;
 
 public class Dfs extends Labyrinth {
     private Stack<Node> stack = new Stack<>();
+    boolean doubleStep = true;
 
     public Dfs(int mazeWidth, int mazeHeight) {
         algoName = "Depth-first search algorithm";
@@ -23,7 +24,7 @@ public class Dfs extends Labyrinth {
         while(!stack.empty()) {
             List<Node> nextTiles = checkNeighbors(currentTile);
             if (nextTiles.size() > 0) {
-                Node next = nextTiles.get(rnd.nextInt(nextTiles.size()));
+                Node next = getNext(nextTiles);
                 next.removeWall();
                 stack.push(next);
                 mazeOrder.add(next);
@@ -85,11 +86,42 @@ public class Dfs extends Labyrinth {
 
         for (int[] direction : allDirections) {
             Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
-            if(!neighbor.isWall()) {corridorCounter++;}
+            if(!neighbor.isWall()) {
+                corridorCounter++;
+            }
             if (!neighbor.isWall() && !lastStepAndNeighbors.contains(neighbor)) {
                 return false;  // Todo bug
             }
         }
-        return corridorCounter <= 2;
+        return corridorCounter < 3 ;
+    }
+
+    private Node getNext(List<Node> nextTiles) {
+        if(doubleStep) {
+            doubleStep = false;
+        } else {
+            doubleStep = true;
+            int[] lastStep = stack.peek().getCoordinate();
+            int[] lastDirection = getLastDirection(lastStep);
+            for (Node neighbor: nextTiles) {
+                int[] coordinate = neighbor.getCoordinate();
+                if(lastStep[0] + lastDirection[0] == coordinate[0] &&
+                        lastStep[1] + lastDirection[1] == coordinate[1]){
+                    return neighbor;
+                }
+            }
+            /*if(isCoordinateInBound(lastStep, lastDirection)) {  // interesting result
+                return maze.get(lastStep[0] + lastDirection[0]).get(lastStep[1] + lastDirection[1]);
+            }*/
+        }
+        return nextTiles.get(rnd.nextInt(nextTiles.size()));
+    }
+
+    private int[] getLastDirection(int[] lastStep) {
+        int[] beforeLastStep = mazeOrder.get(mazeOrder.size() - 2).getCoordinate();
+        int[] direction = new int[2];
+        direction[0] = lastStep[0] - beforeLastStep[0];
+        direction[1] = lastStep[1] - beforeLastStep[1];
+        return direction;
     }
 }
