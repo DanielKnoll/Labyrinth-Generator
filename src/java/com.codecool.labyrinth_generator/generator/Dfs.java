@@ -43,13 +43,13 @@ public class Dfs extends Labyrinth {
      * - That neighbor has 8 neighbors and all of them are walls OR
      *      the neighbor is one of the top two element in the stack
      */
-    private List<Node> checkNeighbors(Node node) {
+    private List<Node> checkNeighbors(Node current) {
         List<Node> result = new ArrayList<>();
 
-        for (Node neighbour : getAdjacentNeighbours(node)) {
+        for (Node neighbour : getAdjacentNeighbours(current)) {
             if (neighbour.isWall() && // do not go back
                     !super.isEdge(neighbour) && // do not dig into edges
-                    hasNoVisitedNearby(neighbour)) { // do not dig if there is a tunnel nearby
+                    hasNoVisitedNearby(neighbour, current)) { // do not dig if there is a tunnel nearby
                 result.add(neighbour);
             }
         }
@@ -77,23 +77,19 @@ public class Dfs extends Labyrinth {
      * Checks if there are no corridor tiles nearby
      * except for the current searches head and or its neighbors
      */
-    private boolean hasNoVisitedNearby(Node node) {
-        int[] nodeCoordinate = node.getCoordinate();
+    private boolean hasNoVisitedNearby(Node next, Node last) {
+        int[] nextCoordinate = next.getCoordinate();
         int[][] allDirections = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}};
-        int corridorCounter = 0;
-        List<Node> lastStepAndNeighbors = getAdjacentNeighbours(stack.peek());
-        lastStepAndNeighbors.add(stack.peek());
+        List<Node> lastStepAndNeighbors = getAdjacentNeighbours(last);
+        lastStepAndNeighbors.add(last);
 
         for (int[] direction : allDirections) {
-            Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);
-            if(!neighbor.isWall()) {
-                corridorCounter++;
-            }
+            Node neighbor = maze.get(nextCoordinate[0] + direction[0]).get(nextCoordinate[1] + direction[1]);
             if (!neighbor.isWall() && !lastStepAndNeighbors.contains(neighbor)) {
-                return false;  // Todo bug
+                return false;
             }
         }
-        return corridorCounter < 3 ;
+        return true;
     }
 
     private Node getNext(List<Node> nextTiles) {
