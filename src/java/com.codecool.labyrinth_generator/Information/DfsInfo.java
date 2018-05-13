@@ -25,72 +25,78 @@ public class DfsInfo extends AlgorithmInfo {
         classCodes.add(
                 "    public class Node {\n" +
                 "        private boolean isWall = true;\n" +
-                "        private int[] place = new int[2];\n" +
-                "    \n" +
+                "        private int[] coordinate = new int[2];\n\n" +
                 "        public Node(int x, int y) {\n" +
-                "            place[0] = x;\n" +
-                "            place[1] = y;\n" +
-                "        }\n" +
-                "    \n" +
+                "            coordinate[0] = x;\n" +
+                "            coordinate[1] = y;\n" +
+                "        }\n\n" +
                 "        public boolean isWall() {\n" +
                 "            return isWall;\n" +
-                "        }\n" +
-                "    \n" +
+                "        }\n\n" +
                 "        public void removeWall() {\n" +
                 "            isWall = false;\n" +
-                "        }\n" +
-                "    \n" +
+                "        }\n\n" +
                 "        public int[] getCoordinate() {\n" +
-                "            return place;\n" +
-                "        }\n" +
-                "    \n" +
+                "            return coordinate;\n" +
+                "        }\n\n" +
                 "        @Override\n" +
                 "        public String toString() {\n" +
-                "            return (isWall) ? \"0\": \"1\";\n" +
+                "            return Arrays.toString(coordinate);\n" +
                 "        }\n" +
                 "    }\n");
         classNames.add("Dfs Class");
         classCodes.add(
                 "    import java.util.*;\n" +
-                "    \n" +
+                "\n" +
                 "    public class Dfs {\n" +
                 "        List<Node> mazeOrder = new ArrayList<>();\n" +
                 "        Stack<Node> stack = new Stack<>();\n" +
                 "        private int mazeWidth;\n" +
                 "        private int mazeHeight;\n" +
-                "        private List<List<Node>> allTiles = new ArrayList<>();\n" +
+                "        private List<List<Node>> maze = new ArrayList<>();\n" +
                 "        private Random rnd = new Random(12345);\n" +
-                "    \n" +
+                "        Node end = new Node(0,0); // Fail safe\n" +
+                "        private boolean isEndTileFound = false;\n" +
+                "        boolean doubleStep = true;\n\n" +
+                "\n" +
                 "        public Dfs(int width, int height) {\n" +
                 "            mazeHeight = height;\n" +
                 "            mazeWidth = width;\n" +
-                "    \n" +
+                "\n" +
                 "            createGrid();\n" +
                 "            printMaze();\n" +
                 "            Node startTile = randomStart();\n" +
                 "            startTile.removeWall();\n" +
                 "            stack.push(startTile);\n" +
-                "            mazeOrder.add(startTile);\n" +
                 "            generateLabyrinth(startTile);\n" +
+                "\n" +
+                "            printMaze();\n" +
+                "\n" +
+                "            System.out.println(\"\\nmazeorder: \" + mazeOrder);\n" +
+                "            System.out.println(\"\\ndone\");\n" +
                 "        }\n" +
-                "    \n" +
+                "\n" +
                 "        public void generateLabyrinth(Node start) {\n" +
                 "            Node currentTile = start;\n" +
                 "            while(!stack.empty()) {\n" +
                 "                List<Node> nextTiles = checkNeighbors(currentTile);\n" +
                 "                if (nextTiles.size() > 0) {\n" +
-                "                    int num = rnd.nextInt(nextTiles.size());\n" +
-                "                    Node next = nextTiles.get(num);\n" +
+                "                    Node next = getNext(nextTiles);\n" +
                 "                    next.removeWall();\n" +
                 "                    stack.push(next);\n" +
                 "                    mazeOrder.add(next);\n" +
+                "                    setEndTile(stack.get(0), next);\n" +
                 "                    currentTile = next;\n" +
+                "                    printMaze();\n" +
+                "                    if(mazeOrder.size() == 8) {\n" +
+                "                        System.out.println(\"now\");\n" +
+                "                    }\n" +
                 "                } else if (!stack.empty()) {\n" +
                 "                    currentTile = stack.pop();\n" +
                 "                }\n" +
                 "            }\n" +
                 "        }\n" +
-                "    \n" +
+                "\n" +
                 "        /**\n" +
                 "         * Checks 4 adjacent neighbor. 1 is only OK, if:\n" +
                 "         * - It is a wall\n" +
@@ -100,17 +106,18 @@ public class DfsInfo extends AlgorithmInfo {
                 "         */\n" +
                 "        private List<Node> checkNeighbors(Node node) {\n" +
                 "            List<Node> result = new ArrayList<>();\n" +
-                "    \n" +
+                "\n" +
                 "            for (Node neighbour : getAdjacentNeighbours(node)) {\n" +
                 "                if (neighbour.isWall() && // do not go back\n" +
-                "                    !isEdge(neighbour) && // do not dig into edges\n" +
-                "                    hasNoVisitedNearby(neighbour)) { // do not dig if there is a tunnel nearby\n" +
+                "                        !isEdge(neighbour) && // do not dig into edges\n" +
+                "                        hasNoVisitedNearby(neighbour, node)) { // do not dig if there is a tunnel nearby\n" +
                 "                    result.add(neighbour);\n" +
                 "                }\n" +
                 "            }\n" +
                 "            return result;\n" +
                 "        }\n" +
-                "    \n" +
+                "\n" +
+                "\n" +
                 "        /**\n" +
                 "         * Returns north, east, south, west neighbours if they exist\n" +
                 "         */\n" +
@@ -118,38 +125,44 @@ public class DfsInfo extends AlgorithmInfo {
                 "            List<Node> neighbors = new ArrayList<>();\n" +
                 "            int[] nodeCoordinate = node.getCoordinate();\n" +
                 "            int[][] adjacentDirections = {{0, -1}, {-1, 0}, {0, 1}, {1, 0}};\n" +
-                "    \n" +
+                "\n" +
                 "            for (int[] direction : adjacentDirections) {\n" +
                 "                if (isCoordinateInBound(nodeCoordinate, direction)) {\n" +
-                "                    Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);\n" +
+                "                    Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);\n" +
                 "                    neighbors.add(neighbor);\n" +
                 "                }\n" +
                 "            }\n" +
                 "            return neighbors;\n" +
                 "        }\n" +
-                "    \n" +
+                "\n" +
                 "        private boolean isCoordinateInBound(int[] nodeCoordinate, int[] direction) {\n" +
                 "            return nodeCoordinate[0] + direction[0] >= 0 && nodeCoordinate[0] + direction[0] < mazeHeight &&\n" +
                 "                    nodeCoordinate[1] + direction[1] >= 0 && nodeCoordinate[1] + direction[1] < mazeWidth;\n" +
                 "        }\n" +
-                "    \n" +
+                "\n" +
                 "        /**\n" +
                 "         * Checks if there are no corridor tiles nearby\n" +
                 "         * except for the current searches head (top 2 elements of the Stack)\n" +
                 "         */\n" +
-                "        private boolean hasNoVisitedNearby(Node node) {\n" +
+                "        private boolean hasNoVisitedNearby(Node node, Node lastStep) {\n" +
                 "            int[] nodeCoordinate = node.getCoordinate();\n" +
                 "            int[][] allDirections = {{-1, -1}, {-1, 1}, {1, -1}, {1, 1}, {0, -1}, {-1, 0}, {0, 1}, {1, 0}};\n" +
-                "    \n" +
+                "            int corridorCounter = 0;\n" +
+                "            List<Node> lastStepAndNeighbors = getAdjacentNeighbours(lastStep);\n" +
+                "            lastStepAndNeighbors.add(lastStep);\n" +
+                "\n" +
                 "            for (int[] direction : allDirections) {\n" +
-                "                    Node neighbor = allTiles.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);\n" +
-                "                    if (!neighbor.isWall() && !(stack.search(neighbor) == 1 || stack.search(neighbor) == 2)) {\n" +
-                "                        return false;\n" +
-                "                    }\n" +
+                "                Node neighbor = maze.get(nodeCoordinate[0] + direction[0]).get(nodeCoordinate[1] + direction[1]);\n" +
+                "                /*if(!neighbor.isWall()) {\n" +
+                "                    corridorCounter++;\n" +
+                "                }*/\n" +
+                "                if (!neighbor.isWall() && !lastStepAndNeighbors.contains(neighbor)) {\n" +
+                "                    return false;  // Todo bug\n" +
+                "                }\n" +
                 "            }\n" +
-                "            return true;\n" +
+                "            return corridorCounter < 3 ;\n" +
                 "        }\n" +
-                "    \n" +
+                "\n" +
                 "        /**\n" +
                 "         * returns true if the node is on the edge\n" +
                 "         */\n" +
@@ -161,31 +174,104 @@ public class DfsInfo extends AlgorithmInfo {
                 "            }\n" +
                 "            return false;\n" +
                 "        }\n" +
-                "    \n" +
-                "    \n" +
+                "\n" +
+                "        private Node getNext(List<Node> nextTiles) {\n" +
+                "            if(doubleStep) {\n" +
+                "                doubleStep = false;\n" +
+                "            } else {\n" +
+                "                doubleStep = true;\n" +
+                "                int[] lastStep = stack.peek().getCoordinate();\n" +
+                "                int[] lastDirection = getLastDirection(lastStep);\n" +
+                "                for (Node neighbor: nextTiles) {\n" +
+                "                    int[] coordinate = neighbor.getCoordinate();\n" +
+                "                    if(lastStep[0] + lastDirection[0] == coordinate[0] &&\n" +
+                "                            lastStep[1] + lastDirection[1] == coordinate[1]){\n" +
+                "                        return neighbor;\n" +
+                "                    }\n" +
+                "                }\n" +
+                "                /*if(isCoordinateInBound(lastStep, lastDirection)) {  // interesting result\n" +
+                "                    return maze.get(lastStep[0] + lastDirection[0]).get(lastStep[1] + lastDirection[1]);\n" +
+                "                }*/\n" +
+                "            }\n" +
+                "            return nextTiles.get(rnd.nextInt(nextTiles.size()));\n" +
+                "        }\n" +
+                "\n" +
+                "        private int[] getLastDirection(int[] lastStep) {\n" +
+                "            int[] beforeLastStep = mazeOrder.get(mazeOrder.size() - 2).getCoordinate();\n" +
+                "            int[] direction = new int[2];\n" +
+                "            direction[0] = lastStep[0] - beforeLastStep[0];\n" +
+                "            direction[1] = lastStep[1] - beforeLastStep[1];\n" +
+                "            return direction;\n" +
+                "        }\n" +
+                "\n" +
                 "        private void createGrid() {\n" +
-                "            allTiles.clear();\n" +
+                "            maze.clear();\n" +
                 "            for (int i = 0; i < mazeHeight; i++) {\n" +
-                "                allTiles.add(new ArrayList<>());\n" +
+                "                maze.add(new ArrayList<>());\n" +
                 "                for (int j = 0; j < mazeWidth; j++) {\n" +
                 "                    Node tile = new Node(i, j);\n" +
-                "                    allTiles.get(i).add(tile);\n" +
+                "                    maze.get(i).add(tile);\n" +
                 "                }\n" +
                 "            }\n" +
                 "        }\n" +
-                "    \n" +
+                "\n" +
                 "        private Node randomStart() {\n" +
                 "            int randomCol;\n" +
                 "            int randomRow = rnd.nextInt(mazeHeight);\n" +
-                "    \n" +
+                "\n" +
                 "            if (randomRow == 0 || randomRow == mazeHeight - 1) {\n" +
                 "                randomCol = rnd.nextInt(mazeWidth - 2) + 1;  //To avoid corners: between 1 and width-1\n" +
                 "            } else {\n" +
                 "                randomCol = (((int) (rnd.nextInt(1) + 0.5)) == 0) ? 0 : mazeWidth - 1;\n" +
                 "            }\n" +
-                "            return allTiles.get(randomRow).get(randomCol);\n" +
+                "            Node start = maze.get(randomRow).get(randomCol);\n" +
+                "            start.removeWall();\n" +
+                "            mazeOrder.add(start);\n" +
+                "            return start;\n" +
                 "        }\n" +
-                "    }");
+                "\n" +
+                "        private void setEndTile(Node start, Node curentTile) {  // TODO WET\n" +
+                "            int[] startCoordinate = start.getCoordinate();\n" +
+                "            int[] curentCoordintate = curentTile.getCoordinate();\n" +
+                "\n" +
+                "            if(mazeOrder.size() > 1 && !isEndTileFound) {\n" +
+                "                if (startCoordinate[0] == 0 && curentCoordintate[0] + 1 == mazeHeight - 1) {\n" +
+                "                    setEndToCorridor(maze.get(curentCoordintate[0] + 1).get(curentCoordintate[1]));\n" +
+                "                    isEndTileFound = true;\n" +
+                "                } else if (startCoordinate[0] == mazeHeight && curentCoordintate[0] - 1 == 0) {\n" +
+                "                    setEndToCorridor(maze.get(curentCoordintate[0] - 1).get(curentCoordintate[1]));\n" +
+                "                    isEndTileFound = true;\n" +
+                "                } else if (startCoordinate[1] == 0 && curentCoordintate[1] + 1 == mazeWidth - 1) {\n" +
+                "                    setEndToCorridor(maze.get(curentCoordintate[0]).get(curentCoordintate[1] + 1));\n" +
+                "                    isEndTileFound = true;\n" +
+                "                } else if (startCoordinate[1] == mazeWidth && curentCoordintate[1] - 1 == 0) {\n" +
+                "                    setEndToCorridor(maze.get(curentCoordintate[0]).get(curentCoordintate[1] - 1));\n" +
+                "                    isEndTileFound = true;\n" +
+                "                }\n" +
+                "            }\n" +
+                "        }\n" +
+                "\n" +
+                "        private void setEndToCorridor(Node tile) {\n" +
+                "            tile.removeWall();\n" +
+                "            mazeOrder.add(tile);\n" +
+                "            end = tile;\n" +
+                "        }\n" +
+                "\n" +
+                "        private void printMaze() {\n" +
+                "            for (List<Node> row : maze) {\n" +
+                "                System.out.println(row);\n" +
+                "            }\n" +
+                "            System.out.println();\n" +
+                "            for (List<Node> row : maze) {\n" +
+                "                for (Node node: row) {\n" +
+                "                    System.out.print((node.isWall()) ? \"█\": \"░\");\n" +
+                "                }\n" +
+                "                System.out.println();\n" +
+                "            }\n" +
+                "            System.out.println();\n" +
+                "        }\n" +
+                "\n" +
+                "    }\n");
         imageNames.add("dfs.gif");
         imageNames.add("DFSimg.png");
         algoWikiInfo =

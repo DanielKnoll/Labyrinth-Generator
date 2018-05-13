@@ -10,7 +10,7 @@ public class LabyrinthGeneratorFactory {
 
     public Labyrinth generateLabyrinth(Algorithms algoType, int width, int height) {
         int minDimension = 3;
-        int maxDimension = 50;
+        int maxDimension = 100;
 
         Labyrinth labyrinth = null;
 

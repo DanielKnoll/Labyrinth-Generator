@@ -69,7 +69,8 @@ dom = {
                         dom.data.algoType = 2;
                         break;
                     case "kruskal":
-                        apiData.getMazeData("1&19&13");
+                        apiData.getMazeData("1&19&13"); //TODO get rid of next line
+                        dom.data.mazeOrder = [96, 77, 58, 39, 20, 40, 60, 80, 100, 81, 62, 43, 24, 27, 28, 29, 49, 68, 87, 105, 104, 103, 83, 64, 45, 32, 33, 34, 35, 36, 53, 72, 91, 110, 134, 153, 173, 174, 175, 157, 138, 193, 212, 144, 143, 142, 141, 140, 159, 178, 197, 216, 217, 218, 219, 220, 179, 180, 146, 147, 148, 149, 150, 167, 186, 205, 224];
                         apiData.getMazeInfo(1);
                         dom.data.algoType = 1;
                         break;
@@ -100,10 +101,10 @@ dom = {
             });
         },
 
-        anyMazeGenBtnEventListener: function () {  //TODO how to include newMaze and Solve? is this a good practice?
-            let interruptorBtns = ["start", "back", "rew", "pause", "ffwd", "forward", "end", "newMaze"];
+        anyMazeGenBtnEventListener: function () {  //TODO is this a good practice?
+            let interruptorBtns = ["start", "back", "rew", "pause", "ffwd", "forward", "end"];
             let forwardBtns = ["start", "play", "ffwd", "forward"];
-            let resetMazeBtns = ["start", "end", "newMaze"];
+            let resetMazeBtns = ["start", "end"];
             let pauseToPlayBtns = ["start", "back", "forward", "end"];
             let playToPauseBtns = ["rew", "ffwd"];
             $(".playerBtns button").click(function () {
@@ -410,7 +411,7 @@ dom = {
     },
 
     htmlStructures: {
-        // TODO write about POST method too. What is the valid GET link format? Add sliders to JSON preview area.
+        // TODO What is the valid GET link format?
         apiInfo: `
                 <h3 class="title">API Info</h3>
                 <p>
@@ -426,8 +427,8 @@ dom = {
                     <ol>
                         <li>input: 0: thick wall / 1: thin wall</li>
                         <li>input: 0-4 generation algorithms</li>
-                        <li>input: maze width (3-50)</li>
-                        <li>input: maze height (3-50)</li>
+                        <li>input: maze width (3-100)</li>
+                        <li>input: maze height (3-100)</li>
                     </ol>
                     <div class="form">
                         <form>
@@ -440,8 +441,8 @@ dom = {
                                 <option value="1">Kruskal</option>
                                 <option value="2">My algorithm</option>
                             </select>
-                            <input id="width" type="number" value="19" max="50"/>
-                            <input id="height" type="number" value="13" max="50"/>
+                            <input id="width" type="number" value="19" max="100"/>
+                            <input id="height" type="number" value="13" max="100"/>
                             <div class="btn singleBtn formSubmit">Send</div>
                         </form>
                     </div>
@@ -457,9 +458,9 @@ dom = {
                 <div class="snippet">
                    <code>
                         &nbsp;&nbsp;{</br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;algoType: <span class="postAlgoType">0</span>,</br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;mazeColNum: <span class="postWidth">18</span>,</br>
-                        &nbsp;&nbsp;&nbsp;&nbsp;mazeRowNum: <span class="postHeight">10</span></br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"algoType": <span class="postAlgoType">0</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeColNum": <span class="postWidth">18</span>,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeRowNum": <span class="postHeight">10</span></br>
                         &nbsp;&nbsp;}
                     </code>
                 </div>
@@ -468,6 +469,24 @@ dom = {
                     <pre>
                         <code class="json"></code>
                     </pre>
+                </div>
+                <h4>Simple readable example:</h4>
+                <div class="snippet">
+                     <code>
+                        &nbsp;&nbsp;{</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"algoName":"Depth-first search algorithm",</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeColNum":3,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeRowNum":3,</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"maze":[0,1,0,0,1,0,0,0,0],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"start":[1],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"end":[7],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeOrder":[1,4],  // Generation order</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"maze2D":[[0,1,0],[0,1,0],[0,0,0]],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"start2D":[0,1],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"end2D":[2,1],</br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;"mazeOrder2D":[[0,1],[1,1]]</br>
+                        &nbsp;&nbsp;}
+                    </code>
                 </div>
         `,
 
